@@ -1,0 +1,1639 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>ClangVSx</name>
+    </assembly>
+    <members>
+        <member name="T:ClangVSx.CVXSettings">
+            <summary>
+            Settings Dialog Box
+            </summary>
+        </member>
+        <member name="F:ClangVSx.CVXSettings.components">
+            <summary>
+            Required designer variable.
+            </summary>
+        </member>
+        <member name="M:ClangVSx.CVXSettings.Dispose(System.Boolean)">
+            <summary>
+            Clean up any resources being used.
+            </summary>
+            <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        </member>
+        <member name="M:ClangVSx.CVXSettings.InitializeComponent">
+            <summary>
+            Required method for Designer support - do not modify
+            the contents of this method with the code editor.
+            </summary>
+        </member>
+        <member name="M:ClangVSx.CVXSettings.#ctor">
+            <summary>
+            Settings management
+            </summary>
+        </member>
+        <member name="T:ClangVSx.CommandBar">
+            <summary>
+              A strongly-typed resource class, for looking up localized strings, etc.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.ResourceManager">
+            <summary>
+              Returns the cached ResourceManager instance used by this class.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.Culture">
+            <summary>
+              Overrides the current thread's CurrentUICulture property for all
+              resource lookups using this strongly typed resource class.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.deAction">
+            <summary>
+              Looks up a localized string similar to Aktion.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.deAddins">
+            <summary>
+              Looks up a localized string similar to Add-Ins.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.deBuild">
+            <summary>
+              Looks up a localized string similar to Erstellen.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.deClass_Diagram">
+            <summary>
+              Looks up a localized string similar to Klassendiagramm.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.deCommunity">
+            <summary>
+              Looks up a localized string similar to Community.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.deData">
+            <summary>
+              Looks up a localized string similar to Daten.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.deDatabase">
+            <summary>
+              Looks up a localized string similar to Datenbank.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.deDatabase_Diagram">
+            <summary>
+              Looks up a localized string similar to Datenbankdiagramm.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.deDebug">
+            <summary>
+              Looks up a localized string similar to Debuggen.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.deDiagram">
+            <summary>
+              Looks up a localized string similar to Diagramm.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.deEdit">
+            <summary>
+              Looks up a localized string similar to Bearbeiten.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.deFile">
+            <summary>
+              Looks up a localized string similar to Datei.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.deFormat">
+            <summary>
+              Looks up a localized string similar to Format.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.deFrames">
+            <summary>
+              Looks up a localized string similar to Rahmen.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.deHelp">
+            <summary>
+              Looks up a localized string similar to Hilfe.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.deImage">
+            <summary>
+              Looks up a localized string similar to Bild.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.deLayout">
+            <summary>
+              Looks up a localized string similar to Layout.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.deMacros">
+            <summary>
+              Looks up a localized string similar to Makros.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.deProject">
+            <summary>
+              Looks up a localized string similar to Projekt.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.deQuery">
+            <summary>
+              Looks up a localized string similar to Query.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.deQuery_Designer">
+            <summary>
+              Looks up a localized string similar to Abfrage-Designer.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.deRefactor">
+            <summary>
+              Looks up a localized string similar to Umgestalten.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.deResources">
+            <summary>
+              Looks up a localized string similar to Ressourcen.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.deSchema">
+            <summary>
+              Looks up a localized string similar to Schema.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.deStyles">
+            <summary>
+              Looks up a localized string similar to Formate.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.deTable">
+            <summary>
+              Looks up a localized string similar to Tabelle.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.deTable_Designer">
+            <summary>
+              Looks up a localized string similar to Tabellen-Designer.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.deTeam">
+            <summary>
+              Looks up a localized string similar to Team.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.deTest">
+            <summary>
+              Looks up a localized string similar to Testen.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.deTools">
+            <summary>
+              Looks up a localized string similar to Extras.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.deView">
+            <summary>
+              Looks up a localized string similar to Ansicht.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.deWindow">
+            <summary>
+              Looks up a localized string similar to Fenster.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.deXML">
+            <summary>
+              Looks up a localized string similar to XML.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.enAction">
+            <summary>
+              Looks up a localized string similar to Action.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.enAddins">
+            <summary>
+              Looks up a localized string similar to Addins.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.enBuild">
+            <summary>
+              Looks up a localized string similar to Build.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.enClass_Diagram">
+            <summary>
+              Looks up a localized string similar to Class Diagram.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.enCommunity">
+            <summary>
+              Looks up a localized string similar to Community.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.enData">
+            <summary>
+              Looks up a localized string similar to Data.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.enDatabase">
+            <summary>
+              Looks up a localized string similar to Database.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.enDatabase_Diagram">
+            <summary>
+              Looks up a localized string similar to Database Diagram.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.enDebug">
+            <summary>
+              Looks up a localized string similar to Debug.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.enDiagram">
+            <summary>
+              Looks up a localized string similar to Diagram.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.enEdit">
+            <summary>
+              Looks up a localized string similar to Edit.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.enFile">
+            <summary>
+              Looks up a localized string similar to File.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.enFormat">
+            <summary>
+              Looks up a localized string similar to Format.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.enFrames">
+            <summary>
+              Looks up a localized string similar to Frames.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.enHelp">
+            <summary>
+              Looks up a localized string similar to Help.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.enImage">
+            <summary>
+              Looks up a localized string similar to Image.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.enLayout">
+            <summary>
+              Looks up a localized string similar to Layout.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.enMacros">
+            <summary>
+              Looks up a localized string similar to Macros.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.enProject">
+            <summary>
+              Looks up a localized string similar to Project.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.enQuery">
+            <summary>
+              Looks up a localized string similar to Query.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.enQuery_Designer">
+            <summary>
+              Looks up a localized string similar to Query Designer.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.enRefactor">
+            <summary>
+              Looks up a localized string similar to Refactor.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.enResources">
+            <summary>
+              Looks up a localized string similar to Resources.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.enSchema">
+            <summary>
+              Looks up a localized string similar to Schema.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.enStyles">
+            <summary>
+              Looks up a localized string similar to Styles.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.enTable">
+            <summary>
+              Looks up a localized string similar to Table.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.enTable_Designer">
+            <summary>
+              Looks up a localized string similar to Table Designer.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.enTeam">
+            <summary>
+              Looks up a localized string similar to Team.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.enTest">
+            <summary>
+              Looks up a localized string similar to Test.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.enTools">
+            <summary>
+              Looks up a localized string similar to Tools.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.enView">
+            <summary>
+              Looks up a localized string similar to View.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.enWindow">
+            <summary>
+              Looks up a localized string similar to Window.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.enXML">
+            <summary>
+              Looks up a localized string similar to XML.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.esAction">
+            <summary>
+              Looks up a localized string similar to Acción.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.esAddins">
+            <summary>
+              Looks up a localized string similar to Complementos.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.esBuild">
+            <summary>
+              Looks up a localized string similar to Generar.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.esClass_Diagram">
+            <summary>
+              Looks up a localized string similar to Diagrama de clase.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.esCommunity">
+            <summary>
+              Looks up a localized string similar to Comunidad.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.esData">
+            <summary>
+              Looks up a localized string similar to Datos.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.esDatabase">
+            <summary>
+              Looks up a localized string similar to Base de datos.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.esDatabase_Diagram">
+            <summary>
+              Looks up a localized string similar to Diagrama de base de datos.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.esDebug">
+            <summary>
+              Looks up a localized string similar to Depurar.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.esDiagram">
+            <summary>
+              Looks up a localized string similar to Diagrama.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.esEdit">
+            <summary>
+              Looks up a localized string similar to Editar.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.esFile">
+            <summary>
+              Looks up a localized string similar to Archivo.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.esFormat">
+            <summary>
+              Looks up a localized string similar to Formato.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.esFrames">
+            <summary>
+              Looks up a localized string similar to Marcos.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.esHelp">
+            <summary>
+              Looks up a localized string similar to Ayuda.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.esImage">
+            <summary>
+              Looks up a localized string similar to Imagen.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.esLayout">
+            <summary>
+              Looks up a localized string similar to Diseño.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.esMacros">
+            <summary>
+              Looks up a localized string similar to Macros.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.esProject">
+            <summary>
+              Looks up a localized string similar to Proyecto.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.esQuery">
+            <summary>
+              Looks up a localized string similar to Consulta.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.esQuery_Designer">
+            <summary>
+              Looks up a localized string similar to Diseñador de consultas.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.esRefactor">
+            <summary>
+              Looks up a localized string similar to Refactorizar.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.esResources">
+            <summary>
+              Looks up a localized string similar to Recursos.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.esSchema">
+            <summary>
+              Looks up a localized string similar to Esquema.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.esStyles">
+            <summary>
+              Looks up a localized string similar to Estilos.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.esTable">
+            <summary>
+              Looks up a localized string similar to Tabla.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.esTable_Designer">
+            <summary>
+              Looks up a localized string similar to Diseñador de tablas.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.esTeam">
+            <summary>
+              Looks up a localized string similar to Equipo.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.esTest">
+            <summary>
+              Looks up a localized string similar to Prueba.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.esTools">
+            <summary>
+              Looks up a localized string similar to Herramientas.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.esView">
+            <summary>
+              Looks up a localized string similar to Ver.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.esWindow">
+            <summary>
+              Looks up a localized string similar to Ventana.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.esXML">
+            <summary>
+              Looks up a localized string similar to XML.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.frAction">
+            <summary>
+              Looks up a localized string similar to Action.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.frAddins">
+            <summary>
+              Looks up a localized string similar to Compléments.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.frBuild">
+            <summary>
+              Looks up a localized string similar to Générer.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.frClass_Diagram">
+            <summary>
+              Looks up a localized string similar to Diagramme de classes.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.frCommunity">
+            <summary>
+              Looks up a localized string similar to Communauté.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.frData">
+            <summary>
+              Looks up a localized string similar to Données.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.frDatabase">
+            <summary>
+              Looks up a localized string similar to Base de données.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.frDatabase_Diagram">
+            <summary>
+              Looks up a localized string similar to Schéma de base de données.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.frDebug">
+            <summary>
+              Looks up a localized string similar to Déboguer.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.frDiagram">
+            <summary>
+              Looks up a localized string similar to Schéma.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.frEdit">
+            <summary>
+              Looks up a localized string similar to Modifier.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.frFile">
+            <summary>
+              Looks up a localized string similar to Fichier.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.frFormat">
+            <summary>
+              Looks up a localized string similar to Format.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.frFrames">
+            <summary>
+              Looks up a localized string similar to Frames.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.frHelp">
+            <summary>
+              Looks up a localized string similar to ?.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.frImage">
+            <summary>
+              Looks up a localized string similar to Image.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.frLayout">
+            <summary>
+              Looks up a localized string similar to Disposition.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.frMacros">
+            <summary>
+              Looks up a localized string similar to Macros.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.frProject">
+            <summary>
+              Looks up a localized string similar to Projet.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.frQuery">
+            <summary>
+              Looks up a localized string similar to Requête.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.frQuery_Designer">
+            <summary>
+              Looks up a localized string similar to Concepteur de requêtes.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.frRefactor">
+            <summary>
+              Looks up a localized string similar to Refactoriser.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.frResources">
+            <summary>
+              Looks up a localized string similar to Ressources.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.frSchema">
+            <summary>
+              Looks up a localized string similar to Schéma.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.frStyles">
+            <summary>
+              Looks up a localized string similar to Styles.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.frTable">
+            <summary>
+              Looks up a localized string similar to Tableau.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.frTable_Designer">
+            <summary>
+              Looks up a localized string similar to Concepteur de tables.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.frTeam">
+            <summary>
+              Looks up a localized string similar to équipe.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.frTest">
+            <summary>
+              Looks up a localized string similar to Test.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.frTools">
+            <summary>
+              Looks up a localized string similar to Outils.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.frView">
+            <summary>
+              Looks up a localized string similar to Affichage.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.frWindow">
+            <summary>
+              Looks up a localized string similar to Fenêtre.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.frXML">
+            <summary>
+              Looks up a localized string similar to XML.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.itAction">
+            <summary>
+              Looks up a localized string similar to Azione.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.itAddins">
+            <summary>
+              Looks up a localized string similar to Componenti aggiuntivi.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.itBuild">
+            <summary>
+              Looks up a localized string similar to Genera.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.itClass_Diagram">
+            <summary>
+              Looks up a localized string similar to Diagramma classi.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.itCommunity">
+            <summary>
+              Looks up a localized string similar to Comunità.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.itData">
+            <summary>
+              Looks up a localized string similar to Dati.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.itDatabase">
+            <summary>
+              Looks up a localized string similar to Database.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.itDatabase_Diagram">
+            <summary>
+              Looks up a localized string similar to Diagramma database.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.itDebug">
+            <summary>
+              Looks up a localized string similar to Debug.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.itDiagram">
+            <summary>
+              Looks up a localized string similar to Diagramma.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.itEdit">
+            <summary>
+              Looks up a localized string similar to Modifica.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.itFile">
+            <summary>
+              Looks up a localized string similar to File.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.itFormat">
+            <summary>
+              Looks up a localized string similar to Formato.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.itFrames">
+            <summary>
+              Looks up a localized string similar to Frame.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.itHelp">
+            <summary>
+              Looks up a localized string similar to ?.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.itImage">
+            <summary>
+              Looks up a localized string similar to Immagine.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.itLayout">
+            <summary>
+              Looks up a localized string similar to Layout.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.itMacros">
+            <summary>
+              Looks up a localized string similar to Macro.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.itProject">
+            <summary>
+              Looks up a localized string similar to Progetto.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.itQuery">
+            <summary>
+              Looks up a localized string similar to Query.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.itQuery_Designer">
+            <summary>
+              Looks up a localized string similar to Progettazione query.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.itRefactor">
+            <summary>
+              Looks up a localized string similar to Effettua refactoring.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.itResources">
+            <summary>
+              Looks up a localized string similar to Risorse.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.itSchema">
+            <summary>
+              Looks up a localized string similar to Schema.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.itStyles">
+            <summary>
+              Looks up a localized string similar to Stili.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.itTable">
+            <summary>
+              Looks up a localized string similar to Tabella.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.itTable_Designer">
+            <summary>
+              Looks up a localized string similar to Progettazione tabelle.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.itTeam">
+            <summary>
+              Looks up a localized string similar to Team.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.itTest">
+            <summary>
+              Looks up a localized string similar to Prova.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.itTools">
+            <summary>
+              Looks up a localized string similar to Strumenti.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.itView">
+            <summary>
+              Looks up a localized string similar to Visualizza.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.itWindow">
+            <summary>
+              Looks up a localized string similar to Finestra.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.itXML">
+            <summary>
+              Looks up a localized string similar to XML.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.jaAction">
+            <summary>
+              Looks up a localized string similar to 操作.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.jaAddins">
+            <summary>
+              Looks up a localized string similar to アドイン.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.jaBuild">
+            <summary>
+              Looks up a localized string similar to ビルド.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.jaClass_Diagram">
+            <summary>
+              Looks up a localized string similar to クラス ダイアグラム.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.jaCommunity">
+            <summary>
+              Looks up a localized string similar to コミュニティ.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.jaData">
+            <summary>
+              Looks up a localized string similar to データ.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.jaDatabase">
+            <summary>
+              Looks up a localized string similar to データベース.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.jaDatabase_Diagram">
+            <summary>
+              Looks up a localized string similar to データベース ダイアグラム.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.jaDebug">
+            <summary>
+              Looks up a localized string similar to デバッグ.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.jaDiagram">
+            <summary>
+              Looks up a localized string similar to ダイアグラム.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.jaEdit">
+            <summary>
+              Looks up a localized string similar to 編集.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.jaFile">
+            <summary>
+              Looks up a localized string similar to ファイル.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.jaFormat">
+            <summary>
+              Looks up a localized string similar to 書式.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.jaFrames">
+            <summary>
+              Looks up a localized string similar to フレーム.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.jaHelp">
+            <summary>
+              Looks up a localized string similar to ヘルプ.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.jaImage">
+            <summary>
+              Looks up a localized string similar to イメージ.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.jaLayout">
+            <summary>
+              Looks up a localized string similar to レイアウト.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.jaMacros">
+            <summary>
+              Looks up a localized string similar to マクロ.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.jaProject">
+            <summary>
+              Looks up a localized string similar to プロジェクト.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.jaQuery">
+            <summary>
+              Looks up a localized string similar to クエリ.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.jaQuery_Designer">
+            <summary>
+              Looks up a localized string similar to クエリ デザイナ.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.jaRefactor">
+            <summary>
+              Looks up a localized string similar to リファクタ.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.jaResources">
+            <summary>
+              Looks up a localized string similar to リソース.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.jaSchema">
+            <summary>
+              Looks up a localized string similar to スキーマ.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.jaStyles">
+            <summary>
+              Looks up a localized string similar to スタイル.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.jaTable">
+            <summary>
+              Looks up a localized string similar to テーブル.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.jaTable_Designer">
+            <summary>
+              Looks up a localized string similar to テーブル デザイナ.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.jaTeam">
+            <summary>
+              Looks up a localized string similar to チーム.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.jaTest">
+            <summary>
+              Looks up a localized string similar to テスト.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.jaTools">
+            <summary>
+              Looks up a localized string similar to ツール.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.jaView">
+            <summary>
+              Looks up a localized string similar to 表示.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.jaWindow">
+            <summary>
+              Looks up a localized string similar to ウィンドウ.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.jaXML">
+            <summary>
+              Looks up a localized string similar to XML.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.koAction">
+            <summary>
+              Looks up a localized string similar to 작업.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.koAddins">
+            <summary>
+              Looks up a localized string similar to 추가 기능.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.koBuild">
+            <summary>
+              Looks up a localized string similar to 빌드.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.koClass_Diagram">
+            <summary>
+              Looks up a localized string similar to 클래스 다이어그램.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.koCommunity">
+            <summary>
+              Looks up a localized string similar to 커뮤니티.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.koData">
+            <summary>
+              Looks up a localized string similar to 데이터.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.koDatabase">
+            <summary>
+              Looks up a localized string similar to 데이터베이스.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.koDatabase_Diagram">
+            <summary>
+              Looks up a localized string similar to 데이터베이스 다이어그램.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.koDebug">
+            <summary>
+              Looks up a localized string similar to 디버그.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.koDiagram">
+            <summary>
+              Looks up a localized string similar to 다이어그램.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.koEdit">
+            <summary>
+              Looks up a localized string similar to 편집.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.koFile">
+            <summary>
+              Looks up a localized string similar to 파일.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.koFormat">
+            <summary>
+              Looks up a localized string similar to 서식.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.koFrames">
+            <summary>
+              Looks up a localized string similar to 프레임.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.koHelp">
+            <summary>
+              Looks up a localized string similar to 도움말.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.koImage">
+            <summary>
+              Looks up a localized string similar to 이미지.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.koLayout">
+            <summary>
+              Looks up a localized string similar to 레이아웃.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.koMacros">
+            <summary>
+              Looks up a localized string similar to 매크로.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.koProject">
+            <summary>
+              Looks up a localized string similar to 프로젝트.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.koQuery">
+            <summary>
+              Looks up a localized string similar to 쿼리.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.koQuery_Designer">
+            <summary>
+              Looks up a localized string similar to 쿼리 디자이너.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.koRefactor">
+            <summary>
+              Looks up a localized string similar to 리팩터링.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.koResources">
+            <summary>
+              Looks up a localized string similar to 리소스.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.koSchema">
+            <summary>
+              Looks up a localized string similar to 스키마.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.koStyles">
+            <summary>
+              Looks up a localized string similar to 스타일.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.koTable">
+            <summary>
+              Looks up a localized string similar to 테이블.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.koTable_Designer">
+            <summary>
+              Looks up a localized string similar to 테이블 디자이너.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.koTeam">
+            <summary>
+              Looks up a localized string similar to 팀.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.koTest">
+            <summary>
+              Looks up a localized string similar to 테스트.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.koTools">
+            <summary>
+              Looks up a localized string similar to 도구.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.koView">
+            <summary>
+              Looks up a localized string similar to 뷰.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.koWindow">
+            <summary>
+              Looks up a localized string similar to 창.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.koXML">
+            <summary>
+              Looks up a localized string similar to XML.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.zh_CHSAction">
+            <summary>
+              Looks up a localized string similar to 操作.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.zh_CHSAddins">
+            <summary>
+              Looks up a localized string similar to 外接程序.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.zh_CHSBuild">
+            <summary>
+              Looks up a localized string similar to 生成.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.zh_CHSClass_Diagram">
+            <summary>
+              Looks up a localized string similar to 类关系图.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.zh_CHSCommunity">
+            <summary>
+              Looks up a localized string similar to 社区.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.zh_CHSData">
+            <summary>
+              Looks up a localized string similar to 数据.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.zh_CHSDatabase">
+            <summary>
+              Looks up a localized string similar to 数据库.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.zh_CHSDatabase_Diagram">
+            <summary>
+              Looks up a localized string similar to 数据库关系图.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.zh_CHSDebug">
+            <summary>
+              Looks up a localized string similar to 调试.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.zh_CHSDiagram">
+            <summary>
+              Looks up a localized string similar to 关系图.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.zh_CHSEdit">
+            <summary>
+              Looks up a localized string similar to 编辑.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.zh_CHSFile">
+            <summary>
+              Looks up a localized string similar to 文件.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.zh_CHSFormat">
+            <summary>
+              Looks up a localized string similar to 格式.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.zh_CHSFrames">
+            <summary>
+              Looks up a localized string similar to 框架.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.zh_CHSHelp">
+            <summary>
+              Looks up a localized string similar to 帮助.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.zh_CHSImage">
+            <summary>
+              Looks up a localized string similar to 图像.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.zh_CHSLayout">
+            <summary>
+              Looks up a localized string similar to 布局.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.zh_CHSMacros">
+            <summary>
+              Looks up a localized string similar to 宏.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.zh_CHSProject">
+            <summary>
+              Looks up a localized string similar to 项目.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.zh_CHSQuery">
+            <summary>
+              Looks up a localized string similar to 查询.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.zh_CHSQuery_Designer">
+            <summary>
+              Looks up a localized string similar to 查询设计器.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.zh_CHSRefactor">
+            <summary>
+              Looks up a localized string similar to 重构.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.zh_CHSResources">
+            <summary>
+              Looks up a localized string similar to 资源.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.zh_CHSSchema">
+            <summary>
+              Looks up a localized string similar to 架构.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.zh_CHSStyles">
+            <summary>
+              Looks up a localized string similar to 样式.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.zh_CHSTable">
+            <summary>
+              Looks up a localized string similar to 表.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.zh_CHSTable_Designer">
+            <summary>
+              Looks up a localized string similar to 表设计器.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.zh_CHSTeam">
+            <summary>
+              Looks up a localized string similar to 工作组.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.zh_CHSTest">
+            <summary>
+              Looks up a localized string similar to 测试.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.zh_CHSTools">
+            <summary>
+              Looks up a localized string similar to 工具.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.zh_CHSView">
+            <summary>
+              Looks up a localized string similar to 视图.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.zh_CHSWindow">
+            <summary>
+              Looks up a localized string similar to 窗口.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.zh_CHSXML">
+            <summary>
+              Looks up a localized string similar to XML.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.zh_CHTAction">
+            <summary>
+              Looks up a localized string similar to 動作.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.zh_CHTAddins">
+            <summary>
+              Looks up a localized string similar to 增益集.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.zh_CHTBuild">
+            <summary>
+              Looks up a localized string similar to 建置.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.zh_CHTClass_Diagram">
+            <summary>
+              Looks up a localized string similar to 類別圖表.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.zh_CHTCommunity">
+            <summary>
+              Looks up a localized string similar to 社群.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.zh_CHTData">
+            <summary>
+              Looks up a localized string similar to 資料.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.zh_CHTDatabase">
+            <summary>
+              Looks up a localized string similar to 資料庫.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.zh_CHTDatabase_Diagram">
+            <summary>
+              Looks up a localized string similar to 資料庫圖表.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.zh_CHTDebug">
+            <summary>
+              Looks up a localized string similar to 偵錯.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.zh_CHTDiagram">
+            <summary>
+              Looks up a localized string similar to 圖表.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.zh_CHTEdit">
+            <summary>
+              Looks up a localized string similar to 編輯.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.zh_CHTFile">
+            <summary>
+              Looks up a localized string similar to 檔案.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.zh_CHTFormat">
+            <summary>
+              Looks up a localized string similar to 格式.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.zh_CHTFrames">
+            <summary>
+              Looks up a localized string similar to 框架.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.zh_CHTHelp">
+            <summary>
+              Looks up a localized string similar to 說明.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.zh_CHTImage">
+            <summary>
+              Looks up a localized string similar to 影像.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.zh_CHTLayout">
+            <summary>
+              Looks up a localized string similar to 配置.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.zh_CHTMacros">
+            <summary>
+              Looks up a localized string similar to 巨集.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.zh_CHTProject">
+            <summary>
+              Looks up a localized string similar to 專案.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.zh_CHTQuery">
+            <summary>
+              Looks up a localized string similar to 查詢.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.zh_CHTQuery_Designer">
+            <summary>
+              Looks up a localized string similar to 查詢設計工具.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.zh_CHTRefactor">
+            <summary>
+              Looks up a localized string similar to 重整.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.zh_CHTResources">
+            <summary>
+              Looks up a localized string similar to 資源.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.zh_CHTSchema">
+            <summary>
+              Looks up a localized string similar to 結構描述.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.zh_CHTStyles">
+            <summary>
+              Looks up a localized string similar to 樣式.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.zh_CHTTable">
+            <summary>
+              Looks up a localized string similar to 資料表.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.zh_CHTTable_Designer">
+            <summary>
+              Looks up a localized string similar to 資料表設計工具.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.zh_CHTTeam">
+            <summary>
+              Looks up a localized string similar to 小組.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.zh_CHTTest">
+            <summary>
+              Looks up a localized string similar to 測試.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.zh_CHTTools">
+            <summary>
+              Looks up a localized string similar to 工具.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.zh_CHTView">
+            <summary>
+              Looks up a localized string similar to 檢視.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.zh_CHTWindow">
+            <summary>
+              Looks up a localized string similar to 視窗.
+            </summary>
+        </member>
+        <member name="P:ClangVSx.CommandBar.zh_CHTXML">
+            <summary>
+              Looks up a localized string similar to XML.
+            </summary>
+        </member>
+        <member name="T:ClangVSx.CVXConnect">
+            <summary>The object for implementing an Add-in.</summary>
+            <seealso class='IDTExtensibility2' />
+        </member>
+        <member name="M:ClangVSx.CVXConnect.#ctor">
+            <summary>Implements the constructor for the Add-in object. Place your initialization code within this method.</summary>
+        </member>
+        <member name="M:ClangVSx.CVXConnect.OnConnection(System.Object,Extensibility.ext_ConnectMode,System.Object,System.Array@)">
+            <summary>Implements the OnConnection method of the IDTExtensibility2 interface. Receives notification that the Add-in is being loaded.</summary>
+            <param term='application'>Root object of the host application.</param>
+            <param term='connectMode'>Describes how the Add-in is being loaded.</param>
+            <param term='addInInst'>Object representing this Add-in.</param>
+            <seealso class='IDTExtensibility2' />
+        </member>
+        <member name="M:ClangVSx.CVXConnect.OnDisconnection(Extensibility.ext_DisconnectMode,System.Array@)">
+            <summary>Implements the OnDisconnection method of the IDTExtensibility2 interface. Receives notification that the Add-in is being unloaded.</summary>
+            <param term='disconnectMode'>Describes how the Add-in is being unloaded.</param>
+            <param term='custom'>Array of parameters that are host application specific.</param>
+            <seealso class='IDTExtensibility2' />
+        </member>
+        <member name="M:ClangVSx.CVXConnect.OnAddInsUpdate(System.Array@)">
+            <summary>Implements the OnAddInsUpdate method of the IDTExtensibility2 interface. Receives notification when the collection of Add-ins has changed.</summary>
+            <param term='custom'>Array of parameters that are host application specific.</param>
+            <seealso class='IDTExtensibility2' />		
+        </member>
+        <member name="M:ClangVSx.CVXConnect.OnStartupComplete(System.Array@)">
+            <summary>Implements the OnStartupComplete method of the IDTExtensibility2 interface. Receives notification that the host application has completed loading.</summary>
+            <param term='custom'>Array of parameters that are host application specific.</param>
+            <seealso class='IDTExtensibility2' />
+        </member>
+        <member name="M:ClangVSx.CVXConnect.OnBeginShutdown(System.Array@)">
+            <summary>Implements the OnBeginShutdown method of the IDTExtensibility2 interface. Receives notification that the host application is being unloaded.</summary>
+            <param term='custom'>Array of parameters that are host application specific.</param>
+            <seealso class='IDTExtensibility2' />
+        </member>
+        <member name="M:ClangVSx.CVXConnect.QueryStatus(System.String,EnvDTE.vsCommandStatusTextWanted,EnvDTE.vsCommandStatus@,System.Object@)">
+            <summary>Implements the QueryStatus method of the IDTCommandTarget interface. This is called when the command's availability is updated</summary>
+            <param term='commandName'>The name of the command to determine state for.</param>
+            <param term='neededText'>Text that is needed for the command.</param>
+            <param term='status'>The state of the command in the user interface.</param>
+            <param term='commandText'>Text requested by the neededText parameter.</param>
+            <seealso class='Exec' />
+        </member>
+        <member name="M:ClangVSx.CVXConnect.Exec(System.String,EnvDTE.vsCommandExecOption,System.Object@,System.Object@,System.Boolean@)">
+            <summary>Implements the Exec method of the IDTCommandTarget interface. This is called when the command is invoked.</summary>
+            <param term='commandName'>The name of the command to execute.</param>
+            <param term='executeOption'>Describes how the command should be run.</param>
+            <param term='varIn'>Parameters passed from the caller to the command handler.</param>
+            <param term='varOut'>Parameters passed from the command handler to the caller.</param>
+            <param term='handled'>Informs the caller if the command was handled or not.</param>
+            <seealso class='Exec' />
+        </member>
+        <member name="M:ClangVSx.CVXConnect.buildActiveProject">
+            <summary>
+            find the active VC++ project and pass it to our build system
+            </summary>
+        </member>
+        <member name="M:ClangVSx.CVXConnect.cvxCompileFile_menuop(System.Object,System.Boolean@,System.Boolean@)">
+            check that the document selected is a C/C++ code file and pass it to the compiler bridge if so
+        </member>
+        <member name="M:ClangVSx.CVXConnect.ShowCVXSettingsDialog">
+            display our settings panel
+        </member>
+        <member name="T:ClangVSx.CVXConnect.IWinWrapper">
+            workaround for providing IWin32Window interface for IntPtr HWNDs
+        </member>
+        <member name="M:ClangVSx.ClangOps.BeginBuild">
+            function called before any other build functions; sorts out output window, gets locations of executables, etc.
+            returns false if something went wrong - eg. invalid paths to compiler tools
+        </member>
+        <member name="M:ClangVSx.ClangOps.WriteToOutputPane(System.String)">
+            simple wrapper to output text to output pane
+        </member>
+        <member name="M:ClangVSx.ClangOps.NewExternalProcess">
+            simple helper that creates a Process instance ready for running
+            the compiler, linker, external tools, etc
+        </member>
+        <member name="M:ClangVSx.ClangOps.GenerateDefaultCompilerString(Microsoft.VisualStudio.VCProjectEngine.VCProject,Microsoft.VisualStudio.VCProjectEngine.VCConfiguration)">
+            common code to generate compiler settings for non-file-specific stuff
+        </member>
+        <member name="M:ClangVSx.ClangOps.CompileSingleFile(Microsoft.VisualStudio.VCProjectEngine.VCFile,Microsoft.VisualStudio.VCProjectEngine.VCProject,Microsoft.VisualStudio.VCProjectEngine.VCConfiguration)">
+            compile a single VCFile, do nothing with the OBJ
+        </member>
+        <member name="M:ClangVSx.ClangOps.BuildActiveProject">
+            Compile the project that is set as the 'startup project' in the solution
+        </member>
+        <member name="M:ClangVSx.ClangOps.ExecuteCustomBuildToolCommandLine``1(System.String,System.Object,Microsoft.VisualStudio.VCProjectEngine.VCProject)">
+            I'm probably showing C# inexperience here; I wanted this function to operate on any 
+            object that had an Evaluate method, eg. VCConfiguration, VCFileConfiguration, et al.
+            Reflection and generics is what I came up with!
+        </member>
+        <member name="M:ClangVSx.ClangOps.RunCustomBuildStep(Microsoft.VisualStudio.VCProjectEngine.VCCustomBuildTool,Microsoft.VisualStudio.VCProjectEngine.VCFile,Microsoft.VisualStudio.VCProjectEngine.VCProject,Microsoft.VisualStudio.VCProjectEngine.VCFileConfiguration,System.Boolean)">
+            
+        </member>
+        <member name="M:ClangVSx.ClangOps.GatherIncludesAndDefines``1(Microsoft.VisualStudio.VCProjectEngine.VCCLCompilerTool,System.Object)">
+            
+        </member>
+        <member name="M:ClangVSx.ClangOps.InternalBuildVCFile(Microsoft.VisualStudio.VCProjectEngine.VCFile,Microsoft.VisualStudio.VCProjectEngine.VCProject,Microsoft.VisualStudio.VCProjectEngine.VCConfiguration,System.String,System.Text.StringBuilder@,System.Text.StringBuilder@)">
+            internal function that does the work of compiling a C++ file using Clang
+        </member>
+        <member name="M:ClangVSx.ClangOps.BuildProject(Microsoft.VisualStudio.VCProjectEngine.VCProject,Microsoft.VisualStudio.VCProjectEngine.VCConfiguration)">
+            
+        </member>
+    </members>
+</doc>
