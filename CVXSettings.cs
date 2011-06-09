@@ -67,7 +67,7 @@ namespace ClangVSx
       }
       else
       {
-        MessageBox.Show("Cannot find file specified for CLANG.EXE", "MarsVS Settings");
+        MessageBox.Show("Cannot find file specified for CLANG.EXE", "ClangVSx Settings");
       }
     }
 
@@ -77,7 +77,7 @@ namespace ClangVSx
       {
         String cvxStatsStr = "";
 
-        // execute the compiler
+        // execute the compiler, ask for version info
         System.Diagnostics.Process compileProcess = new System.Diagnostics.Process();
         compileProcess.StartInfo.FileName = cvxLocation.Text;
         compileProcess.StartInfo.Arguments = "-v";
@@ -94,6 +94,7 @@ namespace ClangVSx
         compileProcess.StandardError.ReadToEnd();
         compileProcess.WaitForExit();
 
+        // version text contains 'clang', we can assume that's a pass
         if (cvxStatsStr.Contains("clang"))
         {
           cvxStats.Text = cvxStatsStr;

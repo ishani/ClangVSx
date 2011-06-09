@@ -8,53 +8,75 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Reflection;
 using Microsoft.Win32;
 
 namespace ClangVSx
 {
-  class CVXRegistry
+  /// <summary>
+  /// Wrapper around registry access to load/save AddIn settings
+  /// </summary>
+  abstract class CVXRegistry
   {
-    const String CVXRegistryKey = "Software\\Ishani\\ClangVSx";
+    // root reg key 
+    private const String CVXRegistryKey = "Software\\Ishani\\ClangVSx";
 
-    public static String PathToClang
+#region Generic registry access
+
+    private static T LoadFromRegistry<T>(String keyName, T defaultValue)
     {
-      get
-      {
         RegistryKey key = Registry.CurrentUser.OpenSubKey(CVXRegistryKey);
         if (key == null)
         {
           key = Registry.CurrentUser.CreateSubKey(CVXRegistryKey);
         }
 
-        String pathToClang = "C:\\dm\\bin\\dmc.exe";
+        T itemDefaultState = defaultValue;
         try
         {
-          pathToClang = (String)key.GetValue("pathToClang", pathToClang);
+          itemDefaultState = (T)key.GetValue(keyName, itemDefaultState);
         }
         finally
         {
           key.Close();
         }
 
-        return pathToClang;
+        return ((itemDefaultState != null) ? itemDefaultState : defaultValue);
+    }
+
+    private static void SaveToRegistry<T>(String keyName, T saveValue)
+    {
+      RegistryKey key = Registry.CurrentUser.OpenSubKey(CVXRegistryKey, true);
+      if (key == null)
+      {
+        key = Registry.CurrentUser.CreateSubKey(CVXRegistryKey);
+      }
+
+      try
+      {
+        key.SetValue(keyName, saveValue);
+      }
+      finally
+      {
+        key.Close();
+      }
+    }
+
+#endregion
+
+    public static String PathToClang
+    {
+      get
+      {
+        // sketchy way to get name of property from inside accessors
+        String ownerProperty = MethodBase.GetCurrentMethod().Name.Remove(0, 4);
+        return LoadFromRegistry(ownerProperty, "C:\\clang\\clang.exe");
       }
 
       set
       {
-        RegistryKey key = Registry.CurrentUser.OpenSubKey(CVXRegistryKey, true);
-        if (key == null)
-        {
-          key = Registry.CurrentUser.CreateSubKey(CVXRegistryKey);
-        }
-
-        try
-        {
-          key.SetValue("pathToClang", value, RegistryValueKind.String);
-        }
-        finally
-        {
-          key.Close();
-        }
+        String ownerProperty = MethodBase.GetCurrentMethod().Name.Remove(0, 4);
+        SaveToRegistry(ownerProperty, value);
       }
     }
 
@@ -62,41 +84,14 @@ namespace ClangVSx
     {
       get
       {
-        RegistryKey key = Registry.CurrentUser.OpenSubKey(CVXRegistryKey);
-        if (key == null)
-        {
-          key = Registry.CurrentUser.CreateSubKey(CVXRegistryKey);
-        }
-
-        int showCmds = 0;
-        try
-        {
-          showCmds = (int)key.GetValue("ShowCommands", 0);
-        }
-        finally
-        {
-          key.Close();
-        }
-
-        return (showCmds != 0);
+        String ownerProperty = MethodBase.GetCurrentMethod().Name.Remove(0, 4);
+        return (LoadFromRegistry(ownerProperty, 0) == 1);
       }
 
       set
       {
-        RegistryKey key = Registry.CurrentUser.OpenSubKey(CVXRegistryKey, true);
-        if (key == null)
-        {
-          key = Registry.CurrentUser.CreateSubKey(CVXRegistryKey);
-        }
-
-        try
-        {
-          key.SetValue("ShowCommands", value ? 1 : 0, RegistryValueKind.DWord);
-        }
-        finally
-        {
-          key.Close();
-        }
+        String ownerProperty = MethodBase.GetCurrentMethod().Name.Remove(0, 4);
+        SaveToRegistry(ownerProperty, value ? 1 : 0);
       }
     }
 
@@ -104,41 +99,14 @@ namespace ClangVSx
     {
       get
       {
-        RegistryKey key = Registry.CurrentUser.OpenSubKey(CVXRegistryKey);
-        if (key == null)
-        {
-          key = Registry.CurrentUser.CreateSubKey(CVXRegistryKey);
-        }
-
-        int makeBatch = 0;
-        try
-        {
-          makeBatch = (int)key.GetValue("MakeBatchFiles", 0);
-        }
-        finally
-        {
-          key.Close();
-        }
-
-        return (makeBatch != 0);
+        String ownerProperty = MethodBase.GetCurrentMethod().Name.Remove(0, 4);
+        return (LoadFromRegistry(ownerProperty, 0) == 1);
       }
 
       set
       {
-        RegistryKey key = Registry.CurrentUser.OpenSubKey(CVXRegistryKey, true);
-        if (key == null)
-        {
-          key = Registry.CurrentUser.CreateSubKey(CVXRegistryKey);
-        }
-
-        try
-        {
-          key.SetValue("MakeBatchFiles", value ? 1 : 0, RegistryValueKind.DWord);
-        }
-        finally
-        {
-          key.Close();
-        }
+        String ownerProperty = MethodBase.GetCurrentMethod().Name.Remove(0, 4);
+        SaveToRegistry(ownerProperty, value ? 1 : 0);
       }
     }
 
@@ -146,41 +114,14 @@ namespace ClangVSx
     {
       get
       {
-        RegistryKey key = Registry.CurrentUser.OpenSubKey(CVXRegistryKey);
-        if (key == null)
-        {
-          key = Registry.CurrentUser.CreateSubKey(CVXRegistryKey);
-        }
-
-        String commonArgs = "";
-        try
-        {
-          commonArgs = (String)key.GetValue("CommonArgs", "");
-        }
-        finally
-        {
-          key.Close();
-        }
-
-        return commonArgs;
+        String ownerProperty = MethodBase.GetCurrentMethod().Name.Remove(0, 4);
+        return LoadFromRegistry(ownerProperty, "");
       }
 
       set
       {
-        RegistryKey key = Registry.CurrentUser.OpenSubKey(CVXRegistryKey, true);
-        if (key == null)
-        {
-          key = Registry.CurrentUser.CreateSubKey(CVXRegistryKey);
-        }
-
-        try
-        {
-          key.SetValue("CommonArgs", value, RegistryValueKind.String);
-        }
-        finally
-        {
-          key.Close();
-        }
+        String ownerProperty = MethodBase.GetCurrentMethod().Name.Remove(0, 4);
+        SaveToRegistry(ownerProperty, value);
       }
     }
 

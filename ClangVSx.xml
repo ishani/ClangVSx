@@ -1532,6 +1532,11 @@
               Looks up a localized string similar to XML.
             </summary>
         </member>
+        <member name="T:ClangVSx.CVXRegistry">
+            <summary>
+            Wrapper around registry access to load/save AddIn settings
+            </summary>
+        </member>
         <member name="T:ClangVSx.CVXConnect">
             <summary>The object for implementing an Add-in.</summary>
             <seealso class='IDTExtensibility2' />
