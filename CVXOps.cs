@@ -240,17 +240,20 @@ namespace ClangVSx
     /**
      * compile a single VCFile, do nothing with the OBJ
      */
-    public void CompileSingleFile(VCFile vcFile, VCProject vcProject, VCConfiguration vcCfg)
+    public void CompileSingleFile(VCFile vcFile, VCProject vcProject, VCConfiguration vcCfg, String additionalCmds = "")
     {
       if (!BeginBuild())
         return;
 
-      String defaultCompilerString = GenerateDefaultCompilerString(vcProject, vcCfg);
+      StringBuilder defaultCompilerString = new StringBuilder(GenerateDefaultCompilerString(vcProject, vcCfg));
+      defaultCompilerString.Append(" ");
+      defaultCompilerString.Append(additionalCmds);
+      defaultCompilerString.Append(" ");
 
       StringBuilder compileString = new StringBuilder(1024);
       StringBuilder objFiles = new StringBuilder(256);
 
-      if (InternalBuildVCFile(vcFile, vcProject, vcCfg, defaultCompilerString, ref compileString, ref objFiles))
+      if (InternalBuildVCFile(vcFile, vcProject, vcCfg, defaultCompilerString.ToString(), ref compileString, ref objFiles))
       {
         WriteToOutputPane("\nCompile Successful\n");
       }

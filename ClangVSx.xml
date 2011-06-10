@@ -1595,13 +1595,30 @@
             </summary>
         </member>
         <member name="M:ClangVSx.CVXConnect.cvxCompileFile_menuop(System.Object,System.Boolean@,System.Boolean@)">
-            check that the document selected is a C/C++ code file and pass it to the compiler bridge if so
+            <summary>
+            get the active code file and compile it
+            </summary>
+        </member>
+        <member name="M:ClangVSx.CVXConnect.cvxAnalyseFile_menuop(System.Object,System.Boolean@,System.Boolean@)">
+            <summary>
+            get the active code file and compile it, adding static analyzer arguments to the pile
+            </summary>
+        </member>
+        <member name="M:ClangVSx.CVXConnect.GetActiveVCFile(Microsoft.VisualStudio.VCProjectEngine.VCFile@,Microsoft.VisualStudio.VCProjectEngine.VCProject@,Microsoft.VisualStudio.VCProjectEngine.VCConfiguration@)">
+            <summary>
+            Get the active code file, project and configuration 
+            </summary>
+            <returns>true if we have found an active C/C++ document</returns>
         </member>
         <member name="M:ClangVSx.CVXConnect.ShowCVXSettingsDialog">
+            <summary>
             display our settings panel
+            </summary>
         </member>
         <member name="T:ClangVSx.CVXConnect.IWinWrapper">
+            <summary>
             workaround for providing IWin32Window interface for IntPtr HWNDs
+            </summary>
         </member>
         <member name="M:ClangVSx.ClangOps.BeginBuild">
             function called before any other build functions; sorts out output window, gets locations of executables, etc.
@@ -1617,7 +1634,7 @@
         <member name="M:ClangVSx.ClangOps.GenerateDefaultCompilerString(Microsoft.VisualStudio.VCProjectEngine.VCProject,Microsoft.VisualStudio.VCProjectEngine.VCConfiguration)">
             common code to generate compiler settings for non-file-specific stuff
         </member>
-        <member name="M:ClangVSx.ClangOps.CompileSingleFile(Microsoft.VisualStudio.VCProjectEngine.VCFile,Microsoft.VisualStudio.VCProjectEngine.VCProject,Microsoft.VisualStudio.VCProjectEngine.VCConfiguration)">
+        <member name="M:ClangVSx.ClangOps.CompileSingleFile(Microsoft.VisualStudio.VCProjectEngine.VCFile,Microsoft.VisualStudio.VCProjectEngine.VCProject,Microsoft.VisualStudio.VCProjectEngine.VCConfiguration,System.String)">
             compile a single VCFile, do nothing with the OBJ
         </member>
         <member name="M:ClangVSx.ClangOps.BuildActiveProject">

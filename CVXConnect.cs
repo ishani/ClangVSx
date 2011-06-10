@@ -29,7 +29,8 @@ namespace ClangVSx
     private AddIn _addInInstance;
 
     CommandBarEvents saveAndCompileCmdEvent;
-
+    CommandBarEvents saveAndAnalyseCmdEvent;
+ 
     // instance of the compiler bridge; this offers up the main worker functions that go off and compile files, projects, etc.
     private ClangOps _CVXOps;
 
@@ -150,6 +151,14 @@ namespace ClangVSx
           "Save & Compile File");
         saveAndCompileCmdEvent = _applicationObject.Events.get_CommandBarEvents(saveAndCompileCmd) as CommandBarEvents;
         saveAndCompileCmdEvent.Click += new _dispCommandBarControlEvents_ClickEventHandler(cvxCompileFile_menuop);
+
+        CommandBarButton saveAndAnalyseCmd = _dteHelper.AddButtonToPopup(
+          pmPopup,
+          pmPopup.Controls.Count + 1,
+          "Run Static Analysis",
+          "Run Static Analysis");
+        saveAndAnalyseCmdEvent = _applicationObject.Events.get_CommandBarEvents(saveAndAnalyseCmd) as CommandBarEvents;
+        saveAndAnalyseCmdEvent.Click += new _dispCommandBarControlEvents_ClickEventHandler(cvxAnalyseFile_menuop);
       }
 		}
 
@@ -267,11 +276,54 @@ namespace ClangVSx
       }
     }
 
-    /**
-     * check that the document selected is a C/C++ code file and pass it to the compiler bridge if so
-     */
+    /// <summary>
+    /// get the active code file and compile it
+    /// </summary>
     protected void cvxCompileFile_menuop(object CommandaBarControl, ref bool handled, ref bool cancelDefault)
     {
+      VCFile vcFile;
+      VCProject vcProject;
+      VCConfiguration vcCfg;
+
+      if (GetActiveVCFile(out vcFile, out vcProject, out vcCfg))
+      {
+        _CVXOps.CompileSingleFile(vcFile, vcProject, vcCfg);
+      }
+      else
+      {
+        MessageBox.Show("Clang cannot compile files of this type / unrecognized code file (" + _applicationObject.ActiveDocument.Language + ")", "ClangVSx");
+      }
+    }
+
+    /// <summary>
+    /// get the active code file and compile it, adding static analyzer arguments to the pile
+    /// </summary>
+    protected void cvxAnalyseFile_menuop(object CommandaBarControl, ref bool handled, ref bool cancelDefault)
+    {
+      VCFile vcFile;
+      VCProject vcProject;
+      VCConfiguration vcCfg;
+
+      if (GetActiveVCFile(out vcFile, out vcProject, out vcCfg))
+      {
+        _CVXOps.CompileSingleFile(vcFile, vcProject, vcCfg, "--analyze --analyzer-output text");
+      }
+      else
+      {
+        MessageBox.Show("Clang cannot compile files of this type / unrecognized code file (" + _applicationObject.ActiveDocument.Language + ")", "ClangVSx");
+      }
+    }
+
+    /// <summary>
+    /// Get the active code file, project and configuration 
+    /// </summary>
+    /// <returns>true if we have found an active C/C++ document</returns>
+    bool GetActiveVCFile(out VCFile vcFile, out VCProject vcProject, out VCConfiguration vcCfg)
+    {
+      vcFile = null;
+      vcProject = null;
+      vcCfg = null;
+
       if (_applicationObject.ActiveDocument != null)
       {
         // GUID equates to 'code file' as far as I can make out
@@ -282,8 +334,8 @@ namespace ClangVSx
           if (_applicationObject.ActiveDocument.ProjectItem.Kind == "{6BB5F8EE-4483-11D3-8BCF-00C04F8EC28C}")
           {
             // leap of faith
-            VCFile vcFile = (VCFile)_applicationObject.ActiveDocument.ProjectItem.Object;
-            VCProject vcProject = (VCProject)vcFile.project;
+            vcFile = (VCFile)_applicationObject.ActiveDocument.ProjectItem.Object;
+            vcProject = (VCProject)vcFile.project;
 
             // save the file (should be optional!)
             if (!_applicationObject.ActiveDocument.Saved)
@@ -292,22 +344,20 @@ namespace ClangVSx
             // get current configuration to pass to the bridge
             EnvDTE.Configuration cfg = _applicationObject.ActiveDocument.ProjectItem.ConfigurationManager.ActiveConfiguration;
             IVCCollection cfgArray = (IVCCollection)vcProject.Configurations;
-            VCConfiguration vcCfg = (VCConfiguration)cfgArray.Item(cfg.ConfigurationName);
+            vcCfg = (VCConfiguration)cfgArray.Item(cfg.ConfigurationName);
 
-            _CVXOps.CompileSingleFile(vcFile, vcProject, vcCfg);
-            return;
+            return true;
           }
         }
       }
 
-      MessageBox.Show("Clang cannot compile files of this type / unrecognized code file (" + _applicationObject.ActiveDocument.Language + ")", "ClangVSx");
+      return false;
     }
 
 
-
-    /**
-     * workaround for providing IWin32Window interface for IntPtr HWNDs
-     */
+    /// <summary>
+    /// workaround for providing IWin32Window interface for IntPtr HWNDs
+    /// </summary>
     private class IWinWrapper : IWin32Window
     {
       public int mHandle;
@@ -317,9 +367,9 @@ namespace ClangVSx
       }
     }
 
-    /**
-     * display our settings panel
-     */
+    /// <summary>
+    /// display our settings panel
+    /// </summary>
     void ShowCVXSettingsDialog()
     {
       IWinWrapper wW = new IWinWrapper();
