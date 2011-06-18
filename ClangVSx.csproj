@@ -65,6 +65,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>CommandBar.resx</DependentUpon>
     </Compile>
+    <Compile Include="CVXBuildSystem.cs" />
     <Compile Include="CVXConnect.cs">
       <SubType>Code</SubType>
     </Compile>

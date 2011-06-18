@@ -1589,11 +1589,6 @@
             <param term='handled'>Informs the caller if the command was handled or not.</param>
             <seealso class='Exec' />
         </member>
-        <member name="M:ClangVSx.CVXConnect.buildActiveProject">
-            <summary>
-            find the active VC++ project and pass it to our build system
-            </summary>
-        </member>
         <member name="M:ClangVSx.CVXConnect.cvxCompileFile_menuop(System.Object,System.Boolean@,System.Boolean@)">
             <summary>
             get the active code file and compile it
@@ -1620,42 +1615,67 @@
             workaround for providing IWin32Window interface for IntPtr HWNDs
             </summary>
         </member>
-        <member name="M:ClangVSx.ClangOps.BeginBuild">
-            function called before any other build functions; sorts out output window, gets locations of executables, etc.
-            returns false if something went wrong - eg. invalid paths to compiler tools
+        <member name="M:ClangVSx.ClangOps.#ctor(EnvDTE80.DTE2)">
+            <summary>
+            
+            </summary>
         </member>
         <member name="M:ClangVSx.ClangOps.WriteToOutputPane(System.String)">
-            simple wrapper to output text to output pane
-        </member>
-        <member name="M:ClangVSx.ClangOps.NewExternalProcess">
-            simple helper that creates a Process instance ready for running
-            the compiler, linker, external tools, etc
-        </member>
-        <member name="M:ClangVSx.ClangOps.GenerateDefaultCompilerString(Microsoft.VisualStudio.VCProjectEngine.VCProject,Microsoft.VisualStudio.VCProjectEngine.VCConfiguration)">
-            common code to generate compiler settings for non-file-specific stuff
+            <summary>
+            simple wrapper for writing text to the output pane
+            </summary>
         </member>
         <member name="M:ClangVSx.ClangOps.CompileSingleFile(Microsoft.VisualStudio.VCProjectEngine.VCFile,Microsoft.VisualStudio.VCProjectEngine.VCProject,Microsoft.VisualStudio.VCProjectEngine.VCConfiguration,System.String)">
+            <summary>
             compile a single VCFile, do nothing with the OBJ
+            </summary>
         </member>
         <member name="M:ClangVSx.ClangOps.BuildActiveProject">
+            <summary>
             Compile the project that is set as the 'startup project' in the solution
+            </summary>
         </member>
-        <member name="M:ClangVSx.ClangOps.ExecuteCustomBuildToolCommandLine``1(System.String,System.Object,Microsoft.VisualStudio.VCProjectEngine.VCProject)">
+        <member name="T:ClangVSx.CVXBuildSystem">
+            <summary>
+            Collection of build tools
+            </summary>
+        </member>
+        <member name="M:ClangVSx.CVXBuildSystem.NewExternalProcess">
+            <summary>
+            simple helper that creates a Process instance ready for running the compiler, linker, external tools, etc
+            </summary>
+        </member>
+        <member name="M:ClangVSx.CVXBuildSystem.ExecuteCustomBuildToolCommandLine``1(System.String,System.Object,Microsoft.VisualStudio.VCProjectEngine.VCProject)">
+            <summary>
             I'm probably showing C# inexperience here; I wanted this function to operate on any 
             object that had an Evaluate method, eg. VCConfiguration, VCFileConfiguration, et al.
             Reflection and generics is what I came up with!
+            </summary>
         </member>
-        <member name="M:ClangVSx.ClangOps.RunCustomBuildStep(Microsoft.VisualStudio.VCProjectEngine.VCCustomBuildTool,Microsoft.VisualStudio.VCProjectEngine.VCFile,Microsoft.VisualStudio.VCProjectEngine.VCProject,Microsoft.VisualStudio.VCProjectEngine.VCFileConfiguration,System.Boolean)">
-            
+        <member name="M:ClangVSx.CVXBuildSystem.RunCustomBuildStep(Microsoft.VisualStudio.VCProjectEngine.VCCustomBuildTool,Microsoft.VisualStudio.VCProjectEngine.VCFile,Microsoft.VisualStudio.VCProjectEngine.VCProject,Microsoft.VisualStudio.VCProjectEngine.VCFileConfiguration,System.Boolean)">
+            <summary>
+            bootstrap any custom build steps, run via cmd.exe
+            </summary>
         </member>
-        <member name="M:ClangVSx.ClangOps.GatherIncludesAndDefines``1(Microsoft.VisualStudio.VCProjectEngine.VCCLCompilerTool,System.Object)">
-            
-        </member>
-        <member name="M:ClangVSx.ClangOps.InternalBuildVCFile(Microsoft.VisualStudio.VCProjectEngine.VCFile,Microsoft.VisualStudio.VCProjectEngine.VCProject,Microsoft.VisualStudio.VCProjectEngine.VCConfiguration,System.String,System.Text.StringBuilder@,System.Text.StringBuilder@)">
+        <member name="M:ClangVSx.CVXBuildSystem.InternalBuildVCFile(Microsoft.VisualStudio.VCProjectEngine.VCFile,Microsoft.VisualStudio.VCProjectEngine.VCProject,Microsoft.VisualStudio.VCProjectEngine.VCConfiguration,System.String,System.Text.StringBuilder@,System.Collections.Generic.HashSet{System.String})">
+            <summary>
             internal function that does the work of compiling a C++ file using Clang
+            </summary>
         </member>
-        <member name="M:ClangVSx.ClangOps.BuildProject(Microsoft.VisualStudio.VCProjectEngine.VCProject,Microsoft.VisualStudio.VCProjectEngine.VCConfiguration)">
+        <member name="M:ClangVSx.CVXBuildSystem.GatherIncludesAndDefines``1(Microsoft.VisualStudio.VCProjectEngine.VCCLCompilerTool,System.Object)">
+            <summary>
             
+            </summary>
+        </member>
+        <member name="M:ClangVSx.CVXBuildSystem.GenerateDefaultCompilerString(Microsoft.VisualStudio.VCProjectEngine.VCProject,Microsoft.VisualStudio.VCProjectEngine.VCConfiguration)">
+            <summary>
+            common code to generate compiler settings for non-file-specific stuff
+            </summary>
+        </member>
+        <member name="M:ClangVSx.CVXBuildSystem.BuildProject(Microsoft.VisualStudio.VCProjectEngine.VCProject,Microsoft.VisualStudio.VCProjectEngine.VCConfiguration)">
+            <summary>
+            main worker function to build a project, swapping in our own tools as desired
+            </summary>
         </member>
     </members>
 </doc>

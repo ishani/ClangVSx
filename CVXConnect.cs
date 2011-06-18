@@ -219,62 +219,13 @@ namespace ClangVSx
           case COMMAND_CLANG_REBUILD_ACTIVE:
             {
               handled = true;
+              _applicationObject.Documents.SaveAll();
               _CVXOps.BuildActiveProject();
             }
             break;
         }
       }
 		}
-
-    /// <summary>
-    /// find the active VC++ project and pass it to our build system
-    /// </summary>
-    protected void buildActiveProject()
-    {
-      foreach (object startUpProj in (Array)_applicationObject.ActiveSolutionProjects)
-      {
-        Project p = (Project)startUpProj;
-
-        // 8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942 GUID is VC++ Project
-        if (p.Kind.ToUpper().Equals("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}"))
-        {
-          _CVXOps.WriteToOutputPane("Building Project : " + p.Name + "\n");
-
-          VCProject vcProject = p.Object as VCProject;
-          if (vcProject == null)
-          {
-            _CVXOps.WriteToOutputPane("Error : Could not cast project to VCProject.\n");
-            continue;
-          }
-
-          EnvDTE.Configuration cfg = p.ConfigurationManager.ActiveConfiguration;
-          IVCCollection cfgArray = (IVCCollection)vcProject.Configurations;
-          VCConfiguration vcCfg = (VCConfiguration)cfgArray.Item(cfg.ConfigurationName);
-
-          if (vcCfg == null)
-          {
-            _CVXOps.WriteToOutputPane("Error : Could not find '" + cfg.ConfigurationName + "' configuration!\n");
-          }
-          else
-          {
-            _CVXOps.WriteToOutputPane("Configuration : " + vcCfg.Name + "\n");
-          }
-
-          try
-          {
-            _CVXOps.BuildProject(vcProject, vcCfg);
-          }
-          catch (System.Exception e)
-          {
-            _CVXOps.WriteToOutputPane("Unhandled Exception in [buildActiveProject] : \n" + e.Message + "\n" + e.Source + "\n\n");
-          }
-        }
-        else
-        {
-          _CVXOps.WriteToOutputPane("Ignoring non-C++ Project : " + p.Name + "\n");
-        }
-      }
-    }
 
     /// <summary>
     /// get the active code file and compile it
@@ -310,7 +261,7 @@ namespace ClangVSx
       }
       else
       {
-        MessageBox.Show("Clang cannot compile files of this type / unrecognized code file (" + _applicationObject.ActiveDocument.Language + ")", "ClangVSx");
+        MessageBox.Show("Clang cannot analyse files of this type / unrecognized code file (" + _applicationObject.ActiveDocument.Language + ")", "ClangVSx");
       }
     }
 
@@ -336,6 +287,9 @@ namespace ClangVSx
             // leap of faith
             vcFile = (VCFile)_applicationObject.ActiveDocument.ProjectItem.Object;
             vcProject = (VCProject)vcFile.project;
+
+            if (vcFile.FileType != eFileType.eFileTypeCppCode)
+              return false;
 
             // save the file (should be optional!)
             if (!_applicationObject.ActiveDocument.Saved)
