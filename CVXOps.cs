@@ -26,6 +26,7 @@ namespace ClangVSx
   class ClangOps
   {
     private OutputWindowPane  _outputPane;
+    private Window            _vsOutputWindow;
     private DTE2              _applicationObject;
 
     /// <summary>
@@ -38,18 +39,18 @@ namespace ClangVSx
       const string owpName = "Clang C/C++";
 
       // go find the output window
-      Window myOutputWindow = _applicationObject.Windows.Item(EnvDTE.Constants.vsWindowKindOutput);
-      myOutputWindow.Visible = true;
-      OutputWindow castOutputWindow = (OutputWindow)myOutputWindow.Object;
+      _vsOutputWindow = _applicationObject.Windows.Item(EnvDTE.Constants.vsWindowKindOutput);
+      _vsOutputWindow.Visible = true;
+      OutputWindow theOutputWindow = (OutputWindow)_vsOutputWindow.Object;
 
       // add or acquire the output pane
       try
       {
-        _outputPane = castOutputWindow.OutputWindowPanes.Item(owpName);
+        _outputPane = theOutputWindow.OutputWindowPanes.Item(owpName);
       }
       catch
       {
-        _outputPane = castOutputWindow.OutputWindowPanes.Add(owpName);
+        _outputPane = theOutputWindow.OutputWindowPanes.Add(owpName);
       }
     }
 
@@ -69,7 +70,7 @@ namespace ClangVSx
       CVXBuildSystem buildSystem;
       try
       {
-        buildSystem = new CVXBuildSystem(_outputPane);
+        buildSystem = new CVXBuildSystem(_vsOutputWindow, _outputPane);
       }
       catch (System.Exception ex)
       {
@@ -95,7 +96,7 @@ namespace ClangVSx
       CVXBuildSystem buildSystem;
       try
       {
-        buildSystem = new CVXBuildSystem(_outputPane);
+        buildSystem = new CVXBuildSystem(_vsOutputWindow, _outputPane);
       }
       catch (System.Exception ex)
       {

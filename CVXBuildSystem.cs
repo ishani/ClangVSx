@@ -44,21 +44,23 @@ namespace ClangVSx
     private bool DoShowCommands;
     private bool DoGenerateBatchFiles;
     protected OutputWindowPane OutputPane;            // output panel configured by AddIn, passed in to ctor
-
+    protected Window VSOutputWindow;
 
     private StreamWriter BatchFileStream = null;      // if DoGenerateBatchFiles == true, this is set to the output file stream
     private String ConsoleDivider = String.Empty;
 
 
-    public CVXBuildSystem(OutputWindowPane clangOutputPane)
+    public CVXBuildSystem(Window clangOutputWindow, OutputWindowPane clangOutputPane)
     {
+      VSOutputWindow = clangOutputWindow;
       OutputPane = clangOutputPane;
+
 
       ConsoleDivider = ConsoleDivider.PadLeft(128, '-');
 
       // clear and focus the output window
       OutputPane.Clear();
-      OutputPane.Activate();
+      ShowOutputPane();
 
       // write out a version header
       {
@@ -68,7 +70,7 @@ namespace ClangVSx
         WriteToOutputPane("ClangVSx " + vers.Major.ToString() + "." + vers.Minor.ToString() + " | Clang Compiler Bridge | built on " + buildDate + "\n\n");
 
         // try to give the message queue time to bring up the output window
-        System.Windows.Forms.Application.DoEvents();
+        Application.DoEvents();
       }
 
       // read out current executables' locations
@@ -107,6 +109,13 @@ namespace ClangVSx
     }
 
     #region Utils
+
+    internal void ShowOutputPane()
+    {
+      VSOutputWindow.Activate();
+      OutputPane.Activate();
+      Application.DoEvents();
+    }
 
     internal void WriteToOutputPane(string text)
     {
@@ -293,11 +302,16 @@ namespace ClangVSx
           compileString.Append("-O2 ");
           break;
         case optimizeOption.optimizeFull:
-          compileString.Append("-O3 -fomit-frame-pointer ");
+          compileString.Append("-O3 ");
           break;
         case optimizeOption.optimizeMinSpace:
-          compileString.Append("-Os ");
+          compileString.Append("-Oz "); // opting for the 'smallest size at any cost' option
           break;
+      }
+
+      if (perFileVCC.OmitFramePointers || perFileVCC.Optimization == optimizeOption.optimizeFull)
+      {
+        compileString.Append("-fomit-frame-pointer ");
       }
 
       // arbitrarily turning a 5-point dial into a toggle switch :)
@@ -305,11 +319,11 @@ namespace ClangVSx
           perFileVCC.WarningLevel == warningLevelOption.warningLevel_1 ||
           perFileVCC.WarningLevel == warningLevelOption.warningLevel_2)
       {
-        compileString.Append("-w ");
+        compileString.Append("-w "); // no warnings
       }
       else if (perFileVCC.WarningLevel == warningLevelOption.warningLevel_4)
       {
-        compileString.Append("-Wall ");
+        compileString.Append("-Wall "); // all warnings
       }
 
       if (perFileVCC.WarnAsError)
@@ -320,8 +334,12 @@ namespace ClangVSx
       // stack overflow checking
       if (perFileVCC.BufferSecurityCheck)
       {
-        // HDD TODO - clang doesn't support this GCC flag
-        // compileString.Append("-fstack-check ");
+        // HDD TODO incompatible with MSVC atm
+        // compileString.Append("-fstack-protector-all ");
+      }
+      else
+      {
+        compileString.Append("-fno-stack-protector ");
       }
 
       // debug info generation
@@ -350,6 +368,10 @@ namespace ClangVSx
       {
         compileString.Append("-fno-rtti ");
       }
+      else
+      {
+        compileString.Append("-frtti ");
+      }
 
       // EH
       try
@@ -357,18 +379,21 @@ namespace ClangVSx
         // this explodes if it's set to 'off', MSBuild conversion layer problems :|
         if (perFileVCC.ExceptionHandling != cppExceptionHandling.cppExceptionHandlingNo)
         {
-          compileString.Append("-fexceptions ");
+          compileString.Append("-fexceptions -fcxx-exceptions ");
         }
       }
       catch
       {
+        compileString.Append("-fno-exceptions ");
       }
 
       // asm listing or preprocessor output both turn on the same flag, as the flag produces them both
       if (perFileVCC.AssemblerOutput != asmListingOption.asmListingNone ||
           perFileVCC.GeneratePreprocessedFile != preprocessOption.preprocessNo)
       {
-        compileString.Append("-save-temps ");
+        // -S ensures we just preprocess
+        // -CC leaves comments in the output
+        compileString.Append("-save-temps -S -Xpreprocessor -CC ");
       }
 
       if (perFileVCC.CompileAs == CompileAsOptions.compileAsCPlusPlus)
@@ -383,7 +408,7 @@ namespace ClangVSx
       }
 
       // ask for warnings/errors in MSVC format
-      compileString.Append("-fdiagnostics-format=msvc");
+      compileString.Append("-fdiagnostics-format=msvc ");
 
       String fullObjectPath = objectFileName;
       if (!System.IO.Path.IsPathRooted(fullObjectPath))
@@ -397,7 +422,7 @@ namespace ClangVSx
 
 
       // crank the message pump; means our Output Window stuff should update properly
-      System.Windows.Forms.Application.DoEvents();
+      Application.DoEvents();
 
       // execute the compiler
       System.Diagnostics.Process compileProcess = NewExternalProcess();
@@ -558,7 +583,6 @@ namespace ClangVSx
 
       // sort out defines for the runtime library choice
       {
-
         // Static MultiThread          /MT       LIBCMT     _MT
         // Debug Static MultiThread    /MTd      LIBCMTD    _DEBUG and _MT
         // 
@@ -789,6 +813,9 @@ namespace ClangVSx
           try
           {
             pf.Config.Compile(false, true);
+
+            if (BatchFileStream != null)
+              BatchFileStream.WriteLine(String.Format("REM -- warning - missing MIDL step in batch file for\nREM   {0}", pf.File.Name));
           }
           catch (Exception ex)
           {
@@ -823,6 +850,9 @@ namespace ClangVSx
 
             WriteToOutputPane("\nCompiling Resource : " + sourceRCPath + "\n");
             pf.Config.Compile(false, true);
+
+            if (BatchFileStream != null)
+              BatchFileStream.WriteLine(String.Format("REM -- warning - missing resource compiler step in batch file for\nREM   {0}", pf.File.Name));
 
             FileInfo fi = new FileInfo(resourceFile);
             WriteToOutputPane(String.Format("Compiled Resource File : '{0}' [{1} bytes]\n", resourceFile, fi.Length));
@@ -859,7 +889,7 @@ namespace ClangVSx
 
           // log to the build file
           if (BatchFileStream != null)
-            BatchFileStream.WriteLine(LocationClangEXE + " " + compileString.ToString());
+            BatchFileStream.WriteLine(String.Format("\"{0}\" {1}", LocationClangEXE, compileString));
 
           if (numCompilerErrors > 5)
             break;
@@ -872,7 +902,7 @@ namespace ClangVSx
       if (numCompilerErrors > 0)
       {
         WriteToOutputPane("\n" + numCompilerErrors.ToString() + " Compilation Problem(s), Skipping Link.\n");
-        System.Windows.Forms.Application.DoEvents();
+        Application.DoEvents();
 
         if (BatchFileStream != null)
           BatchFileStream.Close();
@@ -1122,7 +1152,7 @@ namespace ClangVSx
       // dump the linker cmdline
       if (BatchFileStream != null)
       {
-        BatchFileStream.WriteLine(linkProcess.StartInfo.FileName + " " + linkString + "\n\npause\n");
+        BatchFileStream.WriteLine(String.Format("\"{0}\" {1}\n\npause\n", linkProcess.StartInfo.FileName, linkString));
         BatchFileStream.Close();
       }
 
