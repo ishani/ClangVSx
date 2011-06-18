@@ -7,7 +7,7 @@ using System.Runtime.CompilerServices;
 // associated with an assembly.
 //
 [assembly: AssemblyTitle("ClangVSx")]
-[assembly: AssemblyDescription("Visual Studio compiler bridge for Clang")]
+[assembly: AssemblyDescription("Visual Studio compiler bridge for Clang C/C++")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("ishani.org")]
 [assembly: AssemblyProduct("ClangVSx")]
@@ -26,7 +26,7 @@ using System.Runtime.CompilerServices;
 // You can specify all the value or you can default the Revision and Build Numbers 
 // by using the '*' as shown below:
 
-[assembly: AssemblyVersion("0.1.*")]
+[assembly: AssemblyVersion("0.2.*")]
 
 //
 // In order to sign your assembly you must specify a key to use. Refer to the 
