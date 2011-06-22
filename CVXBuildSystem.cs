@@ -208,7 +208,7 @@ namespace ClangVSx
           foreach (String outputFileName in outputFiles)
           {
             // find a full pathname for the file, relative or not
-            String finalOutput = outputFileName;
+            String finalOutput = vcFC.Evaluate(outputFileName);
             if (!System.IO.Path.IsPathRooted(outputFileName))
               finalOutput = vcProject.ProjectDirectory + outputFileName;
 
@@ -275,19 +275,23 @@ namespace ClangVSx
         System.IO.Directory.CreateDirectory(prebuild);
       }
 
-      // if no obj file specified, make a suitable filename (is this a robust check..??)
-      if (!System.IO.Path.HasExtension(objectFileName))
+      // check to see if we should emit an obj at all
+      String compileCmds = compileString.ToString();
+      if (!compileCmds.Contains("-o\""))
       {
-        objectFileName += System.IO.Path.ChangeExtension(vcFile.Name, ".obj");
-      }
+        // if no obj file specified, make a suitable filename (is this a robust check..??)
+        if (!System.IO.Path.HasExtension(objectFileName))
+        {
+          objectFileName += System.IO.Path.ChangeExtension(vcFile.Name, ".obj");
+        }
 
-      // record the .obj target in the cmd line and in the list to pass to the linker
-      compileString.Append("-o\"");
-      compileString.Append(objectFileName);
-      compileString.Append("\" ");
+        // record the .obj target in the cmd line and in the list to pass to the linker
+        compileString.Append("-o\"");
+        compileString.Append(objectFileName);
+        compileString.Append("\" ");
 
-      CompilationArtifacts.Add(objectFileName);
-      
+        CompilationArtifacts.Add(objectFileName);
+      }      
 
       // stick the per-file defines, includes, etc 
       compileString.Append(GatherIncludesAndDefines<VCFileConfiguration>(perFileVCC, vcFC));
@@ -323,7 +327,7 @@ namespace ClangVSx
       }
       else if (perFileVCC.WarningLevel == warningLevelOption.warningLevel_4)
       {
-        compileString.Append("-Wall "); // all warnings
+        compileString.Append("-Wall --pedantic "); // all warnings
       }
 
       if (perFileVCC.WarnAsError)
@@ -491,8 +495,9 @@ namespace ClangVSx
               if (incCheck == "./") incCheck = ".";
               if (incCheck == "../") incCheck = "..";
 
+              result.Append("\"");
               result.Append(incCheck);
-              result.Append(" ");
+              result.Append("\" ");
             }
           }
         }
@@ -551,7 +556,8 @@ namespace ClangVSx
       // per cpp-file compiler setting default
       // -c for individual compilation without auto-linking
       // define 'COMPILING_WITH_CLANG_VSX'
-      StringBuilder defaultCompilerString = new StringBuilder(" -c -DCOMPILING_WITH_CLANG_VSX ");
+      // -fdelayed-template-parsing to support IUnknown (thanks to Francois Pichet for the tip!)
+      StringBuilder defaultCompilerString = new StringBuilder(" -c -fdelayed-template-parsing -DCOMPILING_WITH_CLANG_VSX ");
 
       // add the UNICODE defines?
       if (vcCfg.CharacterSet == Microsoft.VisualStudio.VCProjectEngine.charSet.charSetUnicode)
@@ -640,7 +646,7 @@ namespace ClangVSx
 
     #endregion
 
-    public void CompileSingleFile(VCFile vcFile, VCProject vcProject, VCConfiguration vcCfg, String additionalCmds = "")
+    public bool CompileSingleFile(VCFile vcFile, VCProject vcProject, VCConfiguration vcCfg, String additionalCmds = "")
     {
       StringBuilder defaultCompilerString = new StringBuilder(GenerateDefaultCompilerString(vcProject, vcCfg));
       defaultCompilerString.Append(" ");
@@ -653,7 +659,9 @@ namespace ClangVSx
       if (InternalBuildVCFile(vcFile, vcProject, vcCfg, defaultCompilerString.ToString(), ref compileString, Artifacts))
       {
         WriteToOutputPane("\nCompile Successful\n");
+        return true;
       }
+      return false;
     }
 
 

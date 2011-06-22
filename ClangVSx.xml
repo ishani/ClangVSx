@@ -1594,6 +1594,16 @@
             get the active code file and compile it
             </summary>
         </member>
+        <member name="M:ClangVSx.CVXConnect.cvxDasmnFile_menuop(System.Object,System.Boolean@,System.Boolean@)">
+            <summary>
+            ask clang to emit assembly listing for the given file, then pop that result open in VS
+            </summary>
+        </member>
+        <member name="M:ClangVSx.CVXConnect.cvxPreProFile_menuop(System.Object,System.Boolean@,System.Boolean@)">
+            <summary>
+            dump the preprocessor and native-assembly format listing
+            </summary>
+        </member>
         <member name="M:ClangVSx.CVXConnect.cvxAnalyseFile_menuop(System.Object,System.Boolean@,System.Boolean@)">
             <summary>
             get the active code file and compile it, adding static analyzer arguments to the pile
@@ -1630,7 +1640,7 @@
             compile a single VCFile, do nothing with the OBJ
             </summary>
         </member>
-        <member name="M:ClangVSx.ClangOps.BuildActiveProject">
+        <member name="M:ClangVSx.ClangOps.BuildActiveProject(System.Object)">
             <summary>
             Compile the project that is set as the 'startup project' in the solution
             </summary>

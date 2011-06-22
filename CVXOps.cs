@@ -65,7 +65,7 @@ namespace ClangVSx
     /// <summary>
     /// compile a single VCFile, do nothing with the OBJ
     /// </summary>
-    public void CompileSingleFile(VCFile vcFile, VCProject vcProject, VCConfiguration vcCfg, String additionalCmds = "")
+    public bool CompileSingleFile(VCFile vcFile, VCProject vcProject, VCConfiguration vcCfg, String additionalCmds = "")
     {
       CVXBuildSystem buildSystem;
       try
@@ -75,24 +75,41 @@ namespace ClangVSx
       catch (System.Exception ex)
       {
         MessageBox.Show(ex.Message, "ClangVSx Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-        return;
+        return false;
       }
 
       try
       {
-        buildSystem.CompileSingleFile(vcFile, vcProject, vcCfg, additionalCmds);
+        return buildSystem.CompileSingleFile(vcFile, vcProject, vcCfg, additionalCmds);
       }
       catch (System.Exception ex)
       {
         WriteToOutputPane("Exception During File Compile : \n" + ex.Message + "\n");
       }
+
+      return false;
+    }
+
+    public delegate void BuildEventDelegate(bool success);
+    public class ProjectBuildConfig
+    {
+      public BuildEventDelegate BuildBegun;
+      public BuildEventDelegate BuildFinished;
     }
 
     /// <summary>
     /// Compile the project that is set as the 'startup project' in the solution
     /// </summary>
-    public void BuildActiveProject()
+    public void BuildActiveProject(object buildConfig)
     {
+      // cast the input object; this is designed to be run with ParameterizedThreadStart, so we have to accept 'object'...
+      ProjectBuildConfig config = (buildConfig as ProjectBuildConfig);
+      if (config == null)
+        throw new InvalidCastException("BuildActiveProject called with invalid argument - ProjectBuildConfig required");
+
+      // mark the build as ready-to-go
+      config.BuildBegun(true);
+
       CVXBuildSystem buildSystem;
       try
       {
@@ -101,6 +118,7 @@ namespace ClangVSx
       catch (System.Exception ex)
       {
         MessageBox.Show(ex.Message, "ClangVSx Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        config.BuildFinished(false);
         return;
       }
 
@@ -121,9 +139,9 @@ namespace ClangVSx
             if (vcProject == null)
             {
               WriteToOutputPane("Error : Could not cast project to VCProject.\n");
+              config.BuildFinished(false); 
               return;
             }
-
 
             EnvDTE.Configuration cfg = p.ConfigurationManager.ActiveConfiguration;
             IVCCollection cfgArray = (IVCCollection)vcProject.Configurations;
@@ -138,7 +156,9 @@ namespace ClangVSx
               WriteToOutputPane("Configuration : " + vcCfg.Name + "\n");
             }
 
-            buildSystem.BuildProject(vcProject, vcCfg);
+            bool result = buildSystem.BuildProject(vcProject, vcCfg);
+            config.BuildFinished(result);
+            return;
           }
           else
           {
@@ -149,6 +169,10 @@ namespace ClangVSx
       catch (System.Exception ex)
       {
         WriteToOutputPane("Exception During Build : \n" + ex.Message + "\n");
+      }
+      finally
+      {
+        config.BuildFinished(false);
       }
     }
   }
