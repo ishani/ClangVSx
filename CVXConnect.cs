@@ -215,9 +215,13 @@ namespace ClangVSx
         if (commandName.StartsWith("ClangVSx.CVXConnect"))
         {
           status = (vsCommandStatus)vsCommandStatus.vsCommandStatusSupported;
-          
+
           if (commandName.EndsWith(COMMAND_CLANG_SETTINGS_DLG))
-            status |= vsCommandStatus.vsCommandStatusEnabled;
+          {
+            // don't change settings mid-build
+            if (!BuildInProgress)
+              status |= vsCommandStatus.vsCommandStatusEnabled;
+          }
           else if (commandName.EndsWith(COMMAND_CLANG_REBUILD_ACTIVE))
           {
             if (!BuildInProgress && ((Array)_applicationObject.ActiveSolutionProjects).Length > 0)
@@ -254,16 +258,24 @@ namespace ClangVSx
               handled = true;
               _applicationObject.Documents.SaveAll();
 
-              // build a config options block, set the delegates for build events to toggle
-              // our local build-is-running variable that will disable all other Clang actions until it finishes
-              ClangOps.ProjectBuildConfig pbc = new ClangOps.ProjectBuildConfig();
-              pbc.BuildBegun = (bool success) => { BuildInProgress = true; };
-              pbc.BuildFinished = (bool success) => { BuildInProgress = false; };
-              
-              // start the build on another thread so the output pane updates asynchronously
-              ParameterizedThreadStart buildDelegate = new ParameterizedThreadStart(_CVXOps.BuildActiveProject);
-              System.Threading.Thread newThread = new System.Threading.Thread(buildDelegate);
-              newThread.Start(pbc);
+              try
+              {
+                // build a config options block, set the delegates for build events to toggle
+                // our local build-is-running variable that will disable all other Clang actions until it finishes
+                ClangOps.ProjectBuildConfig pbc = new ClangOps.ProjectBuildConfig();
+                pbc.BuildBegun = (bool success) => { BuildInProgress = true; };
+                pbc.BuildFinished = (bool success) => { BuildInProgress = false; };
+
+                // start the build on another thread so the output pane updates asynchronously
+                ParameterizedThreadStart buildDelegate = new ParameterizedThreadStart(_CVXOps.BuildActiveProject);
+                System.Threading.Thread newThread = new System.Threading.Thread(buildDelegate);
+                newThread.Start(pbc);
+              }
+              catch (System.Exception ex)
+              {
+                BuildInProgress = false;
+                MessageBox.Show(ex.Message, "ClangVSx - Project Build Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+              }
             }
             break;
         }
