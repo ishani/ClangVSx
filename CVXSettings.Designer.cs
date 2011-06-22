@@ -203,7 +203,7 @@ namespace ClangVSx
       this.bridgeOps.Size = new System.Drawing.Size(419, 213);
       this.bridgeOps.TabIndex = 8;
       this.bridgeOps.TabStop = false;
-      this.bridgeOps.Text = "Bridging Options";
+      this.bridgeOps.Text = "Options";
       // 
       // label2
       // 
@@ -218,9 +218,10 @@ namespace ClangVSx
       // 
       // cvxCommonArgs
       // 
+      this.cvxCommonArgs.Font = new System.Drawing.Font("Courier New", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
       this.cvxCommonArgs.Location = new System.Drawing.Point(8, 87);
       this.cvxCommonArgs.Name = "cvxCommonArgs";
-      this.cvxCommonArgs.Size = new System.Drawing.Size(399, 20);
+      this.cvxCommonArgs.Size = new System.Drawing.Size(399, 21);
       this.cvxCommonArgs.TabIndex = 2;
       // 
       // cvxBatch
