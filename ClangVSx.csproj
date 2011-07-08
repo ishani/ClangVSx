@@ -136,9 +136,6 @@
     </COMReference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="..\..\..\Users\Harry\Documents\Visual Studio 2010\Addins\ClangVSx - For Testing.AddIn">
-      <Link>ClangVSx - For Testing.AddIn</Link>
-    </Content>
     <Content Include="ClangVSx.AddIn" />
   </ItemGroup>
   <ItemGroup>
