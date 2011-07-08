@@ -629,15 +629,21 @@ namespace ClangVSx
         String cIncDir = vcCTool.FullIncludePath.Replace(",", ";");
         String[] cIncDirs = cIncDir.Split(';');
 
+        // add the fully resolved directories into a string set, to weed out any duplicates
+        HashSet<String> uniqueDirs = new HashSet<String>();
         foreach (string inc in cIncDirs)
         {
           if (inc.Length > 0)
           {
-            defaultCompilerString.Append("-isystem \"");
-
-            defaultCompilerString.Append(inc.Replace("\\", "/"));
-            defaultCompilerString.Append("\" ");
+            uniqueDirs.Add(Path.GetFullPath(inc.Replace("\\", "/")));
           }
+        }
+
+        foreach (String inc in uniqueDirs)
+        {
+          defaultCompilerString.Append("-isystem \"");
+          defaultCompilerString.Append(inc);
+          defaultCompilerString.Append("\" ");
         }
       }
 
