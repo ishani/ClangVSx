@@ -643,6 +643,7 @@ namespace ClangVSx
         {
           defaultCompilerString.Append("-isystem \"");
           defaultCompilerString.Append(inc);
+          defaultCompilerString.Replace("\\", "", defaultCompilerString.Length - 1, 1);
           defaultCompilerString.Append("\" ");
         }
       }
