@@ -269,7 +269,7 @@ namespace ClangVSx
       // sort out an output object file name
       String objectFileName = vcFC.Evaluate(perFileVCC.ObjectFile).Replace("/", "\\");
 
-      String prebuild = (vcProject.ProjectDirectory + "\\" + objectFileName);
+      String prebuild = System.IO.Path.Combine(vcProject.ProjectDirectory, objectFileName);
       if (!System.IO.Directory.Exists(prebuild))
       {
         System.IO.Directory.CreateDirectory(prebuild);
