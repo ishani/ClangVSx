@@ -367,30 +367,6 @@ namespace ClangVSx
         }
       }
 
-      // RTTI disable?
-      if (!perFileVCC.RuntimeTypeInfo)
-      {
-        compileString.Append("-fno-rtti ");
-      }
-      else
-      {
-        compileString.Append("-frtti ");
-      }
-
-      // EH
-      try
-      {
-        // this explodes if it's set to 'off', MSBuild conversion layer problems :|
-        if (perFileVCC.ExceptionHandling != cppExceptionHandling.cppExceptionHandlingNo)
-        {
-          compileString.Append("-fexceptions -fcxx-exceptions ");
-        }
-      }
-      catch
-      {
-        compileString.Append("-fno-exceptions ");
-      }
-
       // asm listing or preprocessor output both turn on the same flag, as the flag produces them both
       if (perFileVCC.AssemblerOutput != asmListingOption.asmListingNone ||
           perFileVCC.GeneratePreprocessedFile != preprocessOption.preprocessNo)
@@ -403,6 +379,30 @@ namespace ClangVSx
       if (perFileVCC.CompileAs == CompileAsOptions.compileAsCPlusPlus)
       {
         compileString.Append("-x c++ ");
+
+        // RTTI disable?
+        if (!perFileVCC.RuntimeTypeInfo)
+        {
+            compileString.Append("-fno-rtti ");
+        }
+        else
+        {
+            compileString.Append("-frtti ");
+        }
+
+        // EH
+        try
+        {
+            // this explodes if it's set to 'off', MSBuild conversion layer problems :|
+            if (perFileVCC.ExceptionHandling != cppExceptionHandling.cppExceptionHandlingNo)
+            {
+                compileString.Append("-fexceptions -fcxx-exceptions ");
+            }
+        }
+        catch
+        {
+            compileString.Append("-fno-exceptions ");
+        }
       }
 
       // add the 'additional options' verbatim
