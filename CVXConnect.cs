@@ -224,7 +224,7 @@ namespace ClangVSx
           }
           else if (commandName.EndsWith(COMMAND_CLANG_REBUILD_ACTIVE))
           {
-            if (!BuildInProgress && ((Array)_applicationObject.ActiveSolutionProjects).Length > 0)
+            if (!BuildInProgress && _applicationObject.Solution.Count != 0)
               status |= vsCommandStatus.vsCommandStatusEnabled;
           }
         }

@@ -263,7 +263,7 @@ namespace ClangVSx
       VCCLCompilerTool perFileVCC = (VCCLCompilerTool)vcFC.Tool;
 
       // begin forming the command line string to send to Clang
-      compileString.Append(vcFile.FullPath.Replace("/", "\\"));
+      compileString.Append('"' + vcFile.FullPath.Replace("/", "\\") + '"');
       compileString.Append(defaultCompilerString.ToString());
 
       // sort out an output object file name
@@ -367,30 +367,6 @@ namespace ClangVSx
         }
       }
 
-      // RTTI disable?
-      if (!perFileVCC.RuntimeTypeInfo)
-      {
-        compileString.Append("-fno-rtti ");
-      }
-      else
-      {
-        compileString.Append("-frtti ");
-      }
-
-      // EH
-      try
-      {
-        // this explodes if it's set to 'off', MSBuild conversion layer problems :|
-        if (perFileVCC.ExceptionHandling != cppExceptionHandling.cppExceptionHandlingNo)
-        {
-          compileString.Append("-fexceptions -fcxx-exceptions ");
-        }
-      }
-      catch
-      {
-        compileString.Append("-fno-exceptions ");
-      }
-
       // asm listing or preprocessor output both turn on the same flag, as the flag produces them both
       if (perFileVCC.AssemblerOutput != asmListingOption.asmListingNone ||
           perFileVCC.GeneratePreprocessedFile != preprocessOption.preprocessNo)
@@ -403,6 +379,30 @@ namespace ClangVSx
       if (perFileVCC.CompileAs == CompileAsOptions.compileAsCPlusPlus)
       {
         compileString.Append("-x c++ ");
+
+        // RTTI disable?
+        if (!perFileVCC.RuntimeTypeInfo)
+        {
+            compileString.Append("-fno-rtti ");
+        }
+        else
+        {
+            compileString.Append("-frtti ");
+        }
+
+        // EH
+        try
+        {
+            // this explodes if it's set to 'off', MSBuild conversion layer problems :|
+            if (perFileVCC.ExceptionHandling != cppExceptionHandling.cppExceptionHandlingNo)
+            {
+                compileString.Append("-fexceptions -fcxx-exceptions ");
+            }
+        }
+        catch
+        {
+            compileString.Append("-fno-exceptions ");
+        }
       }
 
       // add the 'additional options' verbatim
@@ -711,6 +711,11 @@ namespace ClangVSx
       outLink.Replace("/", "\\");
       WriteToOutputPane("Linker Output : " + outLink + "\n");
 
+      String outLinkDirectory = Path.GetDirectoryName(outLink);
+      if (!System.IO.Directory.Exists(outLinkDirectory))
+      {
+        System.IO.Directory.CreateDirectory(outLinkDirectory);
+      }
 
       // ------------------ log out a batch file of build commands ------------------
 
@@ -1178,7 +1183,7 @@ namespace ClangVSx
       // put the linker options into a file, we only have ~2000 characters to play with if sending direct which will
       // overflow quickly on any decent sized project
       String respFileName = System.IO.Path.GetRandomFileName();
-      String respFilePath = vcProject.ProjectDirectory + "\\" + respFileName;
+      String respFilePath = System.IO.Path.Combine(vcProject.ProjectDirectory, respFileName);
       System.IO.StreamWriter respFile = new System.IO.StreamWriter(respFilePath);
       respFile.WriteLine(linkString);
       respFile.Close();
@@ -1187,7 +1192,7 @@ namespace ClangVSx
       linkProcess.StartInfo.EnvironmentVariables["PATH"] += ";" + PathToVS10Tools + ";" + PathToVS10CommonIDE;
 
       // execute the compiler
-      linkProcess.StartInfo.Arguments = "@" + respFilePath;
+      linkProcess.StartInfo.Arguments = "@\"" + respFilePath + '"';
       linkProcess.StartInfo.WorkingDirectory = vcProject.ProjectDirectory;
       linkProcess.Start();
 
