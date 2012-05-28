@@ -5,7 +5,7 @@ AddIn for Visual Studio 2010 that allows use of the Clang C/C++ compiler in plac
 
 One click 'Build Project' testing of Clang in Windows development environments!
 
-![Output Example](http://www.ishani.org/web/wp-content/uploads/2011/06/Clangvsx_rcmenu.png) 
+<div><img src="http://www.ishani.org/web/wp-content/uploads/2011/06/Clangvsx_rcmenu.png"/></div>
 
 Bear in mind that Clang support for Windows is incomplete and occasionally buggy. This AddIn is largely experimental and the code is likely to change a lot over time. Your milage will definately vary.
 
