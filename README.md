@@ -5,40 +5,47 @@ AddIn for Visual Studio 2010 that allows use of the Clang C/C++ compiler in plac
 
 One click 'Build Project' testing of Clang in Windows development environments!
 
-![Output Example](http://www.ishani.org/ext/ClangVSx-output.png) 
+![Output Example](http://www.ishani.org/web/wp-content/uploads/2011/06/Clangvsx_rcmenu.png) 
 
 Bear in mind that Clang support for Windows is incomplete and occasionally buggy. This AddIn is largely experimental and the code is likely to change a lot over time. Your milage will definately vary.
 
 Some things **not** supported:
 
-* LTCG (-emit-llvm and LLVM linker before MSVC Linker, presumably)
 * PCH (ignored during translation)
 * ATL / MFC projects (Clang can't handle certain ATL/COM headers properly yet)
+
+
+Added in v0.3
+
+* Support for LTCG (LTO) - ClangVSx will compile to LLVM bitcode, link and optimise the artifacts into a single object file before doing native code generation. 
 
 
 Required Compiler Patches
 -------------------------
 
-Vanilla Clang will not (as of 2011-06-18) build Win32 projects with the MSVC linker successfully. A couple of patches to the compiler are required:
-
-* [LLVM Bug 9277](http://llvm.org/bugs/show_bug.cgi?id=9277) - required for compiling any projects using Windows API (eg including windows.h)
-* [LLVM Bug 9213](http://llvm.org/bugs/show_bug.cgi?id=9213) - fixing up problems with static initializers
+Clang 3.2 still does not cleanly compile projects using the Windows Platform SDK. I maintain a pre-built version that contains a few patches in this area. Read more [here](http://www.ishani.org/web/articles/code/clang-win32/).
   
   
 - - -
   
-  
-Usage (v0.2)
+
+Usage (v0.3)
 ------------
 Copy *.AddIn* and built *ClangVSx.dll* into ``C:\Users\<username>\Documents\Visual Studio 2010\Addins\``  
-In VS2010, a new top-level *Clang* menu will be created, offering a settings dialog (to choose location of compiler) and *Rebuild Active Project*
-
+In VS2010, a new top-level *Clang* menu will be created, offering a settings dialog (to choose location of compiler) and *Rebuild Active Project* or *Relink*
+A context-menu option is added to code editor windows that allows for Clang-specific tasks to be performed on that code.
   
 - - -
   
 
 Release Notes
 -------------
+
+**Version 0.3** (2012-05-28)
+
+* Tidied up preferences, added more diagnotics options in the settings dialog
+* Tested with latest Clang 3.2 builds and some more adventurous Win32 projects
+* Added support for LTO / LTCG
 
 **Version 0.2** (2011-06-18)
 
