@@ -42,26 +42,32 @@ namespace ClangVSx
       this.cvxDone = new System.Windows.Forms.Button();
       this.findClangExe = new System.Windows.Forms.OpenFileDialog();
       this.panel1 = new System.Windows.Forms.Panel();
-      this.linkLabel1 = new System.Windows.Forms.LinkLabel();
       this.label1 = new System.Windows.Forms.Label();
+      this.linkLabel3 = new System.Windows.Forms.LinkLabel();
       this.cvxCancel = new System.Windows.Forms.Button();
       this.bridgeOps = new System.Windows.Forms.GroupBox();
-      this.label2 = new System.Windows.Forms.Label();
-      this.cvxCommonArgs = new System.Windows.Forms.TextBox();
+      this.cvxPhases = new System.Windows.Forms.CheckBox();
+      this.cvxEcho = new System.Windows.Forms.CheckBox();
       this.cvxBatch = new System.Windows.Forms.CheckBox();
       this.cvxShowCmds = new System.Windows.Forms.CheckBox();
+      this.label2 = new System.Windows.Forms.Label();
+      this.cvxCommonArgs = new System.Windows.Forms.TextBox();
+      this.groupBox2 = new System.Windows.Forms.GroupBox();
+      this.label3 = new System.Windows.Forms.Label();
+      this.cvxTriple = new System.Windows.Forms.ComboBox();
       ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
       this.groupBox1.SuspendLayout();
       ((System.ComponentModel.ISupportInitialize)(this.cvxPic)).BeginInit();
       this.panel1.SuspendLayout();
       this.bridgeOps.SuspendLayout();
+      this.groupBox2.SuspendLayout();
       this.SuspendLayout();
       // 
       // pictureBox1
       // 
       this.pictureBox1.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
       this.pictureBox1.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox1.Image")));
-      this.pictureBox1.Location = new System.Drawing.Point(11, 12);
+      this.pictureBox1.Location = new System.Drawing.Point(12, 12);
       this.pictureBox1.Name = "pictureBox1";
       this.pictureBox1.Size = new System.Drawing.Size(157, 234);
       this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.AutoSize;
@@ -74,9 +80,9 @@ namespace ClangVSx
       this.groupBox1.Controls.Add(this.cvxStats);
       this.groupBox1.Controls.Add(this.cvxBrowse);
       this.groupBox1.Controls.Add(this.cvxLocation);
-      this.groupBox1.Location = new System.Drawing.Point(174, 12);
+      this.groupBox1.Location = new System.Drawing.Point(184, 12);
       this.groupBox1.Name = "groupBox1";
-      this.groupBox1.Size = new System.Drawing.Size(419, 91);
+      this.groupBox1.Size = new System.Drawing.Size(310, 91);
       this.groupBox1.TabIndex = 1;
       this.groupBox1.TabStop = false;
       this.groupBox1.Text = "Location of Clang Executable";
@@ -84,7 +90,7 @@ namespace ClangVSx
       // cvxPic
       // 
       this.cvxPic.Image = ((System.Drawing.Image)(resources.GetObject("cvxPic.Image")));
-      this.cvxPic.Location = new System.Drawing.Point(376, 47);
+      this.cvxPic.Location = new System.Drawing.Point(267, 47);
       this.cvxPic.Name = "cvxPic";
       this.cvxPic.Size = new System.Drawing.Size(32, 32);
       this.cvxPic.SizeMode = System.Windows.Forms.PictureBoxSizeMode.AutoSize;
@@ -98,12 +104,12 @@ namespace ClangVSx
       this.cvxStats.Multiline = true;
       this.cvxStats.Name = "cvxStats";
       this.cvxStats.ReadOnly = true;
-      this.cvxStats.Size = new System.Drawing.Size(361, 34);
+      this.cvxStats.Size = new System.Drawing.Size(252, 34);
       this.cvxStats.TabIndex = 3;
       // 
       // cvxBrowse
       // 
-      this.cvxBrowse.Location = new System.Drawing.Point(376, 19);
+      this.cvxBrowse.Location = new System.Drawing.Point(267, 19);
       this.cvxBrowse.Name = "cvxBrowse";
       this.cvxBrowse.Size = new System.Drawing.Size(32, 20);
       this.cvxBrowse.TabIndex = 2;
@@ -115,7 +121,7 @@ namespace ClangVSx
       // 
       this.cvxLocation.Location = new System.Drawing.Point(9, 19);
       this.cvxLocation.Name = "cvxLocation";
-      this.cvxLocation.Size = new System.Drawing.Size(361, 20);
+      this.cvxLocation.Size = new System.Drawing.Size(252, 20);
       this.cvxLocation.TabIndex = 0;
       this.cvxLocation.TextChanged += new System.EventHandler(this.cvxLocation_TextChanged);
       // 
@@ -123,7 +129,7 @@ namespace ClangVSx
       // 
       this.linkLabel2.AutoSize = true;
       this.linkLabel2.LinkBehavior = System.Windows.Forms.LinkBehavior.HoverUnderline;
-      this.linkLabel2.Location = new System.Drawing.Point(29, 249);
+      this.linkLabel2.Location = new System.Drawing.Point(33, 249);
       this.linkLabel2.Name = "linkLabel2";
       this.linkLabel2.Size = new System.Drawing.Size(108, 13);
       this.linkLabel2.TabIndex = 4;
@@ -133,7 +139,7 @@ namespace ClangVSx
       // 
       // cvxDone
       // 
-      this.cvxDone.Location = new System.Drawing.Point(481, 328);
+      this.cvxDone.Location = new System.Drawing.Point(679, 268);
       this.cvxDone.Name = "cvxDone";
       this.cvxDone.Size = new System.Drawing.Size(112, 23);
       this.cvxDone.TabIndex = 5;
@@ -151,25 +157,13 @@ namespace ClangVSx
       // 
       this.panel1.BackColor = System.Drawing.Color.Wheat;
       this.panel1.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-      this.panel1.Controls.Add(this.linkLabel1);
       this.panel1.Controls.Add(this.label1);
+      this.panel1.Controls.Add(this.linkLabel3);
       this.panel1.Dock = System.Windows.Forms.DockStyle.Bottom;
-      this.panel1.Location = new System.Drawing.Point(0, 362);
+      this.panel1.Location = new System.Drawing.Point(0, 297);
       this.panel1.Name = "panel1";
-      this.panel1.Size = new System.Drawing.Size(608, 24);
+      this.panel1.Size = new System.Drawing.Size(798, 24);
       this.panel1.TabIndex = 6;
-      // 
-      // linkLabel1
-      // 
-      this.linkLabel1.AutoSize = true;
-      this.linkLabel1.LinkBehavior = System.Windows.Forms.LinkBehavior.HoverUnderline;
-      this.linkLabel1.Location = new System.Drawing.Point(476, 4);
-      this.linkLabel1.Name = "linkLabel1";
-      this.linkLabel1.Size = new System.Drawing.Size(115, 13);
-      this.linkLabel1.TabIndex = 5;
-      this.linkLabel1.TabStop = true;
-      this.linkLabel1.Text = "http://www.ishani.org/";
-      this.linkLabel1.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.url_LinkClicked);
       // 
       // label1
       // 
@@ -180,11 +174,23 @@ namespace ClangVSx
       this.label1.Name = "label1";
       this.label1.Size = new System.Drawing.Size(325, 16);
       this.label1.TabIndex = 4;
-      this.label1.Text = "ClangVSx Compiler Bridge - Harry Denholm, ishani.org 2011";
+      this.label1.Text = "ClangVSx Compiler Bridge - Harry Denholm, ishani.org 2012";
+      // 
+      // linkLabel3
+      // 
+      this.linkLabel3.AutoSize = true;
+      this.linkLabel3.LinkBehavior = System.Windows.Forms.LinkBehavior.HoverUnderline;
+      this.linkLabel3.Location = new System.Drawing.Point(611, 4);
+      this.linkLabel3.Name = "linkLabel3";
+      this.linkLabel3.Size = new System.Drawing.Size(178, 13);
+      this.linkLabel3.TabIndex = 10;
+      this.linkLabel3.TabStop = true;
+      this.linkLabel3.Text = "https://github.com/ishani/ClangVSx";
+      this.linkLabel3.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.url_LinkClicked);
       // 
       // cvxCancel
       // 
-      this.cvxCancel.Location = new System.Drawing.Point(363, 328);
+      this.cvxCancel.Location = new System.Drawing.Point(561, 268);
       this.cvxCancel.Name = "cvxCancel";
       this.cvxCancel.Size = new System.Drawing.Size(112, 23);
       this.cvxCancel.TabIndex = 7;
@@ -194,40 +200,41 @@ namespace ClangVSx
       // 
       // bridgeOps
       // 
-      this.bridgeOps.Controls.Add(this.label2);
-      this.bridgeOps.Controls.Add(this.cvxCommonArgs);
+      this.bridgeOps.Controls.Add(this.cvxPhases);
+      this.bridgeOps.Controls.Add(this.cvxEcho);
       this.bridgeOps.Controls.Add(this.cvxBatch);
       this.bridgeOps.Controls.Add(this.cvxShowCmds);
-      this.bridgeOps.Location = new System.Drawing.Point(174, 109);
+      this.bridgeOps.Location = new System.Drawing.Point(500, 109);
       this.bridgeOps.Name = "bridgeOps";
-      this.bridgeOps.Size = new System.Drawing.Size(419, 213);
+      this.bridgeOps.Size = new System.Drawing.Size(291, 110);
       this.bridgeOps.TabIndex = 8;
       this.bridgeOps.TabStop = false;
-      this.bridgeOps.Text = "Options";
+      this.bridgeOps.Text = "Output";
       // 
-      // label2
+      // cvxPhases
       // 
-      this.label2.AutoSize = true;
-      this.label2.Font = new System.Drawing.Font("Trebuchet MS", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-      this.label2.ForeColor = System.Drawing.Color.Black;
-      this.label2.Location = new System.Drawing.Point(6, 68);
-      this.label2.Name = "label2";
-      this.label2.Size = new System.Drawing.Size(199, 16);
-      this.label2.TabIndex = 5;
-      this.label2.Text = "Compiler arguments to add to all files :";
+      this.cvxPhases.AutoSize = true;
+      this.cvxPhases.Location = new System.Drawing.Point(10, 83);
+      this.cvxPhases.Name = "cvxPhases";
+      this.cvxPhases.Size = new System.Drawing.Size(228, 17);
+      this.cvxPhases.TabIndex = 11;
+      this.cvxPhases.Text = "Show compiler phases ( -ccc-print-phases )";
+      this.cvxPhases.UseVisualStyleBackColor = true;
       // 
-      // cvxCommonArgs
+      // cvxEcho
       // 
-      this.cvxCommonArgs.Font = new System.Drawing.Font("Courier New", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-      this.cvxCommonArgs.Location = new System.Drawing.Point(8, 87);
-      this.cvxCommonArgs.Name = "cvxCommonArgs";
-      this.cvxCommonArgs.Size = new System.Drawing.Size(399, 21);
-      this.cvxCommonArgs.TabIndex = 2;
+      this.cvxEcho.AutoSize = true;
+      this.cvxEcho.Location = new System.Drawing.Point(10, 62);
+      this.cvxEcho.Name = "cvxEcho";
+      this.cvxEcho.Size = new System.Drawing.Size(261, 17);
+      this.cvxEcho.TabIndex = 10;
+      this.cvxEcho.Text = "Echo internal compiler command line ( -ccc-echo )";
+      this.cvxEcho.UseVisualStyleBackColor = true;
       // 
       // cvxBatch
       // 
       this.cvxBatch.AutoSize = true;
-      this.cvxBatch.Location = new System.Drawing.Point(10, 39);
+      this.cvxBatch.Location = new System.Drawing.Point(10, 41);
       this.cvxBatch.Name = "cvxBatch";
       this.cvxBatch.Size = new System.Drawing.Size(242, 17);
       this.cvxBatch.TabIndex = 1;
@@ -244,12 +251,69 @@ namespace ClangVSx
       this.cvxShowCmds.Text = "Dump all command line arguments to output window";
       this.cvxShowCmds.UseVisualStyleBackColor = true;
       // 
+      // label2
+      // 
+      this.label2.AutoSize = true;
+      this.label2.Font = new System.Drawing.Font("Trebuchet MS", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+      this.label2.ForeColor = System.Drawing.Color.Black;
+      this.label2.Location = new System.Drawing.Point(7, 31);
+      this.label2.Name = "label2";
+      this.label2.Size = new System.Drawing.Size(199, 16);
+      this.label2.TabIndex = 5;
+      this.label2.Text = "Compiler arguments to add to all files :";
+      // 
+      // cvxCommonArgs
+      // 
+      this.cvxCommonArgs.Font = new System.Drawing.Font("Courier New", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+      this.cvxCommonArgs.Location = new System.Drawing.Point(9, 50);
+      this.cvxCommonArgs.Name = "cvxCommonArgs";
+      this.cvxCommonArgs.Size = new System.Drawing.Size(290, 21);
+      this.cvxCommonArgs.TabIndex = 2;
+      // 
+      // groupBox2
+      // 
+      this.groupBox2.Controls.Add(this.label3);
+      this.groupBox2.Controls.Add(this.cvxTriple);
+      this.groupBox2.Controls.Add(this.label2);
+      this.groupBox2.Controls.Add(this.cvxCommonArgs);
+      this.groupBox2.Location = new System.Drawing.Point(184, 109);
+      this.groupBox2.Name = "groupBox2";
+      this.groupBox2.Size = new System.Drawing.Size(310, 110);
+      this.groupBox2.TabIndex = 9;
+      this.groupBox2.TabStop = false;
+      this.groupBox2.Text = "Global ";
+      // 
+      // label3
+      // 
+      this.label3.AutoSize = true;
+      this.label3.Font = new System.Drawing.Font("Trebuchet MS", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+      this.label3.ForeColor = System.Drawing.Color.Black;
+      this.label3.Location = new System.Drawing.Point(26, 80);
+      this.label3.Name = "label3";
+      this.label3.Size = new System.Drawing.Size(126, 16);
+      this.label3.TabIndex = 7;
+      this.label3.Text = "Overload target triple :";
+      // 
+      // cvxTriple
+      // 
+      this.cvxTriple.Font = new System.Drawing.Font("Courier New", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+      this.cvxTriple.FormattingEnabled = true;
+      this.cvxTriple.Items.AddRange(new object[] {
+            "i686-pc-win32",
+            "x86_64-pc-win32"});
+      this.cvxTriple.Location = new System.Drawing.Point(158, 77);
+      this.cvxTriple.Name = "cvxTriple";
+      this.cvxTriple.Size = new System.Drawing.Size(141, 23);
+      this.cvxTriple.TabIndex = 6;
+      this.cvxTriple.Text = "i686-pc-win32";
+      // 
       // CVXSettings
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-      this.ClientSize = new System.Drawing.Size(608, 386);
+      this.ClientSize = new System.Drawing.Size(798, 321);
       this.ControlBox = false;
+      this.Controls.Add(this.groupBox2);
       this.Controls.Add(this.bridgeOps);
       this.Controls.Add(this.cvxCancel);
       this.Controls.Add(this.panel1);
@@ -274,6 +338,8 @@ namespace ClangVSx
       this.panel1.PerformLayout();
       this.bridgeOps.ResumeLayout(false);
       this.bridgeOps.PerformLayout();
+      this.groupBox2.ResumeLayout(false);
+      this.groupBox2.PerformLayout();
       this.ResumeLayout(false);
       this.PerformLayout();
 
@@ -290,7 +356,6 @@ namespace ClangVSx
     private System.Windows.Forms.OpenFileDialog findClangExe;
     private System.Windows.Forms.TextBox cvxStats;
     private System.Windows.Forms.Panel panel1;
-    private System.Windows.Forms.LinkLabel linkLabel1;
     private System.Windows.Forms.Label label1;
     private System.Windows.Forms.Button cvxCancel;
     private System.Windows.Forms.GroupBox bridgeOps;
@@ -299,6 +364,12 @@ namespace ClangVSx
     private System.Windows.Forms.PictureBox cvxPic;
     private System.Windows.Forms.Label label2;
     private System.Windows.Forms.TextBox cvxCommonArgs;
+    private System.Windows.Forms.GroupBox groupBox2;
+    private System.Windows.Forms.LinkLabel linkLabel3;
+    private System.Windows.Forms.CheckBox cvxEcho;
+    private System.Windows.Forms.Label label3;
+    private System.Windows.Forms.ComboBox cvxTriple;
+    private System.Windows.Forms.CheckBox cvxPhases;
 
 
   }

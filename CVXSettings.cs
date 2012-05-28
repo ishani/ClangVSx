@@ -27,9 +27,14 @@ namespace ClangVSx
       InitializeComponent();
 
       cvxLocation.Text = CVXRegistry.PathToClang;
+      
       cvxShowCmds.Checked = CVXRegistry.ShowCommands;
       cvxBatch.Checked = CVXRegistry.MakeBatchFiles;
+      cvxEcho.Checked = CVXRegistry.EchoInternal;
+      cvxPhases.Checked = CVXRegistry.ShowPhases;
+
       cvxCommonArgs.Text = CVXRegistry.CommonArgs;
+      cvxTriple.Text = CVXRegistry.Triple;
 
       // blot the version number up in the title bar
       Assembly assem = Assembly.GetExecutingAssembly();
@@ -54,21 +59,26 @@ namespace ClangVSx
 
     private void cvxDone_Click(object sender, EventArgs e)
     {
-      if (validEXELocation(cvxLocation.Text))
       {
         // save back to the registry
-        CVXRegistry.PathToClang = cvxLocation.Text;
-        CVXRegistry.ShowCommands = cvxShowCmds.Checked;
-        CVXRegistry.MakeBatchFiles = cvxBatch.Checked;
-        CVXRegistry.CommonArgs = cvxCommonArgs.Text;
+        CVXRegistry.PathToClang.Value = cvxLocation.Text;
 
-        DialogResult = DialogResult.OK;
-        Close();
+        CVXRegistry.ShowCommands.Value = cvxShowCmds.Checked;
+        CVXRegistry.MakeBatchFiles.Value = cvxBatch.Checked;
+        CVXRegistry.EchoInternal.Value = cvxEcho.Checked;
+        CVXRegistry.ShowPhases.Value = cvxPhases.Checked;
+
+        CVXRegistry.CommonArgs.Value = cvxCommonArgs.Text;
+        CVXRegistry.Triple.Value = cvxTriple.Text;
       }
-      else
+
+      if (!validEXELocation(cvxLocation.Text))
       {
-        MessageBox.Show("Cannot find file specified for CLANG.EXE", "ClangVSx Settings");
+        MessageBox.Show("Warning: Cannot find file specified for CLANG.EXE, will be unable to build projects.", "ClangVSx Settings");
       }
+
+      DialogResult = DialogResult.OK;
+      Close();
     }
 
     private void cvxLocation_TextChanged(object sender, EventArgs e)

@@ -47,6 +47,7 @@ namespace ClangVSx
     #region Commands
     private const string COMMAND_CLANG_SETTINGS_DLG = "ShowSettingsDlg";
     private const string COMMAND_CLANG_REBUILD_ACTIVE = "RebuildActiveProject";
+    private const string COMMAND_CLANG_RELINK_ACTIVE = "RelinkActiveProject";
 
     private string GetCommandFullName(string cmdName)
     {
@@ -140,7 +141,16 @@ namespace ClangVSx
           Command commandToAdd = _applicationObject.Commands.Item(GetCommandFullName(COMMAND_CLANG_REBUILD_ACTIVE), 0);
           RebuildActiveProjectButton = commandToAdd.AddControl(clangMenuRoot.CommandBar, clangMenuRoot.CommandBar.Controls.Count + 1) as CommandBarButton;
         }
-
+        {
+          _dteHelper.AddNamedCommand2(
+                COMMAND_CLANG_RELINK_ACTIVE,
+                "Relink",
+                "Relink",
+                false,
+                0);
+          Command commandToAdd = _applicationObject.Commands.Item(GetCommandFullName(COMMAND_CLANG_RELINK_ACTIVE), 0);
+          RebuildActiveProjectButton = commandToAdd.AddControl(clangMenuRoot.CommandBar, clangMenuRoot.CommandBar.Controls.Count + 1) as CommandBarButton;
+        }
       }
       // add a compile-this-file option to the editor window
       {
@@ -227,6 +237,11 @@ namespace ClangVSx
             if (!BuildInProgress && _applicationObject.Solution.Count != 0)
               status |= vsCommandStatus.vsCommandStatusEnabled;
           }
+          else if (commandName.EndsWith(COMMAND_CLANG_RELINK_ACTIVE))
+          {
+            if (!BuildInProgress && _applicationObject.Solution.Count != 0)
+              status |= vsCommandStatus.vsCommandStatusEnabled;
+          }
         }
       }
 		}
@@ -253,6 +268,7 @@ namespace ClangVSx
             }
             break;
 
+          case COMMAND_CLANG_RELINK_ACTIVE:
           case COMMAND_CLANG_REBUILD_ACTIVE:
             {
               handled = true;
@@ -265,6 +281,7 @@ namespace ClangVSx
                 ClangOps.ProjectBuildConfig pbc = new ClangOps.ProjectBuildConfig();
                 pbc.BuildBegun = (bool success) => { BuildInProgress = true; };
                 pbc.BuildFinished = (bool success) => { BuildInProgress = false; };
+                pbc.JustLink = (cmd == COMMAND_CLANG_RELINK_ACTIVE);
 
                 // start the build on another thread so the output pane updates asynchronously
                 ParameterizedThreadStart buildDelegate = new ParameterizedThreadStart(_CVXOps.BuildActiveProject);

@@ -95,6 +95,7 @@ namespace ClangVSx
     {
       public BuildEventDelegate BuildBegun;
       public BuildEventDelegate BuildFinished;
+      public bool JustLink;
     }
 
     /// <summary>
@@ -156,7 +157,7 @@ namespace ClangVSx
               WriteToOutputPane("Configuration : " + vcCfg.Name + "\n");
             }
 
-            bool result = buildSystem.BuildProject(vcProject, vcCfg);
+            bool result = buildSystem.BuildProject(vcProject, vcCfg, config.JustLink);
             config.BuildFinished(result);
             return;
           }

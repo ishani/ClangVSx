@@ -11,7 +11,7 @@ using System.Runtime.CompilerServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("ishani.org")]
 [assembly: AssemblyProduct("ClangVSx")]
-[assembly: AssemblyCopyright("Harry Denholm, ishani.org 2011")]
+[assembly: AssemblyCopyright("Harry Denholm, ishani.org 2012")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -26,7 +26,7 @@ using System.Runtime.CompilerServices;
 // You can specify all the value or you can default the Revision and Build Numbers 
 // by using the '*' as shown below:
 
-[assembly: AssemblyVersion("0.2.1.*")]
+[assembly: AssemblyVersion("0.3.1.*")]
 
 //
 // In order to sign your assembly you must specify a key to use. Refer to the 
