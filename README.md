@@ -5,6 +5,7 @@ AddIn for Visual Studio 2010 that allows use of the Clang C/C++ compiler in plac
 
 One click 'Build Project' testing of Clang in Windows development environments!
 
+Futher information and screenshots are [here](http://www.ishani.org/web/articles/code/clangvsx/).
 
 Bear in mind that Clang support for Windows is incomplete and occasionally buggy. This AddIn is largely experimental and the code is likely to change a lot over time. Your milage will definately vary.
 
@@ -22,7 +23,8 @@ Added in v0.3
 Required Compiler Patches
 -------------------------
 
-Clang 3.2 still does not cleanly compile projects using the Windows Platform SDK. I maintain a pre-built version that contains a few patches in this area. Read more [here](http://www.ishani.org/web/articles/code/clang-win32/).
+ClangVSx requires Clang 3.0 or above - preferably 3.2.
+However, 3.2 still does not cleanly compile projects using the Windows Platform SDK. I maintain a pre-built version that contains a few patches in this area. Read more [here](http://www.ishani.org/web/articles/code/clang-win32/).
   
   
 - - -
