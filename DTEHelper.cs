@@ -163,7 +163,7 @@ namespace NEnhancer.Common
         }
 
         public bool IsDirectProjectNode(UIHierarchyItem item)
-        {
+        {            
             return ((item.Object is Project) && ((item.Object as Project).Kind != ProjectKinds.vsProjectKindSolutionFolder));
         }
 
@@ -190,20 +190,7 @@ namespace NEnhancer.Common
 
         private static bool IsBlank(string input)
         {
-          if (string.IsNullOrEmpty(input))
-          {
-            return true;
-          }
-
-          for (int i = 0; i < input.Length; i++)
-          {
-            if (!char.IsWhiteSpace(input[i]))
-            {
-              return false;
-            }
-          }
-
-          return true;
+          return string.IsNullOrEmpty(input) || input.All(ch => char.IsWhiteSpace(ch));          
         }
 
         public string GetCurrentWord()
