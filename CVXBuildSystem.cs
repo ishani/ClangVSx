@@ -79,7 +79,7 @@ namespace ClangVSx
       // read out current executables' locations
       LocationClangEXE = CVXRegistry.PathToClang;
       LocationLLVM_LINK_EXE = System.IO.Path.GetDirectoryName(LocationClangEXE) + @"\llvm-link.exe";
-      LocationLLVM_LD_EXE = System.IO.Path.GetDirectoryName(LocationClangEXE) + @"\llvm-ld.exe";
+      //LocationLLVM_LD_EXE = System.IO.Path.GetDirectoryName(LocationClangEXE) + @"\llvm-ld.exe";
       LocationLLVM_LLC_EXE = System.IO.Path.GetDirectoryName(LocationClangEXE) + @"\llc.exe";
 
       // work out where the MS linker / lib tools are, Clang/LLVM doesn't have a linker presently
@@ -98,7 +98,7 @@ namespace ClangVSx
 
       String[] PathCheck = new String[] {
         LocationLLVM_LINK_EXE, 
-        LocationLLVM_LD_EXE,
+        //LocationLLVM_LD_EXE,
         LocationLLVM_LLC_EXE,
         LocationClangEXE,
         LocationLIBExe,
@@ -1049,7 +1049,7 @@ namespace ClangVSx
         firstRound = false;
       }
       // then run ld to run the optimisation phase
-      {
+      /*{
         WriteToOutputPane("\nLLVM LTO LD/Optimise ...\n");
 
         string inputLinkObject = newLinkObject;
@@ -1072,7 +1072,7 @@ namespace ClangVSx
           return false;
         }
         WriteToOutputPane(outputStr);
-      }
+      }*/
       // and finally turn the single file back into a COFF for the MS linker to work with
       {
         WriteToOutputPane("\nLLVM LTO Code Generation ...\n");
