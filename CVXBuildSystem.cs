@@ -689,6 +689,10 @@ namespace ClangVSx
           defaultCompilerString.Append("\" ");
         }
       }
+      defaultCompilerString.Append(" -fms-compatibility ");
+      defaultCompilerString.Append(" -fms-extensions ");
+      defaultCompilerString.Append(" -fmsc-version=1600 ");
+
 
       return defaultCompilerString.ToString();
     }
