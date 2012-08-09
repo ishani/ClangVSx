@@ -38,7 +38,6 @@ namespace ClangVSx
 
     private String LocationClangEXE;
     private String LocationLLVM_LINK_EXE;
-    private String LocationLLVM_LD_EXE;
     private String LocationLLVM_LLC_EXE;
     private String LocationLIBExe;
     private String LocationLINKExe;
@@ -79,7 +78,6 @@ namespace ClangVSx
       // read out current executables' locations
       LocationClangEXE = CVXRegistry.PathToClang;
       LocationLLVM_LINK_EXE = System.IO.Path.GetDirectoryName(LocationClangEXE) + @"\llvm-link.exe";
-      LocationLLVM_LD_EXE = System.IO.Path.GetDirectoryName(LocationClangEXE) + @"\llvm-ld.exe";
       LocationLLVM_LLC_EXE = System.IO.Path.GetDirectoryName(LocationClangEXE) + @"\llc.exe";
 
       // work out where the MS linker / lib tools are, Clang/LLVM doesn't have a linker presently
@@ -98,7 +96,6 @@ namespace ClangVSx
 
       String[] PathCheck = new String[] {
         LocationLLVM_LINK_EXE, 
-        LocationLLVM_LD_EXE,
         LocationLLVM_LLC_EXE,
         LocationClangEXE,
         LocationLIBExe,
@@ -780,10 +777,21 @@ namespace ClangVSx
       foreach (VCFile vcFile in vcFileCollection)
       {
         VCFileConfiguration vcFC = (VCFileConfiguration)((IVCCollection)vcFile.FileConfigurations).Item(vcCfg.ConfigurationName);
-        if (vcFC.ExcludedFromBuild)
-          continue;
 
-        ProjectFiles.Add(new ProjectFile(vcFile, vcFC));
+        try
+        {
+          if (vcFC.ExcludedFromBuild)
+            continue;
+
+          ProjectFiles.Add(new ProjectFile(vcFile, vcFC));
+        }
+        catch (System.Exception )
+        {
+        	// in 2012 RC we get the .filters file in here which throws an exception when ExcludedFromBuild is accessed
+          // not sure yet how best else to check for this...
+
+          WriteToOutputPane("Skipping : " + vcFile.ItemName + "\n");
+        }
       }
 
       HashSet<String> CompilationArtifacts = new HashSet<String>();
@@ -1048,31 +1056,7 @@ namespace ClangVSx
 
         firstRound = false;
       }
-      // then run ld to run the optimisation phase
-      {
-        WriteToOutputPane("\nLLVM LTO LD/Optimise ...\n");
 
-        string inputLinkObject = newLinkObject;
-        newLinkObject = System.IO.Path.ChangeExtension(newLinkObject, ".opt_bc");
-
-        System.Diagnostics.Process linkProcess = NewExternalProcess();
-        linkProcess.StartInfo.FileName = LocationLLVM_LD_EXE;
-
-        // execute the compiler
-        linkProcess.StartInfo.Arguments = String.Format(@"-stats -b=""{0}"" ""{1}"" ", newLinkObject, inputLinkObject);
-        linkProcess.StartInfo.WorkingDirectory = vcProject.ProjectDirectory;
-        linkProcess.Start();
-
-        String outputStr = linkProcess.StandardError.ReadToEnd();
-        linkProcess.WaitForExit();
-
-        if (linkProcess.ExitCode != 0)
-        {
-          WriteToOutputPane("LTO-Opt failed.\n" + linkProcess.StartInfo.Arguments + "\n");
-          return false;
-        }
-        WriteToOutputPane(outputStr);
-      }
       // and finally turn the single file back into a COFF for the MS linker to work with
       {
         WriteToOutputPane("\nLLVM LTO Code Generation ...\n");
@@ -1094,6 +1078,7 @@ namespace ClangVSx
         if (linkProcess.ExitCode != 0)
         {
           WriteToOutputPane("LTO-LLC failed.\n" + linkProcess.StartInfo.Arguments + "\n");
+          WriteToOutputPane(outputStr);
           return false;
         }
         WriteToOutputPane(outputStr);

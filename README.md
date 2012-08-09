@@ -15,6 +15,11 @@ Some things **not** supported:
 * ATL / MFC projects (Clang can't handle certain ATL/COM headers properly yet)
 
 
+Added in v0.3.2
+
+* Support for latest Clang 3.2 changes - specifically the removal of llvm-ld during LTO phase
+* Support added for Visual Studio 2012 RC
+
 Added in v0.3
 
 * Support for LTCG (LTO) - ClangVSx will compile to LLVM bitcode, link and optimise the artifacts into a single object file before doing native code generation. 
@@ -30,10 +35,17 @@ However, 3.2 still does not cleanly compile projects using the Windows Platform 
 - - -
   
 
-Usage (v0.3)
+Usage (v0.3.2)
 ------------
-Copy *.AddIn* and built *ClangVSx.dll* into ``C:\Users\<username>\Documents\Visual Studio 2010\Addins\``  
-In VS2010, a new top-level *Clang* menu will be created, offering a settings dialog (to choose location of compiler) and *Rebuild Active Project* or *Relink*
+There is a directory for each Visual Studio platform supported in the pre-built zip. 
+
+VS2010:
+Copy *.AddIn* and built *ClangVSx.dll* from the VS_2010/ directory into ``C:\Users\<username>\Documents\Visual Studio 2010\Addins\``  
+VS2012:
+Copy *.AddIn* and built *ClangVSx.dll* from the VS_2012/ directory into ``C:\Users\<username>\Documents\Visual Studio 2012\Addins\``  
+Also you may have to add a folder to the Add-in Security panel, [information here](http://www.ishani.org/web/2012/getting-add-ins-to-work-on-visual-studio-2012-rc/).
+
+A new top-level *Clang* menu will be created, offering a settings dialog (to choose location of compiler) and *Rebuild Active Project* or *Relink*
 A context-menu option is added to code editor windows that allows for Clang-specific tasks to be performed on that code.
   
 - - -
@@ -41,6 +53,11 @@ A context-menu option is added to code editor windows that allows for Clang-spec
 
 Release Notes
 -------------
+
+**Version 0.3.2** (2012-08-09)
+
+* Removed use of llvm-ld, no longer available in recent Clang 3.2 builds
+* Added support for Visual Studio 2012 RC
 
 **Version 0.3** (2012-05-28)
 
