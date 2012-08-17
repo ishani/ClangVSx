@@ -142,6 +142,28 @@ namespace ClangVSx
       return result;
     }
 
+    VCFileConfiguration GetFileConfiguration(IVCCollection configs, VCConfiguration cfg)
+    {
+      
+      try
+      {
+        foreach (VCFileConfiguration vcr in configs)
+        {
+          if (vcr.ProjectConfiguration.ConfigurationName == cfg.ConfigurationName &&
+              vcr.ProjectConfiguration.Platform.Name == cfg.Platform.Name)
+          {
+            return vcr;
+          }
+        }
+      }
+      catch (System.Exception)
+      {
+        WriteToOutputPane("Error: failed to resolve configuration for file - " + cfg.ConfigurationName + " | " + cfg.Platform.Name + "\n");
+        return null;
+      }
+      return null;
+    }
+
     #endregion
 
     #region Custom Build Steps
@@ -265,7 +287,10 @@ namespace ClangVSx
     {
       // get access to the per-file VCCL config data (eg stuff that augments / overwrites the global settings)
       // we use this to configure the compiler per file, as it should reflect the final config state of the file
-      VCFileConfiguration vcFC = (VCFileConfiguration)((IVCCollection)vcFile.FileConfigurations).Item(vcCfg.ConfigurationName);
+      VCFileConfiguration vcFC = GetFileConfiguration((IVCCollection)vcFile.FileConfigurations, vcCfg);
+      if (vcFC == null)
+        return false;
+
       VCCLCompilerTool perFileVCC = (VCCLCompilerTool)vcFC.Tool;
 
       // begin forming the command line string to send to Clang
@@ -582,13 +607,15 @@ namespace ClangVSx
       //
       // define '__CLANG_VSX__'
       //
-      // DEPRECATED: -fdelayed-template-parsing to support IUnknown (thanks to Francois Pichet for the tip!)
-      //             (this is now on by default for the Win32 target)
-      //
       StringBuilder defaultCompilerString = new StringBuilder(" -c -nostdinc -D__CLANG_VSX__ ");
 
-      // pull in basics from the settings panel
-      defaultCompilerString.AppendFormat("-ccc-host-triple {0} ", CVXRegistry.Triple.Value.ToString());
+      if (vcCfg.Platform.Name == "Win32")
+        defaultCompilerString.AppendFormat("-ccc-host-triple {0} ", CVXRegistry.TripleWin32.Value.ToString());
+      else if (vcCfg.Platform.Name == "x64")
+        defaultCompilerString.AppendFormat("-ccc-host-triple {0} ", CVXRegistry.TripleX64.Value.ToString());
+      else if (vcCfg.Platform.Name == "ARM")
+        defaultCompilerString.AppendFormat("-ccc-host-triple {0} ", CVXRegistry.TripleARM.Value.ToString());
+
       if (CVXRegistry.EchoInternal)
       {
         defaultCompilerString.Append("-ccc-echo ");
@@ -616,6 +643,8 @@ namespace ClangVSx
 
       // convert the project-wide includes, prepro defines, force includes
       defaultCompilerString.Append(GatherIncludesAndDefines<VCConfiguration>(vcCTool, vcCfg));
+
+      String plt = vcCfg.Platform.Name;
 
       // sort out prolog/epilog settings based on cfg/subsystem
       if (vcCfg.ConfigurationType == Microsoft.VisualStudio.VCProjectEngine.ConfigurationTypes.typeApplication)
@@ -728,7 +757,7 @@ namespace ClangVSx
         if (vcLinkerTool.SubSystem != subSystemOption.subSystemWindows &&
             vcLinkerTool.SubSystem != subSystemOption.subSystemConsole)
         {
-          WriteToOutputPane("Unsupported subsystem type (Windows/Console only)\n");
+          WriteToOutputPane("Unsupported subsystem type - " + vcLinkerTool.SubSystem.ToString() + " - (Windows/Console only)\n");
           return false;
         }
       }
@@ -776,7 +805,9 @@ namespace ClangVSx
       IVCCollection vcFileCollection = (IVCCollection)vcProject.Files;
       foreach (VCFile vcFile in vcFileCollection)
       {
-        VCFileConfiguration vcFC = (VCFileConfiguration)((IVCCollection)vcFile.FileConfigurations).Item(vcCfg.ConfigurationName);
+        VCFileConfiguration vcFC = GetFileConfiguration((IVCCollection)vcFile.FileConfigurations, vcCfg);
+        if (vcFC == null)
+          return false;
 
         try
         {
@@ -1136,8 +1167,10 @@ namespace ClangVSx
         // machine type
         if (vcLinkerTool.TargetMachine == machineTypeOption.machineX86)
           linkString.Append("/MACHINE:X86 ");
-        else if (vcLinkerTool.TargetMachine == machineTypeOption.machineIA64)
+        else if (vcLinkerTool.TargetMachine == machineTypeOption.machineAMD64)
           linkString.Append("/MACHINE:X64 ");
+        else if (vcLinkerTool.TargetMachine == machineTypeOption.machineARM)
+          linkString.Append("/MACHINE:ARM ");
 
 
         if (vcCfg.ConfigurationType == Microsoft.VisualStudio.VCProjectEngine.ConfigurationTypes.typeDynamicLibrary)

@@ -34,7 +34,9 @@ namespace ClangVSx
       cvxPhases.Checked = CVXRegistry.ShowPhases;
 
       cvxCommonArgs.Text = CVXRegistry.CommonArgs;
-      cvxTriple.Text = CVXRegistry.Triple;
+      cvxTripleWin32.Text = CVXRegistry.TripleWin32;
+      cvxTripleX64.Text = CVXRegistry.TripleX64;
+      cvxTripleARM.Text = CVXRegistry.TripleARM;
 
       // blot the version number up in the title bar
       Assembly assem = Assembly.GetExecutingAssembly();
@@ -69,7 +71,9 @@ namespace ClangVSx
         CVXRegistry.ShowPhases.Value = cvxPhases.Checked;
 
         CVXRegistry.CommonArgs.Value = cvxCommonArgs.Text;
-        CVXRegistry.Triple.Value = cvxTriple.Text;
+        CVXRegistry.TripleWin32.Value = cvxTripleWin32.Text;
+        CVXRegistry.TripleX64.Value = cvxTripleX64.Text;
+        CVXRegistry.TripleARM.Value = cvxTripleARM.Text;
       }
 
       if (!validEXELocation(cvxLocation.Text))

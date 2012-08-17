@@ -448,8 +448,23 @@ namespace ClangVSx
 
             // get current configuration to pass to the bridge
             EnvDTE.Configuration cfg = _applicationObject.ActiveDocument.ProjectItem.ConfigurationManager.ActiveConfiguration;
-            IVCCollection cfgArray = (IVCCollection)vcProject.Configurations;
-            vcCfg = (VCConfiguration)cfgArray.Item(cfg.ConfigurationName);
+
+            try
+            {
+              IVCCollection cfgArray = (IVCCollection)vcProject.Configurations;
+              foreach (VCConfiguration vcr in cfgArray)
+              {
+                if (vcr.ConfigurationName == cfg.ConfigurationName &&
+                    vcr.Platform.Name == cfg.PlatformName)
+                {
+                  vcCfg = vcr;
+                }
+              }
+            }
+            catch (System.Exception)
+            {
+              return false;
+            }
 
             return true;
           }

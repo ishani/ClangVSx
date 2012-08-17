@@ -1505,6 +1505,53 @@
               Looks up a localized string similar to XML.
             </summary>
         </member>
+        <member name="T:ClangVSx.CVXSettings">
+            <summary>
+            Settings Dialog Box
+            </summary>
+        </member>
+        <member name="M:ClangVSx.CVXSettings.#ctor">
+            <summary>
+            Settings management
+            </summary>
+        </member>
+        <member name="F:ClangVSx.CVXSettings.components">
+            <summary>
+            Required designer variable.
+            </summary>
+        </member>
+        <member name="M:ClangVSx.CVXSettings.Dispose(System.Boolean)">
+            <summary>
+            Clean up any resources being used.
+            </summary>
+            <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        </member>
+        <member name="M:ClangVSx.CVXSettings.InitializeComponent">
+            <summary>
+            Required method for Designer support - do not modify
+            the contents of this method with the code editor.
+            </summary>
+        </member>
+        <member name="M:ClangVSx.ClangOps.#ctor(EnvDTE80.DTE2)">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:ClangVSx.ClangOps.WriteToOutputPane(System.String)">
+            <summary>
+            simple wrapper for writing text to the output pane
+            </summary>
+        </member>
+        <member name="M:ClangVSx.ClangOps.CompileSingleFile(Microsoft.VisualStudio.VCProjectEngine.VCFile,Microsoft.VisualStudio.VCProjectEngine.VCProject,Microsoft.VisualStudio.VCProjectEngine.VCConfiguration,System.String)">
+            <summary>
+            compile a single VCFile, do nothing with the OBJ
+            </summary>
+        </member>
+        <member name="M:ClangVSx.ClangOps.BuildActiveProject(System.Object)">
+            <summary>
+            Compile the project that is set as the 'startup project' in the solution
+            </summary>
+        </member>
         <member name="T:ClangVSx.CVXBuildSystem">
             <summary>
             Collection of build tools
@@ -1635,56 +1682,9 @@
             workaround for providing IWin32Window interface for IntPtr HWNDs
             </summary>
         </member>
-        <member name="M:ClangVSx.ClangOps.#ctor(EnvDTE80.DTE2)">
-            <summary>
-            
-            </summary>
-        </member>
-        <member name="M:ClangVSx.ClangOps.WriteToOutputPane(System.String)">
-            <summary>
-            simple wrapper for writing text to the output pane
-            </summary>
-        </member>
-        <member name="M:ClangVSx.ClangOps.CompileSingleFile(Microsoft.VisualStudio.VCProjectEngine.VCFile,Microsoft.VisualStudio.VCProjectEngine.VCProject,Microsoft.VisualStudio.VCProjectEngine.VCConfiguration,System.String)">
-            <summary>
-            compile a single VCFile, do nothing with the OBJ
-            </summary>
-        </member>
-        <member name="M:ClangVSx.ClangOps.BuildActiveProject(System.Object)">
-            <summary>
-            Compile the project that is set as the 'startup project' in the solution
-            </summary>
-        </member>
         <member name="T:ClangVSx.CVXRegistry">
             <summary>
             Wrapper around registry access to load/save AddIn settings
-            </summary>
-        </member>
-        <member name="T:ClangVSx.CVXSettings">
-            <summary>
-            Settings Dialog Box
-            </summary>
-        </member>
-        <member name="M:ClangVSx.CVXSettings.#ctor">
-            <summary>
-            Settings management
-            </summary>
-        </member>
-        <member name="F:ClangVSx.CVXSettings.components">
-            <summary>
-            Required designer variable.
-            </summary>
-        </member>
-        <member name="M:ClangVSx.CVXSettings.Dispose(System.Boolean)">
-            <summary>
-            Clean up any resources being used.
-            </summary>
-            <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
-        </member>
-        <member name="M:ClangVSx.CVXSettings.InitializeComponent">
-            <summary>
-            Required method for Designer support - do not modify
-            the contents of this method with the code editor.
             </summary>
         </member>
     </members>
