@@ -151,10 +151,10 @@
   <PropertyGroup>
     <PreBuildEvent>
     </PreBuildEvent>
-    <PostBuildEvent>mkdir $(ProjectDir)install
-mkdir $(ProjectDir)install\VS_2012
-copy $(TargetPath) $(ProjectDir)install\VS_2012\
-copy $(ProjectDir)ClangVSx.AddIn $(ProjectDir)install\VS_2012\</PostBuildEvent>
+    <PostBuildEvent>mkdir "$(ProjectDir)install"
+mkdir "$(ProjectDir)install\VS_2012"
+copy "$(TargetPath)" "$(ProjectDir)install\VS_2012\"
+copy "$(ProjectDir)ClangVSx.AddIn" "$(ProjectDir)install\VS_2012\"</PostBuildEvent>
   </PropertyGroup>
   <ProjectExtensions />
   <Target Name="AfterBuild">
