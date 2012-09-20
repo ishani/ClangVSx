@@ -145,8 +145,24 @@ namespace ClangVSx
             }
 
             EnvDTE.Configuration cfg = p.ConfigurationManager.ActiveConfiguration;
-            IVCCollection cfgArray = (IVCCollection)vcProject.Configurations;
-            VCConfiguration vcCfg = (VCConfiguration)cfgArray.Item(cfg.ConfigurationName);
+
+            VCConfiguration vcCfg = null;
+            try
+            {
+              IVCCollection cfgArray = (IVCCollection)vcProject.Configurations;
+              foreach (VCConfiguration vcr in cfgArray)
+              {
+                if (vcr.ConfigurationName == cfg.ConfigurationName &&
+                    vcr.Platform.Name == cfg.PlatformName)
+                {
+                  vcCfg = vcr;
+                }
+              }
+            }
+            catch (System.Exception)
+            {
+              WriteToOutputPane("Error - failed to determine VC configuration\n");
+            }
 
             if (vcCfg == null)
             {

@@ -153,6 +153,8 @@ namespace ClangVSx
     public static CVXRegistryItem<Boolean> ShowPhases = new CVXRegistryItem<Boolean>(() => ShowPhases, false);
 
     public static CVXRegistryItem<String> CommonArgs = new CVXRegistryItem<String>(() => CommonArgs, "");
-    public static CVXRegistryItem<String> Triple = new CVXRegistryItem<String>(() => Triple, "i686-pc-win32");
+    public static CVXRegistryItem<String> TripleWin32 = new CVXRegistryItem<String>(() => TripleWin32, "i686-pc-win32");
+    public static CVXRegistryItem<String> TripleX64 = new CVXRegistryItem<String>(() => TripleX64, "x86_64-pc-win32");
+    public static CVXRegistryItem<String> TripleARM = new CVXRegistryItem<String>(() => TripleARM, "armv7-apple-darwin10");
   }
 }

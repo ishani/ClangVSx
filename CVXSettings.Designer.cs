@@ -53,8 +53,12 @@ namespace ClangVSx
       this.label2 = new System.Windows.Forms.Label();
       this.cvxCommonArgs = new System.Windows.Forms.TextBox();
       this.groupBox2 = new System.Windows.Forms.GroupBox();
+      this.label5 = new System.Windows.Forms.Label();
+      this.cvxTripleARM = new System.Windows.Forms.ComboBox();
+      this.label4 = new System.Windows.Forms.Label();
+      this.cvxTripleX64 = new System.Windows.Forms.ComboBox();
       this.label3 = new System.Windows.Forms.Label();
-      this.cvxTriple = new System.Windows.Forms.ComboBox();
+      this.cvxTripleWin32 = new System.Windows.Forms.ComboBox();
       ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
       this.groupBox1.SuspendLayout();
       ((System.ComponentModel.ISupportInitialize)(this.cvxPic)).BeginInit();
@@ -256,7 +260,7 @@ namespace ClangVSx
       this.label2.AutoSize = true;
       this.label2.Font = new System.Drawing.Font("Trebuchet MS", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
       this.label2.ForeColor = System.Drawing.Color.Black;
-      this.label2.Location = new System.Drawing.Point(7, 31);
+      this.label2.Location = new System.Drawing.Point(7, 20);
       this.label2.Name = "label2";
       this.label2.Size = new System.Drawing.Size(199, 16);
       this.label2.TabIndex = 5;
@@ -265,47 +269,99 @@ namespace ClangVSx
       // cvxCommonArgs
       // 
       this.cvxCommonArgs.Font = new System.Drawing.Font("Courier New", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-      this.cvxCommonArgs.Location = new System.Drawing.Point(9, 50);
+      this.cvxCommonArgs.Location = new System.Drawing.Point(9, 39);
       this.cvxCommonArgs.Name = "cvxCommonArgs";
       this.cvxCommonArgs.Size = new System.Drawing.Size(290, 21);
       this.cvxCommonArgs.TabIndex = 2;
       // 
       // groupBox2
       // 
+      this.groupBox2.Controls.Add(this.label5);
+      this.groupBox2.Controls.Add(this.cvxTripleARM);
+      this.groupBox2.Controls.Add(this.label4);
+      this.groupBox2.Controls.Add(this.cvxTripleX64);
       this.groupBox2.Controls.Add(this.label3);
-      this.groupBox2.Controls.Add(this.cvxTriple);
+      this.groupBox2.Controls.Add(this.cvxTripleWin32);
       this.groupBox2.Controls.Add(this.label2);
       this.groupBox2.Controls.Add(this.cvxCommonArgs);
       this.groupBox2.Location = new System.Drawing.Point(184, 109);
       this.groupBox2.Name = "groupBox2";
-      this.groupBox2.Size = new System.Drawing.Size(310, 110);
+      this.groupBox2.Size = new System.Drawing.Size(310, 153);
       this.groupBox2.TabIndex = 9;
       this.groupBox2.TabStop = false;
       this.groupBox2.Text = "Global ";
       // 
-      // label3
+      // label5
       // 
-      this.label3.AutoSize = true;
-      this.label3.Font = new System.Drawing.Font("Trebuchet MS", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-      this.label3.ForeColor = System.Drawing.Color.Black;
-      this.label3.Location = new System.Drawing.Point(26, 80);
-      this.label3.Name = "label3";
-      this.label3.Size = new System.Drawing.Size(126, 16);
-      this.label3.TabIndex = 7;
-      this.label3.Text = "Overload target triple :";
+      this.label5.Font = new System.Drawing.Font("Trebuchet MS", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+      this.label5.ForeColor = System.Drawing.Color.Black;
+      this.label5.Location = new System.Drawing.Point(10, 118);
+      this.label5.Name = "label5";
+      this.label5.Size = new System.Drawing.Size(142, 23);
+      this.label5.TabIndex = 11;
+      this.label5.Text = "ARM Platform Triple :";
+      this.label5.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
       // 
-      // cvxTriple
+      // cvxTripleARM
       // 
-      this.cvxTriple.Font = new System.Drawing.Font("Courier New", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-      this.cvxTriple.FormattingEnabled = true;
-      this.cvxTriple.Items.AddRange(new object[] {
+      this.cvxTripleARM.Font = new System.Drawing.Font("Courier New", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+      this.cvxTripleARM.FormattingEnabled = true;
+      this.cvxTripleARM.Items.AddRange(new object[] {
             "i686-pc-win32",
             "x86_64-pc-win32"});
-      this.cvxTriple.Location = new System.Drawing.Point(158, 77);
-      this.cvxTriple.Name = "cvxTriple";
-      this.cvxTriple.Size = new System.Drawing.Size(141, 23);
-      this.cvxTriple.TabIndex = 6;
-      this.cvxTriple.Text = "i686-pc-win32";
+      this.cvxTripleARM.Location = new System.Drawing.Point(158, 118);
+      this.cvxTripleARM.Name = "cvxTripleARM";
+      this.cvxTripleARM.Size = new System.Drawing.Size(141, 23);
+      this.cvxTripleARM.TabIndex = 10;
+      this.cvxTripleARM.Text = "armv7-apple-darwin10";
+      // 
+      // label4
+      // 
+      this.label4.Font = new System.Drawing.Font("Trebuchet MS", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+      this.label4.ForeColor = System.Drawing.Color.Black;
+      this.label4.Location = new System.Drawing.Point(10, 92);
+      this.label4.Name = "label4";
+      this.label4.Size = new System.Drawing.Size(142, 23);
+      this.label4.TabIndex = 9;
+      this.label4.Text = "x64 Platform Triple :";
+      this.label4.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+      // 
+      // cvxTripleX64
+      // 
+      this.cvxTripleX64.Font = new System.Drawing.Font("Courier New", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+      this.cvxTripleX64.FormattingEnabled = true;
+      this.cvxTripleX64.Items.AddRange(new object[] {
+            "i686-pc-win32",
+            "x86_64-pc-win32"});
+      this.cvxTripleX64.Location = new System.Drawing.Point(158, 92);
+      this.cvxTripleX64.Name = "cvxTripleX64";
+      this.cvxTripleX64.Size = new System.Drawing.Size(141, 23);
+      this.cvxTripleX64.TabIndex = 8;
+      this.cvxTripleX64.Text = "x86_64-pc-win32";
+      // 
+      // label3
+      // 
+      this.label3.Font = new System.Drawing.Font("Trebuchet MS", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+      this.label3.ForeColor = System.Drawing.Color.Black;
+      this.label3.Location = new System.Drawing.Point(10, 66);
+      this.label3.Name = "label3";
+      this.label3.Size = new System.Drawing.Size(142, 23);
+      this.label3.TabIndex = 7;
+      this.label3.Text = "Win32 Platform Triple :";
+      this.label3.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+      // 
+      // cvxTripleWin32
+      // 
+      this.cvxTripleWin32.Font = new System.Drawing.Font("Courier New", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+      this.cvxTripleWin32.FormattingEnabled = true;
+      this.cvxTripleWin32.Items.AddRange(new object[] {
+            "i686-pc-win32",
+            "x86_64-pc-win32"});
+      this.cvxTripleWin32.Location = new System.Drawing.Point(158, 66);
+      this.cvxTripleWin32.Name = "cvxTripleWin32";
+      this.cvxTripleWin32.Size = new System.Drawing.Size(141, 23);
+      this.cvxTripleWin32.TabIndex = 6;
+      this.cvxTripleWin32.Text = "i686-pc-win32";
       // 
       // CVXSettings
       // 
@@ -368,8 +424,12 @@ namespace ClangVSx
     private System.Windows.Forms.LinkLabel linkLabel3;
     private System.Windows.Forms.CheckBox cvxEcho;
     private System.Windows.Forms.Label label3;
-    private System.Windows.Forms.ComboBox cvxTriple;
+    private System.Windows.Forms.ComboBox cvxTripleWin32;
     private System.Windows.Forms.CheckBox cvxPhases;
+    private System.Windows.Forms.Label label4;
+    private System.Windows.Forms.ComboBox cvxTripleX64;
+    private System.Windows.Forms.Label label5;
+    private System.Windows.Forms.ComboBox cvxTripleARM;
 
 
   }

@@ -38,7 +38,6 @@ namespace ClangVSx
 
     private String LocationClangEXE;
     private String LocationLLVM_LINK_EXE;
-    private String LocationLLVM_LD_EXE;
     private String LocationLLVM_LLC_EXE;
     private String LocationLIBExe;
     private String LocationLINKExe;
@@ -79,7 +78,6 @@ namespace ClangVSx
       // read out current executables' locations
       LocationClangEXE = CVXRegistry.PathToClang;
       LocationLLVM_LINK_EXE = System.IO.Path.GetDirectoryName(LocationClangEXE) + @"\llvm-link.exe";
-      //LocationLLVM_LD_EXE = System.IO.Path.GetDirectoryName(LocationClangEXE) + @"\llvm-ld.exe";
       LocationLLVM_LLC_EXE = System.IO.Path.GetDirectoryName(LocationClangEXE) + @"\llc.exe";
 
       // work out where the MS linker / lib tools are, Clang/LLVM doesn't have a linker presently
@@ -98,7 +96,6 @@ namespace ClangVSx
 
       String[] PathCheck = new String[] {
         LocationLLVM_LINK_EXE, 
-        //LocationLLVM_LD_EXE,
         LocationLLVM_LLC_EXE,
         LocationClangEXE,
         LocationLIBExe,
@@ -143,6 +140,28 @@ namespace ClangVSx
       result.StartInfo.RedirectStandardOutput = true;
       result.StartInfo.RedirectStandardError = true;
       return result;
+    }
+
+    VCFileConfiguration GetFileConfiguration(IVCCollection configs, VCConfiguration cfg)
+    {
+      
+      try
+      {
+        foreach (VCFileConfiguration vcr in configs)
+        {
+          if (vcr.ProjectConfiguration.ConfigurationName == cfg.ConfigurationName &&
+              vcr.ProjectConfiguration.Platform.Name == cfg.Platform.Name)
+          {
+            return vcr;
+          }
+        }
+      }
+      catch (System.Exception)
+      {
+        WriteToOutputPane("Error: failed to resolve configuration for file - " + cfg.ConfigurationName + " | " + cfg.Platform.Name + "\n");
+        return null;
+      }
+      return null;
     }
 
     #endregion
@@ -268,7 +287,10 @@ namespace ClangVSx
     {
       // get access to the per-file VCCL config data (eg stuff that augments / overwrites the global settings)
       // we use this to configure the compiler per file, as it should reflect the final config state of the file
-      VCFileConfiguration vcFC = (VCFileConfiguration)((IVCCollection)vcFile.FileConfigurations).Item(vcCfg.ConfigurationName);
+      VCFileConfiguration vcFC = GetFileConfiguration((IVCCollection)vcFile.FileConfigurations, vcCfg);
+      if (vcFC == null)
+        return false;
+
       VCCLCompilerTool perFileVCC = (VCCLCompilerTool)vcFC.Tool;
 
       // begin forming the command line string to send to Clang
@@ -585,13 +607,15 @@ namespace ClangVSx
       //
       // define '__CLANG_VSX__'
       //
-      // DEPRECATED: -fdelayed-template-parsing to support IUnknown (thanks to Francois Pichet for the tip!)
-      //             (this is now on by default for the Win32 target)
-      //
       StringBuilder defaultCompilerString = new StringBuilder(" -c -nostdinc -D__CLANG_VSX__ ");
 
-      // pull in basics from the settings panel
-      defaultCompilerString.AppendFormat("-ccc-host-triple {0} ", CVXRegistry.Triple.Value.ToString());
+      if (vcCfg.Platform.Name == "Win32")
+        defaultCompilerString.AppendFormat("-ccc-host-triple {0} ", CVXRegistry.TripleWin32.Value.ToString());
+      else if (vcCfg.Platform.Name == "x64")
+        defaultCompilerString.AppendFormat("-ccc-host-triple {0} ", CVXRegistry.TripleX64.Value.ToString());
+      else if (vcCfg.Platform.Name == "ARM")
+        defaultCompilerString.AppendFormat("-ccc-host-triple {0} ", CVXRegistry.TripleARM.Value.ToString());
+
       if (CVXRegistry.EchoInternal)
       {
         defaultCompilerString.Append("-ccc-echo ");
@@ -619,6 +643,8 @@ namespace ClangVSx
 
       // convert the project-wide includes, prepro defines, force includes
       defaultCompilerString.Append(GatherIncludesAndDefines<VCConfiguration>(vcCTool, vcCfg));
+
+      String plt = vcCfg.Platform.Name;
 
       // sort out prolog/epilog settings based on cfg/subsystem
       if (vcCfg.ConfigurationType == Microsoft.VisualStudio.VCProjectEngine.ConfigurationTypes.typeApplication)
@@ -735,7 +761,7 @@ namespace ClangVSx
         if (vcLinkerTool.SubSystem != subSystemOption.subSystemWindows &&
             vcLinkerTool.SubSystem != subSystemOption.subSystemConsole)
         {
-          WriteToOutputPane("Unsupported subsystem type (Windows/Console only)\n");
+          WriteToOutputPane("Unsupported subsystem type - " + vcLinkerTool.SubSystem.ToString() + " - (Windows/Console only)\n");
           return false;
         }
       }
@@ -783,11 +809,24 @@ namespace ClangVSx
       IVCCollection vcFileCollection = (IVCCollection)vcProject.Files;
       foreach (VCFile vcFile in vcFileCollection)
       {
-        VCFileConfiguration vcFC = (VCFileConfiguration)((IVCCollection)vcFile.FileConfigurations).Item(vcCfg.ConfigurationName);
-        if (vcFC.ExcludedFromBuild)
-          continue;
+        VCFileConfiguration vcFC = GetFileConfiguration((IVCCollection)vcFile.FileConfigurations, vcCfg);
+        if (vcFC == null)
+          return false;
 
-        ProjectFiles.Add(new ProjectFile(vcFile, vcFC));
+        try
+        {
+          if (vcFC.ExcludedFromBuild)
+            continue;
+
+          ProjectFiles.Add(new ProjectFile(vcFile, vcFC));
+        }
+        catch (System.Exception )
+        {
+        	// in 2012 RC we get the .filters file in here which throws an exception when ExcludedFromBuild is accessed
+          // not sure yet how best else to check for this...
+
+          WriteToOutputPane("Skipping : " + vcFile.ItemName + "\n");
+        }
       }
 
       HashSet<String> CompilationArtifacts = new HashSet<String>();
@@ -1052,31 +1091,7 @@ namespace ClangVSx
 
         firstRound = false;
       }
-      // then run ld to run the optimisation phase
-      /*{
-        WriteToOutputPane("\nLLVM LTO LD/Optimise ...\n");
 
-        string inputLinkObject = newLinkObject;
-        newLinkObject = System.IO.Path.ChangeExtension(newLinkObject, ".opt_bc");
-
-        System.Diagnostics.Process linkProcess = NewExternalProcess();
-        linkProcess.StartInfo.FileName = LocationLLVM_LD_EXE;
-
-        // execute the compiler
-        linkProcess.StartInfo.Arguments = String.Format(@"-stats -b=""{0}"" ""{1}"" ", newLinkObject, inputLinkObject);
-        linkProcess.StartInfo.WorkingDirectory = vcProject.ProjectDirectory;
-        linkProcess.Start();
-
-        String outputStr = linkProcess.StandardError.ReadToEnd();
-        linkProcess.WaitForExit();
-
-        if (linkProcess.ExitCode != 0)
-        {
-          WriteToOutputPane("LTO-Opt failed.\n" + linkProcess.StartInfo.Arguments + "\n");
-          return false;
-        }
-        WriteToOutputPane(outputStr);
-      }*/
       // and finally turn the single file back into a COFF for the MS linker to work with
       {
         WriteToOutputPane("\nLLVM LTO Code Generation ...\n");
@@ -1098,6 +1113,7 @@ namespace ClangVSx
         if (linkProcess.ExitCode != 0)
         {
           WriteToOutputPane("LTO-LLC failed.\n" + linkProcess.StartInfo.Arguments + "\n");
+          WriteToOutputPane(outputStr);
           return false;
         }
         WriteToOutputPane(outputStr);
@@ -1155,8 +1171,10 @@ namespace ClangVSx
         // machine type
         if (vcLinkerTool.TargetMachine == machineTypeOption.machineX86)
           linkString.Append("/MACHINE:X86 ");
-        else if (vcLinkerTool.TargetMachine == machineTypeOption.machineIA64)
+        else if (vcLinkerTool.TargetMachine == machineTypeOption.machineAMD64)
           linkString.Append("/MACHINE:X64 ");
+        else if (vcLinkerTool.TargetMachine == machineTypeOption.machineARM)
+          linkString.Append("/MACHINE:ARM ");
 
 
         if (vcCfg.ConfigurationType == Microsoft.VisualStudio.VCProjectEngine.ConfigurationTypes.typeDynamicLibrary)
