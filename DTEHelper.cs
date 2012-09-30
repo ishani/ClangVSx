@@ -6,7 +6,6 @@ using System.Globalization;
 using System.Linq;
 using System.Reflection;
 using System.Resources;
-using System.Text;
 using EnvDTE;
 using EnvDTE80;
 using Microsoft.VisualStudio.CommandBars;
@@ -31,7 +30,8 @@ namespace NEnhancer.Common
             try
             {
                 string resourceName;
-                ResourceManager resourceManager = new ResourceManager("ClangVSx.CommandBar", Assembly.GetExecutingAssembly());
+                ResourceManager resourceManager = new ResourceManager("ClangVSx.CommandBar",
+                                                                      Assembly.GetExecutingAssembly());
                 CultureInfo cultureInfo = new CultureInfo(dte.LocaleID);
 
                 if (cultureInfo.TwoLetterISOLanguageName == "zh")
@@ -56,35 +56,37 @@ namespace NEnhancer.Common
 
         public CommandBar GetCommandBarByName(string cmdBarName)
         {
-            return ((CommandBars)dte.CommandBars)[cmdBarName];
+            return ((CommandBars) dte.CommandBars)[cmdBarName];
         }
 
         public void AddNamedCommand2(string cmdName, string buttonText, string toolTip,
-            bool useMsoButton, int iconIndex)
+                                     bool useMsoButton, int iconIndex)
         {
             // Get commands collection
-            Commands2 commands = (Commands2)dte.Commands;
-            object[] contextGUIDS = new object[] { };
+            Commands2 commands = (Commands2) dte.Commands;
+            object[] contextGUIDS = new object[] {};
 
             try
             {
                 // Add command
                 Command command = commands.AddNamedCommand2(addin, cmdName, buttonText, toolTip,
-                    useMsoButton, iconIndex, ref contextGUIDS,
-                    (int)vsCommandStatus.vsCommandStatusSupported + (int)vsCommandStatus.vsCommandStatusEnabled,
-                    (int)vsCommandStyle.vsCommandStylePictAndText, vsCommandControlType.vsCommandControlTypeButton);
+                                                            useMsoButton, iconIndex, ref contextGUIDS,
+                                                            (int) vsCommandStatus.vsCommandStatusSupported +
+                                                            (int) vsCommandStatus.vsCommandStatusEnabled,
+                                                            (int) vsCommandStyle.vsCommandStylePictAndText,
+                                                            vsCommandControlType.vsCommandControlTypeButton);
             }
             catch (ArgumentException)
             {
-              // Command already exists, so ignore the exception.
-
+                // Command already exists, so ignore the exception.
             }
         }
 
         public CommandBarButton AddButtonToCmdBar(CommandBar cmdBar, int beforeIndex, string caption, string tooltip)
         {
             CommandBarButton button = cmdBar.Controls.Add(MsoControlType.msoControlButton,
-                        Type.Missing, Type.Missing, beforeIndex, true) as CommandBarButton;
+                                                          Type.Missing, Type.Missing, beforeIndex, true) as
+                                      CommandBarButton;
             button.Caption = caption;
             button.TooltipText = tooltip;
 
@@ -94,7 +96,8 @@ namespace NEnhancer.Common
         public CommandBarButton AddButtonToPopup(CommandBarPopup popup, int beforeIndex, string caption, string tooltip)
         {
             CommandBarButton button = popup.Controls.Add(MsoControlType.msoControlButton,
-                        Type.Missing, Type.Missing, beforeIndex, true) as CommandBarButton;
+                                                         Type.Missing, Type.Missing, beforeIndex, true) as
+                                      CommandBarButton;
             button.Caption = caption;
             button.TooltipText = tooltip;
 
@@ -103,10 +106,7 @@ namespace NEnhancer.Common
 
         public UIHierarchy SolutionExplorerNode
         {
-            get
-            {
-                return dte.ToolWindows.SolutionExplorer;
-            }
+            get { return dte.ToolWindows.SolutionExplorer; }
         }
 
         public List<UIHierarchyItem> GetProjectNodes(Solution solution)
@@ -154,7 +154,7 @@ namespace NEnhancer.Common
         public bool IsSolutionFolder(UIHierarchyItem item)
         {
             return ((item.Object is Project) &&
-                ((item.Object as Project).Kind == ProjectKinds.vsProjectKindSolutionFolder));
+                    ((item.Object as Project).Kind == ProjectKinds.vsProjectKindSolutionFolder));
         }
 
         public bool IsProjectNode(UIHierarchyItem item)
@@ -163,14 +163,15 @@ namespace NEnhancer.Common
         }
 
         public bool IsDirectProjectNode(UIHierarchyItem item)
-        {            
-            return ((item.Object is Project) && ((item.Object as Project).Kind != ProjectKinds.vsProjectKindSolutionFolder));
+        {
+            return ((item.Object is Project) &&
+                    ((item.Object as Project).Kind != ProjectKinds.vsProjectKindSolutionFolder));
         }
 
         public bool IsProjectNodeInSolutionFolder(UIHierarchyItem item)
         {
-            return (item.Object is ProjectItem && ((ProjectItem)item.Object).Object is Project &&
-                        ((Project)((ProjectItem)item.Object).Object).Kind != ProjectKinds.vsProjectKindSolutionFolder);
+            return (item.Object is ProjectItem && ((ProjectItem) item.Object).Object is Project &&
+                    ((Project) ((ProjectItem) item.Object).Object).Kind != ProjectKinds.vsProjectKindSolutionFolder);
         }
 
         public string GetSelectedText()
@@ -190,7 +191,7 @@ namespace NEnhancer.Common
 
         private static bool IsBlank(string input)
         {
-          return string.IsNullOrEmpty(input) || input.All(ch => char.IsWhiteSpace(ch));          
+            return string.IsNullOrEmpty(input) || input.All(ch => char.IsWhiteSpace(ch));
         }
 
         public string GetCurrentWord()
@@ -207,21 +208,21 @@ namespace NEnhancer.Common
             string result = string.Empty;
             int charIndex = topPoint.LineCharOffset - 1;
 
-            if (topPoint.AtStartOfLine || 
+            if (topPoint.AtStartOfLine ||
                 (!char.IsWhiteSpace(currentLine[charIndex]) && char.IsWhiteSpace(currentLine[charIndex - 1])))
             {
                 EditPoint rightPoint = topPoint.CreateEditPoint();
                 rightPoint.WordRight(1);
                 result = currentLine.Substring(topPoint.LineCharOffset - 1,
-                    rightPoint.LineCharOffset - topPoint.LineCharOffset).Trim();
+                                               rightPoint.LineCharOffset - topPoint.LineCharOffset).Trim();
             }
             else if (topPoint.AtEndOfLine ||
-                (!char.IsWhiteSpace(currentLine[charIndex - 1]) && char.IsWhiteSpace(currentLine[charIndex])))
+                     (!char.IsWhiteSpace(currentLine[charIndex - 1]) && char.IsWhiteSpace(currentLine[charIndex])))
             {
                 EditPoint leftPoint = topPoint.CreateEditPoint();
                 leftPoint.WordLeft(1);
                 result = currentLine.Substring(leftPoint.LineCharOffset - 1,
-                    topPoint.LineCharOffset - leftPoint.LineCharOffset).Trim();
+                                               topPoint.LineCharOffset - leftPoint.LineCharOffset).Trim();
             }
             else if (char.IsLetterOrDigit(currentLine[charIndex - 1]) && char.IsLetterOrDigit(currentLine[charIndex + 1]))
             {
@@ -229,13 +230,13 @@ namespace NEnhancer.Common
                 EditPoint rightPoint = topPoint.CreateEditPoint();
                 rightPoint.WordRight(1);
                 result = currentLine.Substring(topPoint.LineCharOffset - 1,
-                    rightPoint.LineCharOffset - topPoint.LineCharOffset);
+                                               rightPoint.LineCharOffset - topPoint.LineCharOffset);
             }
             else
             {
                 result = GetSelectedText();
             }
-            
+
             return result;
         }
 

@@ -6,20 +6,16 @@
  */
 
 using System;
-using Extensibility;
 using System.Collections.Generic;
+using System.IO;
+using System.Threading;
+using System.Windows.Forms;
 using EnvDTE;
 using EnvDTE80;
-using System.Resources;
-using System.Reflection;
-using System.Globalization;
-using System.IO;
-using System.Windows.Forms;
+using Extensibility;
 using Microsoft.VisualStudio.CommandBars;
-using Microsoft.VisualStudio.VCProject;
 using Microsoft.VisualStudio.VCProjectEngine;
 using NEnhancer.Common;
-using System.Threading;
 
 namespace ClangVSx
 {
@@ -31,20 +27,21 @@ namespace ClangVSx
         private DTEHelper _dteHelper;
         private AddIn _addInInstance;
 
-        CommandBarButton SettingsButton;
-        CommandBarButton RebuildActiveProjectButton;
-        CommandBarEvents CompileCmdEvent;
-        CommandBarEvents AnalyseCmdEvent;
-        CommandBarEvents DasmCmdEvent;
-        CommandBarEvents PreproCmdEvent;
+        private CommandBarButton SettingsButton;
+        private CommandBarButton RebuildActiveProjectButton;
+        private CommandBarEvents CompileCmdEvent;
+        private CommandBarEvents AnalyseCmdEvent;
+        private CommandBarEvents DasmCmdEvent;
+        private CommandBarEvents PreproCmdEvent;
 
-        List<String> TemporaryFilesCreatedDuringThisSession = new List<String>();
-        bool BuildInProgress;
+        private List<String> TemporaryFilesCreatedDuringThisSession = new List<String>();
+        private bool BuildInProgress;
 
         // instance of the compiler bridge; this offers up the main worker functions that go off and compile files, projects, etc.
         private ClangOps _CVXOps;
 
         #region Commands
+
         private const string COMMAND_CLANG_SETTINGS_DLG = "ShowSettingsDlg";
         private const string COMMAND_CLANG_REBUILD_ACTIVE = "RebuildActiveProject";
         private const string COMMAND_CLANG_RELINK_ACTIVE = "RelinkActiveProject";
@@ -58,6 +55,7 @@ namespace ClangVSx
         {
             return fullCmdName.Remove(0, ("ClangVSx.CVXConnect.").Length);
         }
+
         #endregion
 
         /// <summary>Implements the constructor for the Add-in object. Place your initialization code within this method.</summary>
@@ -73,8 +71,8 @@ namespace ClangVSx
         /// <seealso class='IDTExtensibility2' />
         public void OnConnection(object application, ext_ConnectMode connectMode, object addInInst, ref Array custom)
         {
-            _applicationObject = (DTE2)application;
-            _addInInstance = (AddIn)addInInst;
+            _applicationObject = (DTE2) application;
+            _addInInstance = (AddIn) addInInst;
             _dteHelper = new DTEHelper(_applicationObject, _addInInstance);
 
             _CVXOps = new ClangOps(_applicationObject);
@@ -100,61 +98,72 @@ namespace ClangVSx
         /// <seealso class='IDTExtensibility2' />
         public void OnStartupComplete(ref Array custom)
         {
-            object[] contextGUIDS = new object[] { };
-            Commands2 commands = (Commands2)_applicationObject.Commands;
-            Microsoft.VisualStudio.CommandBars.CommandBars _commandBars = ((Microsoft.VisualStudio.CommandBars.CommandBars)_applicationObject.CommandBars);
+            object[] contextGUIDS = new object[] {};
+            Commands2 commands = (Commands2) _applicationObject.Commands;
+            Microsoft.VisualStudio.CommandBars.CommandBars _commandBars =
+                ((Microsoft.VisualStudio.CommandBars.CommandBars) _applicationObject.CommandBars);
 
             // add a top-level menu to stick some global options in
             {
                 Microsoft.VisualStudio.CommandBars.CommandBar menuBarCommandBar =
-                    ((Microsoft.VisualStudio.CommandBars.CommandBars)_applicationObject.CommandBars)["MenuBar"];
+                    ((Microsoft.VisualStudio.CommandBars.CommandBars) _applicationObject.CommandBars)["MenuBar"];
 
                 int nenhancerPopupIndex = menuBarCommandBar.Controls.Count + 1;
                 CommandBarPopup clangMenuRoot = menuBarCommandBar.Controls.Add(
-                              MsoControlType.msoControlPopup,
-                              Type.Missing,
-                              Type.Missing,
-                              nenhancerPopupIndex,
-                              true) as CommandBarPopup;
+                    MsoControlType.msoControlPopup,
+                    Type.Missing,
+                    Type.Missing,
+                    nenhancerPopupIndex,
+                    true) as CommandBarPopup;
                 clangMenuRoot.Caption = "Clang";
 
                 // open the settings dialog
                 {
                     _dteHelper.AddNamedCommand2(
-                          COMMAND_CLANG_SETTINGS_DLG,
-                          "Settings...",
-                          "Settings...",
-                          false,
-                          0);
-                    Command commandToAdd = _applicationObject.Commands.Item(GetCommandFullName(COMMAND_CLANG_SETTINGS_DLG), 0);
-                    SettingsButton = commandToAdd.AddControl(clangMenuRoot.CommandBar, clangMenuRoot.CommandBar.Controls.Count + 1) as CommandBarButton;
+                        COMMAND_CLANG_SETTINGS_DLG,
+                        "Settings...",
+                        "Settings...",
+                        false,
+                        0);
+                    Command commandToAdd =
+                        _applicationObject.Commands.Item(GetCommandFullName(COMMAND_CLANG_SETTINGS_DLG), 0);
+                    SettingsButton =
+                        commandToAdd.AddControl(clangMenuRoot.CommandBar, clangMenuRoot.CommandBar.Controls.Count + 1)
+                        as CommandBarButton;
                 }
 
                 // get active vcproj, rebuild it with Clang
                 {
                     _dteHelper.AddNamedCommand2(
-                          COMMAND_CLANG_REBUILD_ACTIVE,
-                          "Rebuild Active Project",
-                          "Rebuild Active Project",
-                          false,
-                          0);
-                    Command commandToAdd = _applicationObject.Commands.Item(GetCommandFullName(COMMAND_CLANG_REBUILD_ACTIVE), 0);
-                    RebuildActiveProjectButton = commandToAdd.AddControl(clangMenuRoot.CommandBar, clangMenuRoot.CommandBar.Controls.Count + 1) as CommandBarButton;
+                        COMMAND_CLANG_REBUILD_ACTIVE,
+                        "Rebuild Active Project",
+                        "Rebuild Active Project",
+                        false,
+                        0);
+                    Command commandToAdd =
+                        _applicationObject.Commands.Item(GetCommandFullName(COMMAND_CLANG_REBUILD_ACTIVE), 0);
+                    RebuildActiveProjectButton =
+                        commandToAdd.AddControl(clangMenuRoot.CommandBar, clangMenuRoot.CommandBar.Controls.Count + 1)
+                        as CommandBarButton;
                 }
                 {
                     _dteHelper.AddNamedCommand2(
-                          COMMAND_CLANG_RELINK_ACTIVE,
-                          "Relink",
-                          "Relink",
-                          false,
-                          0);
-                    Command commandToAdd = _applicationObject.Commands.Item(GetCommandFullName(COMMAND_CLANG_RELINK_ACTIVE), 0);
-                    RebuildActiveProjectButton = commandToAdd.AddControl(clangMenuRoot.CommandBar, clangMenuRoot.CommandBar.Controls.Count + 1) as CommandBarButton;
+                        COMMAND_CLANG_RELINK_ACTIVE,
+                        "Relink",
+                        "Relink",
+                        false,
+                        0);
+                    Command commandToAdd =
+                        _applicationObject.Commands.Item(GetCommandFullName(COMMAND_CLANG_RELINK_ACTIVE), 0);
+                    RebuildActiveProjectButton =
+                        commandToAdd.AddControl(clangMenuRoot.CommandBar, clangMenuRoot.CommandBar.Controls.Count + 1)
+                        as CommandBarButton;
                 }
             }
             // add a compile-this-file option to the editor window
             {
-                Microsoft.VisualStudio.CommandBars.CommandBar codeWinCommandBar = _dteHelper.GetCommandBarByName("Code Window");
+                Microsoft.VisualStudio.CommandBars.CommandBar codeWinCommandBar =
+                    _dteHelper.GetCommandBarByName("Code Window");
 
                 int pmPopupIndex = codeWinCommandBar.Controls.Count + 1;
                 CommandBarPopup pmPopup = codeWinCommandBar.Controls.Add(
@@ -166,34 +175,34 @@ namespace ClangVSx
                 pmPopup.Caption = "Clang Compiler";
 
                 CommandBarButton saveAndCompileCmd = _dteHelper.AddButtonToPopup(
-                  pmPopup,
-                  pmPopup.Controls.Count + 1,
-                  "Compile",
-                  "Compile");
+                    pmPopup,
+                    pmPopup.Controls.Count + 1,
+                    "Compile",
+                    "Compile");
                 CompileCmdEvent = _applicationObject.Events.get_CommandBarEvents(saveAndCompileCmd) as CommandBarEvents;
                 CompileCmdEvent.Click += new _dispCommandBarControlEvents_ClickEventHandler(cvxCompileFile_menuop);
 
                 CommandBarButton saveAndAnalyseCmd = _dteHelper.AddButtonToPopup(
-                  pmPopup,
-                  pmPopup.Controls.Count + 1,
-                  "Run Static Analysis",
-                  "Run Static Analysis");
+                    pmPopup,
+                    pmPopup.Controls.Count + 1,
+                    "Run Static Analysis",
+                    "Run Static Analysis");
                 AnalyseCmdEvent = _applicationObject.Events.get_CommandBarEvents(saveAndAnalyseCmd) as CommandBarEvents;
                 AnalyseCmdEvent.Click += new _dispCommandBarControlEvents_ClickEventHandler(cvxAnalyseFile_menuop);
 
                 CommandBarButton saveAndDasmCmd = _dteHelper.AddButtonToPopup(
-                  pmPopup,
-                  pmPopup.Controls.Count + 1,
-                  "View Disassembly (LLVM)",
-                  "View Disassembly (LLVM)");
+                    pmPopup,
+                    pmPopup.Controls.Count + 1,
+                    "View Disassembly (LLVM)",
+                    "View Disassembly (LLVM)");
                 DasmCmdEvent = _applicationObject.Events.get_CommandBarEvents(saveAndDasmCmd) as CommandBarEvents;
                 DasmCmdEvent.Click += new _dispCommandBarControlEvents_ClickEventHandler(cvxDasmnFile_menuop);
 
                 CommandBarButton dasmAndPreproCmd = _dteHelper.AddButtonToPopup(
-                  pmPopup,
-                  pmPopup.Controls.Count + 1,
-                  "View Preprocessor Result",
-                  "View Preprocessor Result");
+                    pmPopup,
+                    pmPopup.Controls.Count + 1,
+                    "View Preprocessor Result",
+                    "View Preprocessor Result");
                 PreproCmdEvent = _applicationObject.Events.get_CommandBarEvents(dasmAndPreproCmd) as CommandBarEvents;
                 PreproCmdEvent.Click += new _dispCommandBarControlEvents_ClickEventHandler(cvxPreProFile_menuop);
             }
@@ -218,13 +227,14 @@ namespace ClangVSx
         /// <param term='status'>The state of the command in the user interface.</param>
         /// <param term='commandText'>Text requested by the neededText parameter.</param>
         /// <seealso class='Exec' />
-        public void QueryStatus(string commandName, vsCommandStatusTextWanted neededText, ref vsCommandStatus status, ref object commandText)
+        public void QueryStatus(string commandName, vsCommandStatusTextWanted neededText, ref vsCommandStatus status,
+                                ref object commandText)
         {
             if (neededText == vsCommandStatusTextWanted.vsCommandStatusTextWantedNone)
             {
                 if (commandName.StartsWith("ClangVSx.CVXConnect"))
                 {
-                    status = (vsCommandStatus)vsCommandStatus.vsCommandStatusSupported;
+                    status = (vsCommandStatus) vsCommandStatus.vsCommandStatusSupported;
 
                     if (commandName.EndsWith(COMMAND_CLANG_SETTINGS_DLG))
                     {
@@ -253,7 +263,8 @@ namespace ClangVSx
         /// <param term='varOut'>Parameters passed from the command handler to the caller.</param>
         /// <param term='handled'>Informs the caller if the command was handled or not.</param>
         /// <seealso class='Exec' />
-        public void Exec(string commandName, vsCommandExecOption executeOption, ref object varIn, ref object varOut, ref bool handled)
+        public void Exec(string commandName, vsCommandExecOption executeOption, ref object varIn, ref object varOut,
+                         ref bool handled)
         {
             handled = false;
             if (executeOption == vsCommandExecOption.vsCommandExecOptionDoDefault)
@@ -284,14 +295,16 @@ namespace ClangVSx
                                 pbc.JustLink = (cmd == COMMAND_CLANG_RELINK_ACTIVE);
 
                                 // start the build on another thread so the output pane updates asynchronously
-                                ParameterizedThreadStart buildDelegate = new ParameterizedThreadStart(_CVXOps.BuildActiveProject);
+                                ParameterizedThreadStart buildDelegate =
+                                    new ParameterizedThreadStart(_CVXOps.BuildActiveProject);
                                 System.Threading.Thread newThread = new System.Threading.Thread(buildDelegate);
                                 newThread.Start(pbc);
                             }
                             catch (System.Exception ex)
                             {
                                 BuildInProgress = false;
-                                MessageBox.Show(ex.Message, "ClangVSx - Project Build Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                MessageBox.Show(ex.Message, "ClangVSx - Project Build Error", MessageBoxButtons.OK,
+                                                MessageBoxIcon.Error);
                             }
                         }
                         break;
@@ -301,7 +314,8 @@ namespace ClangVSx
 
         internal void ReportBuildInProgress()
         {
-            MessageBox.Show("The Clang compiler is already in use, please wait.", "ClangVSx", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            MessageBox.Show("The Clang compiler is already in use, please wait.", "ClangVSx", MessageBoxButtons.OK,
+                            MessageBoxIcon.Information);
         }
 
         /// <summary>
@@ -325,7 +339,9 @@ namespace ClangVSx
             }
             else
             {
-                MessageBox.Show("Clang cannot compile files of this type / unrecognized code file (" + _applicationObject.ActiveDocument.Language + ")", "ClangVSx");
+                MessageBox.Show(
+                    "Clang cannot compile files of this type / unrecognized code file (" +
+                    _applicationObject.ActiveDocument.Language + ")", "ClangVSx");
             }
         }
 
@@ -349,14 +365,17 @@ namespace ClangVSx
                 String dasmOut = Path.GetTempFileName();
                 TemporaryFilesCreatedDuringThisSession.Add(dasmOut);
 
-                if (_CVXOps.CompileSingleFile(vcFile, vcProject, vcCfg, String.Format("-save-temps -S -emit-llvm -o\"{0}\"", dasmOut)))
+                if (_CVXOps.CompileSingleFile(vcFile, vcProject, vcCfg,
+                                              String.Format("-save-temps -S -emit-llvm -o\"{0}\"", dasmOut)))
                 {
                     _applicationObject.ItemOperations.OpenFile(dasmOut, "{8E7B96A8-E33D-11D0-A6D5-00C04FB67F6A}");
                 }
             }
             else
             {
-                MessageBox.Show("Clang cannot compile files of this type / unrecognized code file (" + _applicationObject.ActiveDocument.Language + ")", "ClangVSx");
+                MessageBox.Show(
+                    "Clang cannot compile files of this type / unrecognized code file (" +
+                    _applicationObject.ActiveDocument.Language + ")", "ClangVSx");
             }
         }
 
@@ -387,7 +406,9 @@ namespace ClangVSx
             }
             else
             {
-                MessageBox.Show("Clang cannot compile files of this type / unrecognized code file (" + _applicationObject.ActiveDocument.Language + ")", "ClangVSx");
+                MessageBox.Show(
+                    "Clang cannot compile files of this type / unrecognized code file (" +
+                    _applicationObject.ActiveDocument.Language + ")", "ClangVSx");
             }
         }
 
@@ -412,7 +433,9 @@ namespace ClangVSx
             }
             else
             {
-                MessageBox.Show("Clang cannot analyse files of this type / unrecognized code file (" + _applicationObject.ActiveDocument.Language + ")", "ClangVSx");
+                MessageBox.Show(
+                    "Clang cannot analyse files of this type / unrecognized code file (" +
+                    _applicationObject.ActiveDocument.Language + ")", "ClangVSx");
             }
         }
 
@@ -420,7 +443,7 @@ namespace ClangVSx
         /// Get the active code file, project and configuration 
         /// </summary>
         /// <returns>true if we have found an active C/C++ document</returns>
-        bool GetActiveVCFile(out VCFile vcFile, out VCProject vcProject, out VCConfiguration vcCfg)
+        private bool GetActiveVCFile(out VCFile vcFile, out VCProject vcProject, out VCConfiguration vcCfg)
         {
             vcFile = null;
             vcProject = null;
@@ -436,8 +459,8 @@ namespace ClangVSx
                     if (_applicationObject.ActiveDocument.ProjectItem.Kind == "{6BB5F8EE-4483-11D3-8BCF-00C04F8EC28C}")
                     {
                         // leap of faith
-                        vcFile = (VCFile)_applicationObject.ActiveDocument.ProjectItem.Object;
-                        vcProject = (VCProject)vcFile.project;
+                        vcFile = (VCFile) _applicationObject.ActiveDocument.ProjectItem.Object;
+                        vcProject = (VCProject) vcFile.project;
 
                         if (vcFile.FileType != eFileType.eFileTypeCppCode)
                             return false;
@@ -447,24 +470,25 @@ namespace ClangVSx
                             _applicationObject.ActiveDocument.Save(vcFile.FullPath);
 
                         // get current configuration to pass to the bridge
-                        EnvDTE.Configuration cfg = _applicationObject.ActiveDocument.ProjectItem.ConfigurationManager.ActiveConfiguration;
+                        EnvDTE.Configuration cfg =
+                            _applicationObject.ActiveDocument.ProjectItem.ConfigurationManager.ActiveConfiguration;
 
-            try
-            {
-              IVCCollection cfgArray = (IVCCollection)vcProject.Configurations;
-              foreach (VCConfiguration vcr in cfgArray)
-              {
-                if (vcr.ConfigurationName == cfg.ConfigurationName &&
-                    vcr.Platform.Name == cfg.PlatformName)
-                {
-                  vcCfg = vcr;
-                }
-              }
-            }
-            catch (System.Exception)
-            {
-              return false;
-            }
+                        try
+                        {
+                            IVCCollection cfgArray = (IVCCollection) vcProject.Configurations;
+                            foreach (VCConfiguration vcr in cfgArray)
+                            {
+                                if (vcr.ConfigurationName == cfg.ConfigurationName &&
+                                    vcr.Platform.Name == cfg.PlatformName)
+                                {
+                                    vcCfg = vcr;
+                                }
+                            }
+                        }
+                        catch (System.Exception)
+                        {
+                            return false;
+                        }
 
                         return true;
                     }
@@ -481,16 +505,17 @@ namespace ClangVSx
         private class IWinWrapper : IWin32Window
         {
             public int mHandle;
+
             public IntPtr Handle
             {
-                get { return (IntPtr)mHandle; }
+                get { return (IntPtr) mHandle; }
             }
         }
 
         /// <summary>
         /// display our settings panel
         /// </summary>
-        void ShowCVXSettingsDialog()
+        private void ShowCVXSettingsDialog()
         {
             IWinWrapper wW = new IWinWrapper();
             wW.mHandle = _applicationObject.MainWindow.HWnd;

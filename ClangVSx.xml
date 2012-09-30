@@ -4,6 +4,33 @@
         <name>ClangVSx</name>
     </assembly>
     <members>
+        <member name="T:ClangVSx.CVXSettings">
+            <summary>
+            Settings Dialog Box
+            </summary>
+        </member>
+        <member name="M:ClangVSx.CVXSettings.#ctor">
+            <summary>
+            Settings management
+            </summary>
+        </member>
+        <member name="F:ClangVSx.CVXSettings.components">
+            <summary>
+            Required designer variable.
+            </summary>
+        </member>
+        <member name="M:ClangVSx.CVXSettings.Dispose(System.Boolean)">
+            <summary>
+            Clean up any resources being used.
+            </summary>
+            <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        </member>
+        <member name="M:ClangVSx.CVXSettings.InitializeComponent">
+            <summary>
+            Required method for Designer support - do not modify
+            the contents of this method with the code editor.
+            </summary>
+        </member>
         <member name="T:ClangVSx.CommandBar">
             <summary>
               A strongly-typed resource class, for looking up localized strings, etc.
@@ -1505,33 +1532,6 @@
               Looks up a localized string similar to XML.
             </summary>
         </member>
-        <member name="T:ClangVSx.CVXSettings">
-            <summary>
-            Settings Dialog Box
-            </summary>
-        </member>
-        <member name="M:ClangVSx.CVXSettings.#ctor">
-            <summary>
-            Settings management
-            </summary>
-        </member>
-        <member name="F:ClangVSx.CVXSettings.components">
-            <summary>
-            Required designer variable.
-            </summary>
-        </member>
-        <member name="M:ClangVSx.CVXSettings.Dispose(System.Boolean)">
-            <summary>
-            Clean up any resources being used.
-            </summary>
-            <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
-        </member>
-        <member name="M:ClangVSx.CVXSettings.InitializeComponent">
-            <summary>
-            Required method for Designer support - do not modify
-            the contents of this method with the code editor.
-            </summary>
-        </member>
         <member name="M:ClangVSx.ClangOps.#ctor(EnvDTE80.DTE2)">
             <summary>
             
@@ -1550,48 +1550,6 @@
         <member name="M:ClangVSx.ClangOps.BuildActiveProject(System.Object)">
             <summary>
             Compile the project that is set as the 'startup project' in the solution
-            </summary>
-        </member>
-        <member name="T:ClangVSx.CVXBuildSystem">
-            <summary>
-            Collection of build tools
-            </summary>
-        </member>
-        <member name="M:ClangVSx.CVXBuildSystem.NewExternalProcess">
-            <summary>
-            simple helper that creates a Process instance ready for running the compiler, linker, external tools, etc
-            </summary>
-        </member>
-        <member name="M:ClangVSx.CVXBuildSystem.ExecuteCustomBuildToolCommandLine``1(System.String,System.Object,Microsoft.VisualStudio.VCProjectEngine.VCProject)">
-            <summary>
-            I'm probably showing C# inexperience here; I wanted this function to operate on any 
-            object that had an Evaluate method, eg. VCConfiguration, VCFileConfiguration, et al.
-            Reflection and generics is what I came up with!
-            </summary>
-        </member>
-        <member name="M:ClangVSx.CVXBuildSystem.RunCustomBuildStep(Microsoft.VisualStudio.VCProjectEngine.VCCustomBuildTool,Microsoft.VisualStudio.VCProjectEngine.VCFile,Microsoft.VisualStudio.VCProjectEngine.VCProject,Microsoft.VisualStudio.VCProjectEngine.VCFileConfiguration,System.Boolean)">
-            <summary>
-            bootstrap any custom build steps, run via cmd.exe
-            </summary>
-        </member>
-        <member name="M:ClangVSx.CVXBuildSystem.InternalBuildVCFile(Microsoft.VisualStudio.VCProjectEngine.VCFile,Microsoft.VisualStudio.VCProjectEngine.VCProject,Microsoft.VisualStudio.VCProjectEngine.VCConfiguration,System.String,System.Text.StringBuilder@,System.Collections.Generic.HashSet{System.String},System.Boolean)">
-            <summary>
-            internal function that does the work of compiling a C++ file using Clang
-            </summary>
-        </member>
-        <member name="M:ClangVSx.CVXBuildSystem.GatherIncludesAndDefines``1(Microsoft.VisualStudio.VCProjectEngine.VCCLCompilerTool,System.Object)">
-            <summary>
-            
-            </summary>
-        </member>
-        <member name="M:ClangVSx.CVXBuildSystem.GenerateDefaultCompilerString(Microsoft.VisualStudio.VCProjectEngine.VCProject,Microsoft.VisualStudio.VCProjectEngine.VCConfiguration)">
-            <summary>
-            common code to generate compiler settings for non-file-specific stuff
-            </summary>
-        </member>
-        <member name="M:ClangVSx.CVXBuildSystem.BuildProject(Microsoft.VisualStudio.VCProjectEngine.VCProject,Microsoft.VisualStudio.VCProjectEngine.VCConfiguration,System.Boolean)">
-            <summary>
-            main worker function to build a project, swapping in our own tools as desired
             </summary>
         </member>
         <member name="T:ClangVSx.CVXConnect">
@@ -1685,6 +1643,48 @@
         <member name="T:ClangVSx.CVXRegistry">
             <summary>
             Wrapper around registry access to load/save AddIn settings
+            </summary>
+        </member>
+        <member name="T:ClangVSx.CVXBuildSystem">
+            <summary>
+            Collection of build tools
+            </summary>
+        </member>
+        <member name="M:ClangVSx.CVXBuildSystem.NewExternalProcess">
+            <summary>
+            simple helper that creates a Process instance ready for running the compiler, linker, external tools, etc
+            </summary>
+        </member>
+        <member name="M:ClangVSx.CVXBuildSystem.ExecuteCustomBuildToolCommandLine``1(System.String,System.Object,Microsoft.VisualStudio.VCProjectEngine.VCProject)">
+            <summary>
+            I'm probably showing C# inexperience here; I wanted this function to operate on any 
+            object that had an Evaluate method, eg. VCConfiguration, VCFileConfiguration, et al.
+            Reflection and generics is what I came up with!
+            </summary>
+        </member>
+        <member name="M:ClangVSx.CVXBuildSystem.RunCustomBuildStep(Microsoft.VisualStudio.VCProjectEngine.VCCustomBuildTool,Microsoft.VisualStudio.VCProjectEngine.VCFile,Microsoft.VisualStudio.VCProjectEngine.VCProject,Microsoft.VisualStudio.VCProjectEngine.VCFileConfiguration,System.Boolean)">
+            <summary>
+            bootstrap any custom build steps, run via cmd.exe
+            </summary>
+        </member>
+        <member name="M:ClangVSx.CVXBuildSystem.InternalBuildVCFile(Microsoft.VisualStudio.VCProjectEngine.VCFile,Microsoft.VisualStudio.VCProjectEngine.VCProject,Microsoft.VisualStudio.VCProjectEngine.VCConfiguration,System.String,System.Text.StringBuilder@,System.Collections.Generic.HashSet{System.String},System.Boolean)">
+            <summary>
+            internal function that does the work of compiling a C++ file using Clang
+            </summary>
+        </member>
+        <member name="M:ClangVSx.CVXBuildSystem.GatherIncludesAndDefines``1(Microsoft.VisualStudio.VCProjectEngine.VCCLCompilerTool,System.Object)">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:ClangVSx.CVXBuildSystem.GenerateDefaultCompilerString(Microsoft.VisualStudio.VCProjectEngine.VCProject,Microsoft.VisualStudio.VCProjectEngine.VCConfiguration)">
+            <summary>
+            common code to generate compiler settings for non-file-specific stuff
+            </summary>
+        </member>
+        <member name="M:ClangVSx.CVXBuildSystem.BuildProject(Microsoft.VisualStudio.VCProjectEngine.VCProject,Microsoft.VisualStudio.VCProjectEngine.VCConfiguration,System.Boolean)">
+            <summary>
+            main worker function to build a project, swapping in our own tools as desired
             </summary>
         </member>
     </members>
