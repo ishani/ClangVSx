@@ -9,18 +9,24 @@ using System.Resources;
 using EnvDTE;
 using EnvDTE80;
 using Microsoft.VisualStudio.CommandBars;
+using Process = System.Diagnostics.Process;
 
 namespace NEnhancer.Common
 {
     public class DTEHelper
     {
-        private readonly DTE2 _dte;
         private readonly AddIn _addin;
+        private readonly DTE2 _dte;
 
         public DTEHelper(DTE2 dte, AddIn addin)
         {
             _dte = dte;
             _addin = addin;
+        }
+
+        public UIHierarchy SolutionExplorerNode
+        {
+            get { return _dte.ToolWindows.SolutionExplorer; }
         }
 
         public string GetCulturedMenuName(string englishName)
@@ -31,7 +37,7 @@ namespace NEnhancer.Common
             {
                 string resourceName;
                 var resourceManager = new ResourceManager("ClangVSx.CommandBar",
-                                                                      Assembly.GetExecutingAssembly());
+                                                          Assembly.GetExecutingAssembly());
                 var cultureInfo = new CultureInfo(_dte.LocaleID);
 
                 if (cultureInfo.TwoLetterISOLanguageName == "zh")
@@ -112,11 +118,6 @@ namespace NEnhancer.Common
             }
 
             return button;
-        }
-
-        public UIHierarchy SolutionExplorerNode
-        {
-            get { return _dte.ToolWindows.SolutionExplorer; }
         }
 
         public List<UIHierarchyItem> GetProjectNodes(Solution solution)
@@ -234,7 +235,8 @@ namespace NEnhancer.Common
                     result = currentLine.Substring(leftPoint.LineCharOffset - 1,
                                                    topPoint.LineCharOffset - leftPoint.LineCharOffset).Trim();
                 }
-                else if (char.IsLetterOrDigit(currentLine[charIndex - 1]) && char.IsLetterOrDigit(currentLine[charIndex + 1]))
+                else if (char.IsLetterOrDigit(currentLine[charIndex - 1]) &&
+                         char.IsLetterOrDigit(currentLine[charIndex + 1]))
                 {
                     topPoint.WordLeft();
                     EditPoint rightPoint = topPoint.CreateEditPoint();
@@ -261,7 +263,7 @@ namespace NEnhancer.Common
         public void Restart()
         {
             _dte.Quit();
-            System.Diagnostics.Process.Start(_dte.FileName);
+            Process.Start(_dte.FileName);
         }
 
         public Project GetProjectByName(Solution2 sln, string projName)

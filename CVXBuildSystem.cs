@@ -7,12 +7,14 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Reflection;
 using System.Text;
 using System.Windows.Forms;
 using EnvDTE;
 using Microsoft.VisualStudio.VCProjectEngine;
+using Process = System.Diagnostics.Process;
 
 namespace ClangVSx
 {
@@ -21,34 +23,19 @@ namespace ClangVSx
     /// </summary>
     internal class CVXBuildSystem
     {
-        internal struct ProjectFile
-        {
-            public ProjectFile(VCFile _f, VCFileConfiguration _c)
-            {
-                File = _f;
-                Config = _c;
-            }
-
-            public VCFile File;
-            public VCFileConfiguration Config;
-        }
-
-        private String LocationClangEXE;
-        private String LocationLLVM_LINK_EXE;
-        private String LocationLLVM_LLC_EXE;
-        private String LocationLIBExe;
-        private String LocationLINKExe;
-        private String PathToVS10Tools;
-        private String PathToVS10CommonIDE;
-        private bool DoShowCommands;
-        private bool DoGenerateBatchFiles;
+        private readonly String ConsoleDivider = String.Empty;
+        private readonly bool DoGenerateBatchFiles;
+        private readonly bool DoShowCommands;
+        private readonly String LocationClangEXE;
+        private readonly String LocationLIBExe;
+        private readonly String LocationLINKExe;
+        private readonly String LocationLLVM_LINK_EXE;
+        private readonly String LocationLLVM_LLC_EXE;
+        private readonly String PathToVS10CommonIDE;
+        private readonly String PathToVS10Tools;
+        private StreamWriter BatchFileStream; // if DoGenerateBatchFiles == true, this is set to the output file stream
         protected OutputWindowPane OutputPane; // output panel configured by AddIn, passed in to ctor
         protected Window VSOutputWindow;
-
-        private StreamWriter BatchFileStream = null;
-                             // if DoGenerateBatchFiles == true, this is set to the output file stream
-
-        private String ConsoleDivider = String.Empty;
 
 
         public CVXBuildSystem(Window clangOutputWindow, OutputWindowPane clangOutputPane)
@@ -77,8 +64,8 @@ namespace ClangVSx
 
             // read out current executables' locations
             LocationClangEXE = CVXRegistry.PathToClang;
-            LocationLLVM_LINK_EXE = System.IO.Path.GetDirectoryName(LocationClangEXE) + @"\llvm-link.exe";
-            LocationLLVM_LLC_EXE = System.IO.Path.GetDirectoryName(LocationClangEXE) + @"\llc.exe";
+            LocationLLVM_LINK_EXE = Path.GetDirectoryName(LocationClangEXE) + @"\llvm-link.exe";
+            LocationLLVM_LLC_EXE = Path.GetDirectoryName(LocationClangEXE) + @"\llc.exe";
 
             // work out where the MS linker / lib tools are, Clang/LLVM doesn't have a linker presently
             // "C:\Program Files (x86)\Microsoft Visual Studio 10.0\Common7\Tools\"
@@ -90,25 +77,25 @@ namespace ClangVSx
             }
 
             // have to go digging for the location of the MSVC linker/librarian
-            PathToVS10Tools = System.IO.Path.GetFullPath(pathToVS10 + @"..\..\VC\bin\");
-            PathToVS10CommonIDE = System.IO.Path.GetFullPath(pathToVS10 + @"..\IDE\");
+            PathToVS10Tools = Path.GetFullPath(pathToVS10 + @"..\..\VC\bin\");
+            PathToVS10CommonIDE = Path.GetFullPath(pathToVS10 + @"..\IDE\");
             LocationLIBExe = PathToVS10Tools + "lib.exe";
             LocationLINKExe = PathToVS10Tools + "link.exe";
 
-            String[] PathCheck = new String[]
-                                     {
-                                         LocationLLVM_LINK_EXE,
-                                         LocationLLVM_LLC_EXE,
-                                         LocationClangEXE,
-                                         LocationLIBExe,
-                                         LocationLINKExe
-                                     };
+            var PathCheck = new[]
+                                {
+                                    LocationLLVM_LINK_EXE,
+                                    LocationLLVM_LLC_EXE,
+                                    LocationClangEXE,
+                                    LocationLIBExe,
+                                    LocationLINKExe
+                                };
             foreach (String path in PathCheck)
             {
-                if (!System.IO.File.Exists(path))
+                if (!File.Exists(path))
                 {
                     throw new Exception(String.Format("Could not find {0}, check ClangVSx Settings - tried:\n\n{1}",
-                                                      System.IO.Path.GetFileName(path), path));
+                                                      Path.GetFileName(path), path));
                 }
             }
 
@@ -134,11 +121,11 @@ namespace ClangVSx
         /// <summary>
         /// simple helper that creates a Process instance ready for running the compiler, linker, external tools, etc
         /// </summary>
-        internal System.Diagnostics.Process NewExternalProcess()
+        internal Process NewExternalProcess()
         {
-            System.Diagnostics.Process result = new System.Diagnostics.Process();
+            var result = new Process();
             result.StartInfo.UseShellExecute = false;
-            result.StartInfo.WindowStyle = System.Diagnostics.ProcessWindowStyle.Hidden;
+            result.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
             result.StartInfo.CreateNoWindow = true;
             result.StartInfo.RedirectStandardOutput = true;
             result.StartInfo.RedirectStandardError = true;
@@ -158,7 +145,7 @@ namespace ClangVSx
                     }
                 }
             }
-            catch (System.Exception)
+            catch (Exception)
             {
                 WriteToOutputPane("Error: failed to resolve configuration for file - " + cfg.ConfigurationName + " | " +
                                   cfg.Platform.Name + "\n");
@@ -182,10 +169,10 @@ namespace ClangVSx
             {
                 MethodInfo evalMethod = typeof (T).GetMethod("Evaluate");
 
-                String[] cmdsToRun = cmdLine.Split(new char[] {'\r', '\n'}, StringSplitOptions.RemoveEmptyEntries);
+                String[] cmdsToRun = cmdLine.Split(new[] {'\r', '\n'}, StringSplitOptions.RemoveEmptyEntries);
                 foreach (String singleCmd in cmdsToRun)
                 {
-                    String evaluatedCmd = evalMethod.Invoke(evaluator, new object[] {singleCmd}) as String;
+                    var evaluatedCmd = evalMethod.Invoke(evaluator, new object[] {singleCmd}) as String;
 
                     if (DoShowCommands)
                     {
@@ -198,7 +185,7 @@ namespace ClangVSx
                     }
 
                     // run the specified tool
-                    System.Diagnostics.Process cbStep = NewExternalProcess();
+                    Process cbStep = NewExternalProcess();
                     cbStep.StartInfo.FileName = "cmd.exe";
                     cbStep.StartInfo.Arguments = "/C " + evaluatedCmd.Replace("/", "\\");
                     cbStep.StartInfo.WorkingDirectory = vcProject.ProjectDirectory;
@@ -210,7 +197,7 @@ namespace ClangVSx
                     cbStep.WaitForExit();
                 }
             }
-            catch (System.Exception e)
+            catch (Exception e)
             {
                 WriteToOutputPane("Exception During Execution : " + cmdLine + "\n" + e.Message + "\n" + e.Source +
                                   "\n\n");
@@ -234,33 +221,33 @@ namespace ClangVSx
             {
                 if (customBuildTool.Outputs.Length > 0)
                 {
-                    System.IO.FileInfo vcFileFI = new System.IO.FileInfo(vcFile.FullPath);
+                    var vcFileFI = new FileInfo(vcFile.FullPath);
 
                     // cut the output files string into individual items
-                    String[] outputFiles = customBuildTool.Outputs.Split(new char[] {' ', ',', ';'},
+                    String[] outputFiles = customBuildTool.Outputs.Split(new[] {' ', ',', ';'},
                                                                          StringSplitOptions.RemoveEmptyEntries);
                     foreach (String outputFileName in outputFiles)
                     {
                         // find a full pathname for the file, relative or not
                         String finalOutput = vcFC.Evaluate(outputFileName);
-                        if (!System.IO.Path.IsPathRooted(outputFileName))
+                        if (!Path.IsPathRooted(outputFileName))
                             finalOutput = vcProject.ProjectDirectory + outputFileName;
 
-                        String finalOutputDir = System.IO.Path.GetDirectoryName(finalOutput);
-                        if (!System.IO.Directory.Exists(finalOutputDir))
+                        String finalOutputDir = Path.GetDirectoryName(finalOutput);
+                        if (!Directory.Exists(finalOutputDir))
                         {
-                            System.IO.Directory.CreateDirectory(finalOutputDir);
+                            Directory.CreateDirectory(finalOutputDir);
                         }
 
                         // if it doesn't exist, safe to assume we should try and build it
-                        if (!System.IO.File.Exists(finalOutput))
+                        if (!File.Exists(finalOutput))
                         {
                             outputFilesNeedBuilding = true;
                             break;
                         }
 
                         // compare timestamps with source file
-                        System.IO.FileInfo outputFileFI = new System.IO.FileInfo(finalOutput);
+                        var outputFileFI = new FileInfo(finalOutput);
                         TimeSpan timeDiffCodeToObj = outputFileFI.LastWriteTime.Subtract(vcFileFI.LastWriteTime);
                         if (timeDiffCodeToObj.Seconds < 0)
                         {
@@ -300,19 +287,19 @@ namespace ClangVSx
             if (vcFC == null)
                 return false;
 
-            VCCLCompilerTool perFileVCC = (VCCLCompilerTool) vcFC.Tool;
+            var perFileVCC = (VCCLCompilerTool) vcFC.Tool;
 
             // begin forming the command line string to send to Clang
             compileString.Append('"' + vcFile.FullPath.Replace("/", "\\") + '"');
-            compileString.Append(defaultCompilerString.ToString());
+            compileString.Append(defaultCompilerString);
 
             // sort out an output object file name
             String objectFileName = vcFC.Evaluate(perFileVCC.ObjectFile).Replace("/", "\\");
 
-            String prebuild = System.IO.Path.Combine(vcProject.ProjectDirectory, objectFileName);
-            if (!System.IO.Directory.Exists(prebuild))
+            String prebuild = Path.Combine(vcProject.ProjectDirectory, objectFileName);
+            if (!Directory.Exists(prebuild))
             {
-                System.IO.Directory.CreateDirectory(prebuild);
+                Directory.CreateDirectory(prebuild);
             }
 
             String outputFileExtension = ".obj";
@@ -327,14 +314,14 @@ namespace ClangVSx
             if (!compileCmds.Contains("-o\""))
             {
                 // if no obj file specified, make a suitable filename (is this a robust check..??)
-                if (!System.IO.Path.HasExtension(objectFileName))
+                if (!Path.HasExtension(objectFileName))
                 {
-                    objectFileName += System.IO.Path.ChangeExtension(vcFile.Name, outputFileExtension);
+                    objectFileName += Path.ChangeExtension(vcFile.Name, outputFileExtension);
                 }
                 else
                 {
                     // force our extension?
-                    objectFileName = System.IO.Path.ChangeExtension(objectFileName, outputFileExtension);
+                    objectFileName = Path.ChangeExtension(objectFileName, outputFileExtension);
                 }
 
                 // record the .obj target in the cmd line and in the list to pass to the linker
@@ -470,21 +457,21 @@ namespace ClangVSx
             compileString.Append("-fdiagnostics-format=msvc ");
 
             String fullObjectPath = objectFileName;
-            if (!System.IO.Path.IsPathRooted(fullObjectPath))
+            if (!Path.IsPathRooted(fullObjectPath))
                 fullObjectPath = vcProject.ProjectDirectory + objectFileName;
 
 
             WriteToOutputPane(" - " + vcFile.UnexpandedRelativePath);
 
             if (DoShowCommands)
-                WriteToOutputPane("\n    " + compileString.ToString() + "\n");
+                WriteToOutputPane("\n    " + compileString + "\n");
 
 
             // crank the message pump; means our Output Window stuff should update properly
             Application.DoEvents();
 
             // execute the compiler
-            System.Diagnostics.Process compileProcess = NewExternalProcess();
+            Process compileProcess = NewExternalProcess();
             compileProcess.StartInfo.FileName = LocationClangEXE;
             compileProcess.StartInfo.Arguments = compileString.ToString();
             compileProcess.StartInfo.WorkingDirectory = vcProject.ProjectDirectory;
@@ -529,7 +516,7 @@ namespace ClangVSx
         internal string GatherIncludesAndDefines<T>(VCCLCompilerTool vcCTool, object evaluator)
         {
             MethodInfo evalMethod = typeof (T).GetMethod("Evaluate");
-            StringBuilder result = new StringBuilder();
+            var result = new StringBuilder();
 
             // push additional includes into the default compiler string
             if (vcCTool.AdditionalIncludeDirectories != null)
@@ -541,7 +528,7 @@ namespace ClangVSx
                 {
                     if (inc.Length > 0)
                     {
-                        String parsedInc = (evalMethod.Invoke(evaluator, new object[] {inc}) as String);
+                        var parsedInc = (evalMethod.Invoke(evaluator, new object[] {inc}) as String);
                         if (parsedInc != null && parsedInc.Length > 0)
                         {
                             result.Append("-I");
@@ -569,7 +556,7 @@ namespace ClangVSx
                 {
                     if (inc.Length > 0)
                     {
-                        String parsedInc = (evalMethod.Invoke(evaluator, new object[] {inc}) as String);
+                        var parsedInc = (evalMethod.Invoke(evaluator, new object[] {inc}) as String);
                         if (parsedInc != null && parsedInc.Length > 0)
                         {
                             result.Append("-include \"");
@@ -590,7 +577,7 @@ namespace ClangVSx
                 {
                     if (pd.Length > 0)
                     {
-                        String parsedPd = (evalMethod.Invoke(evaluator, new object[] {pd}) as String);
+                        var parsedPd = (evalMethod.Invoke(evaluator, new object[] {pd}) as String);
                         if (parsedPd != null && parsedPd.Length > 0)
                         {
                             result.Append("-D");
@@ -617,14 +604,14 @@ namespace ClangVSx
             //
             // define '__CLANG_VSX__'
             //
-            StringBuilder defaultCompilerString = new StringBuilder(" -c -nostdinc -D__CLANG_VSX__ ");
+            var defaultCompilerString = new StringBuilder(" -c -nostdinc -D__CLANG_VSX__ ");
 
             if (vcCfg.Platform.Name == "Win32")
-                defaultCompilerString.AppendFormat("-ccc-host-triple {0} ", CVXRegistry.TripleWin32.Value.ToString());
+                defaultCompilerString.AppendFormat("-ccc-host-triple {0} ", CVXRegistry.TripleWin32.Value);
             else if (vcCfg.Platform.Name == "x64")
-                defaultCompilerString.AppendFormat("-ccc-host-triple {0} ", CVXRegistry.TripleX64.Value.ToString());
+                defaultCompilerString.AppendFormat("-ccc-host-triple {0} ", CVXRegistry.TripleX64.Value);
             else if (vcCfg.Platform.Name == "ARM")
-                defaultCompilerString.AppendFormat("-ccc-host-triple {0} ", CVXRegistry.TripleARM.Value.ToString());
+                defaultCompilerString.AppendFormat("-ccc-host-triple {0} ", CVXRegistry.TripleARM.Value);
 
             if (CVXRegistry.EchoInternal)
             {
@@ -636,20 +623,20 @@ namespace ClangVSx
             }
 
             // add the UNICODE defines?
-            if (vcCfg.CharacterSet == Microsoft.VisualStudio.VCProjectEngine.charSet.charSetUnicode)
+            if (vcCfg.CharacterSet == charSet.charSetUnicode)
             {
                 defaultCompilerString.Append("-DUNICODE -D_UNICODE ");
             }
-            else if (vcCfg.CharacterSet == Microsoft.VisualStudio.VCProjectEngine.charSet.charSetMBCS)
+            else if (vcCfg.CharacterSet == charSet.charSetMBCS)
             {
                 defaultCompilerString.Append("-D_MBCS ");
             }
 
             // get the various VC tools to read out setup
-            IVCCollection fTools = (IVCCollection) vcCfg.Tools;
-            VCCLCompilerTool vcCTool = (VCCLCompilerTool) fTools.Item("VCCLCompilerTool");
-            VCLinkerTool vcLinkerTool = (VCLinkerTool) fTools.Item("VCLinkerTool");
-            VCLibrarianTool vcLibTool = (VCLibrarianTool) fTools.Item("VCLibrarianTool");
+            var fTools = (IVCCollection) vcCfg.Tools;
+            var vcCTool = (VCCLCompilerTool) fTools.Item("VCCLCompilerTool");
+            var vcLinkerTool = (VCLinkerTool) fTools.Item("VCLinkerTool");
+            var vcLibTool = (VCLibrarianTool) fTools.Item("VCLibrarianTool");
 
             // convert the project-wide includes, prepro defines, force includes
             defaultCompilerString.Append(GatherIncludesAndDefines<VCConfiguration>(vcCTool, vcCfg));
@@ -657,11 +644,11 @@ namespace ClangVSx
             String plt = vcCfg.Platform.Name;
 
             // sort out prolog/epilog settings based on cfg/subsystem
-            if (vcCfg.ConfigurationType == Microsoft.VisualStudio.VCProjectEngine.ConfigurationTypes.typeApplication)
+            if (vcCfg.ConfigurationType == ConfigurationTypes.typeApplication)
             {
             }
             else if (vcCfg.ConfigurationType ==
-                     Microsoft.VisualStudio.VCProjectEngine.ConfigurationTypes.typeDynamicLibrary)
+                     ConfigurationTypes.typeDynamicLibrary)
             {
                 defaultCompilerString.Append("-D_WINDLL ");
             }
@@ -709,7 +696,7 @@ namespace ClangVSx
                 String[] cIncDirs = cIncDir.Split(';');
 
                 // add the fully resolved directories into a string set, to weed out any duplicates
-                HashSet<String> uniqueDirs = new HashSet<String>();
+                var uniqueDirs = new HashSet<String>();
                 foreach (string inc in cIncDirs)
                 {
                     if (inc.Length > 0)
@@ -739,13 +726,13 @@ namespace ClangVSx
         public bool CompileSingleFile(VCFile vcFile, VCProject vcProject, VCConfiguration vcCfg,
                                       String additionalCmds = "")
         {
-            StringBuilder defaultCompilerString = new StringBuilder(GenerateDefaultCompilerString(vcProject, vcCfg));
+            var defaultCompilerString = new StringBuilder(GenerateDefaultCompilerString(vcProject, vcCfg));
             defaultCompilerString.Append(" ");
             defaultCompilerString.Append(additionalCmds);
             defaultCompilerString.Append(" ");
 
-            StringBuilder compileString = new StringBuilder(1024);
-            HashSet<String> Artifacts = new HashSet<String>();
+            var compileString = new StringBuilder(1024);
+            var Artifacts = new HashSet<String>();
 
             if (InternalBuildVCFile(vcFile, vcProject, vcCfg, defaultCompilerString.ToString(), ref compileString,
                                     Artifacts))
@@ -765,9 +752,9 @@ namespace ClangVSx
             String defaultCompilerString = GenerateDefaultCompilerString(vcProject, vcCfg);
 
             // get the various VC tools to read out setup
-            IVCCollection fTools = (IVCCollection) vcCfg.Tools;
-            VCLinkerTool vcLinkerTool = (VCLinkerTool) fTools.Item("VCLinkerTool");
-            VCLibrarianTool vcLibTool = (VCLibrarianTool) fTools.Item("VCLibrarianTool");
+            var fTools = (IVCCollection) vcCfg.Tools;
+            var vcLinkerTool = (VCLinkerTool) fTools.Item("VCLinkerTool");
+            var vcLibTool = (VCLibrarianTool) fTools.Item("VCLibrarianTool");
 
             if (vcLinkerTool != null)
             {
@@ -784,13 +771,13 @@ namespace ClangVSx
             String outLink = "";
             switch (vcCfg.ConfigurationType)
             {
-                case Microsoft.VisualStudio.VCProjectEngine.ConfigurationTypes.typeApplication:
+                case ConfigurationTypes.typeApplication:
                     outLink = vcCfg.Evaluate(vcLinkerTool.OutputFile);
                     break;
-                case Microsoft.VisualStudio.VCProjectEngine.ConfigurationTypes.typeDynamicLibrary:
+                case ConfigurationTypes.typeDynamicLibrary:
                     outLink = vcCfg.Evaluate(vcLinkerTool.OutputFile);
                     break;
-                case Microsoft.VisualStudio.VCProjectEngine.ConfigurationTypes.typeStaticLibrary:
+                case ConfigurationTypes.typeStaticLibrary:
                     outLink = vcCfg.Evaluate(vcLibTool.OutputFile);
                     break;
             }
@@ -798,9 +785,9 @@ namespace ClangVSx
             WriteToOutputPane("Linker Output : " + outLink + "\n");
 
             String outLinkDirectory = Path.GetDirectoryName(outLink);
-            if (!System.IO.Directory.Exists(outLinkDirectory))
+            if (!Directory.Exists(outLinkDirectory))
             {
-                System.IO.Directory.CreateDirectory(outLinkDirectory);
+                Directory.CreateDirectory(outLinkDirectory);
             }
 
             // ------------------ log out a batch file of build commands ------------------
@@ -811,7 +798,7 @@ namespace ClangVSx
                                        vcCfg.Name.Replace("|", "-").Replace(" ", "_") + ".bat";
 
                 String buildCommandFileName = Path.GetFullPath(vcProject.ProjectDirectory + "\\" + batchFileName);
-                BatchFileStream = new System.IO.StreamWriter(buildCommandFileName);
+                BatchFileStream = new StreamWriter(buildCommandFileName);
 
                 WriteToOutputPane("Emitting Batch : " + batchFileName + "\n");
             }
@@ -820,8 +807,8 @@ namespace ClangVSx
             // ---------------------------- build prep ------------------------------------
 
             // go and look up all the files that will be taking part in this build in some way
-            List<ProjectFile> ProjectFiles = new List<ProjectFile>(32);
-            IVCCollection vcFileCollection = (IVCCollection) vcProject.Files;
+            var ProjectFiles = new List<ProjectFile>(32);
+            var vcFileCollection = (IVCCollection) vcProject.Files;
             foreach (VCFile vcFile in vcFileCollection)
             {
                 VCFileConfiguration vcFC = GetFileConfiguration((IVCCollection) vcFile.FileConfigurations, vcCfg);
@@ -835,7 +822,7 @@ namespace ClangVSx
 
                     ProjectFiles.Add(new ProjectFile(vcFile, vcFC));
                 }
-                catch (System.Exception)
+                catch (Exception)
                 {
                     // in 2012 RC we get the .filters file in here which throws an exception when ExcludedFromBuild is accessed
                     // not sure yet how best else to check for this...
@@ -844,7 +831,7 @@ namespace ClangVSx
                 }
             }
 
-            HashSet<String> CompilationArtifacts = new HashSet<String>();
+            var CompilationArtifacts = new HashSet<String>();
 
 
             // ----------------------------------------------------------------------------
@@ -891,8 +878,8 @@ namespace ClangVSx
 
         internal bool doPreBuildEvents(VCProject vcProject, VCConfiguration vcCfg)
         {
-            IVCCollection fTools = (IVCCollection) vcCfg.Tools;
-            VCPreBuildEventTool preBuildTool = (VCPreBuildEventTool) fTools.Item("VCPreBuildEventTool");
+            var fTools = (IVCCollection) vcCfg.Tools;
+            var preBuildTool = (VCPreBuildEventTool) fTools.Item("VCPreBuildEventTool");
 
             if (!preBuildTool.ExcludedFromBuild &&
                 preBuildTool.CommandLine != null &&
@@ -915,7 +902,7 @@ namespace ClangVSx
             {
                 if ((pf.Config.Tool as VCCustomBuildTool) != null)
                 {
-                    VCCustomBuildTool customBuildTool = pf.Config.Tool as VCCustomBuildTool;
+                    var customBuildTool = pf.Config.Tool as VCCustomBuildTool;
                     try
                     {
                         // a valid way to consider the custom tool to be 'active?
@@ -972,14 +959,14 @@ namespace ClangVSx
                 {
                     try
                     {
-                        VCResourceCompilerTool resourceTool = (VCResourceCompilerTool) pf.Config.Tool;
+                        var resourceTool = (VCResourceCompilerTool) pf.Config.Tool;
                         String resourceFile = pf.Config.Evaluate(resourceTool.ResourceOutputFileName).Replace("/", "\\");
 
                         String sourceRCPath = pf.File.FullPath;
-                        String rcFile = System.IO.Path.GetFileNameWithoutExtension(sourceRCPath);
+                        String rcFile = Path.GetFileNameWithoutExtension(sourceRCPath);
                         resourceFile = resourceFile.Replace("%(Filename)", rcFile);
 
-                        if (!System.IO.Path.IsPathRooted(resourceFile))
+                        if (!Path.IsPathRooted(resourceFile))
                             resourceFile = vcProject.ProjectDirectory + resourceFile;
 
                         CompilationArtifacts.Add(resourceFile);
@@ -995,12 +982,12 @@ namespace ClangVSx
                                         "REM -- warning - missing resource compiler step in batch file for\nREM   {0}",
                                         pf.File.Name));
 
-                            FileInfo fi = new FileInfo(resourceFile);
+                            var fi = new FileInfo(resourceFile);
                             WriteToOutputPane(String.Format("Compiled Resource File : '{0}' [{1} bytes]\n", resourceFile,
                                                             fi.Length));
                         }
                     }
-                    catch (System.Exception ex)
+                    catch (Exception ex)
                     {
                         WriteToOutputPane("\nException during resource compilation :\n" + ex.Message + "\n");
                         return false;
@@ -1014,8 +1001,8 @@ namespace ClangVSx
         internal bool doCompileCPP(VCProject vcProject, VCConfiguration vcCfg, List<ProjectFile> ProjectFiles,
                                    HashSet<String> CompilationArtifacts, bool dryRun = false)
         {
-            IVCCollection fTools = (IVCCollection) vcCfg.Tools;
-            VCCLCompilerTool vcCTool = (VCCLCompilerTool) fTools.Item("VCCLCompilerTool");
+            var fTools = (IVCCollection) vcCfg.Tools;
+            var vcCTool = (VCCLCompilerTool) fTools.Item("VCCLCompilerTool");
 
             String defaultCompilerString = GenerateDefaultCompilerString(vcProject, vcCfg);
 
@@ -1027,7 +1014,7 @@ namespace ClangVSx
             {
                 if ((pf.Config.Tool as VCCLCompilerTool) != null)
                 {
-                    StringBuilder compileString = new StringBuilder(1024);
+                    var compileString = new StringBuilder(1024);
 
                     if (
                         !InternalBuildVCFile(pf.File, vcProject, vcCfg, defaultCompilerString, ref compileString,
@@ -1068,8 +1055,8 @@ namespace ClangVSx
 
         internal bool doPreLink(VCProject vcProject, VCConfiguration vcCfg)
         {
-            IVCCollection fTools = (IVCCollection) vcCfg.Tools;
-            VCPreLinkEventTool preLinkTool = (VCPreLinkEventTool) fTools.Item("VCPreLinkEventTool");
+            var fTools = (IVCCollection) vcCfg.Tools;
+            var preLinkTool = (VCPreLinkEventTool) fTools.Item("VCPreLinkEventTool");
 
             if (!preLinkTool.ExcludedFromBuild &&
                 preLinkTool.CommandLine != null &&
@@ -1096,7 +1083,7 @@ namespace ClangVSx
             // so we call the linker for each .bc file and link them together into a composite
             foreach (String ca in CompilationArtifacts)
             {
-                System.Diagnostics.Process linkProcess = NewExternalProcess();
+                Process linkProcess = NewExternalProcess();
                 linkProcess.StartInfo.FileName = LocationLLVM_LINK_EXE;
 
                 String linkCA = ca.TrimEnd(' ').Replace("/", "\\");
@@ -1125,9 +1112,9 @@ namespace ClangVSx
                 WriteToOutputPane("\nLLVM LTO Code Generation ...\n");
 
                 string inputLinkObject = newLinkObject;
-                newLinkObject = System.IO.Path.ChangeExtension(newLinkObject, ".obj");
+                newLinkObject = Path.ChangeExtension(newLinkObject, ".obj");
 
-                System.Diagnostics.Process linkProcess = NewExternalProcess();
+                Process linkProcess = NewExternalProcess();
                 linkProcess.StartInfo.FileName = LocationLLVM_LLC_EXE;
 
                 // execute the compiler
@@ -1164,18 +1151,18 @@ namespace ClangVSx
             if (BatchFileStream != null)
                 BatchFileStream.WriteLine("\n\n");
 
-            IVCCollection fTools = (IVCCollection) vcCfg.Tools;
-            VCLinkerTool vcLinkerTool = (VCLinkerTool) fTools.Item("VCLinkerTool");
-            VCLibrarianTool vcLibTool = (VCLibrarianTool) fTools.Item("VCLibrarianTool");
-            VCCLCompilerTool vcCTool = (VCCLCompilerTool) fTools.Item("VCCLCompilerTool");
+            var fTools = (IVCCollection) vcCfg.Tools;
+            var vcLinkerTool = (VCLinkerTool) fTools.Item("VCLinkerTool");
+            var vcLibTool = (VCLibrarianTool) fTools.Item("VCLibrarianTool");
+            var vcCTool = (VCCLCompilerTool) fTools.Item("VCCLCompilerTool");
 
             if (vcLinkerTool.LinkTimeCodeGeneration == LinkTimeCodeGenerationOption.LinkTimeCodeGenerationOptionUse)
             {
                 doLLVMPreLink(vcProject, vcCfg, outLink, ref CompilationArtifacts);
             }
 
-            StringBuilder linkString = new StringBuilder(1024);
-            System.Diagnostics.Process linkProcess = NewExternalProcess();
+            var linkString = new StringBuilder(1024);
+            Process linkProcess = NewExternalProcess();
 
             // standard inputs and outputs
             linkString.Append("/OUT:\"");
@@ -1190,8 +1177,8 @@ namespace ClangVSx
 
             // link to application / DLL
             // LINK obj[,out[,map[,lib[,def[,res]]]]] 
-            if (vcCfg.ConfigurationType == Microsoft.VisualStudio.VCProjectEngine.ConfigurationTypes.typeApplication ||
-                vcCfg.ConfigurationType == Microsoft.VisualStudio.VCProjectEngine.ConfigurationTypes.typeDynamicLibrary)
+            if (vcCfg.ConfigurationType == ConfigurationTypes.typeApplication ||
+                vcCfg.ConfigurationType == ConfigurationTypes.typeDynamicLibrary)
             {
                 linkProcess.StartInfo.FileName = LocationLINKExe;
 
@@ -1208,7 +1195,7 @@ namespace ClangVSx
 
 
                 if (vcCfg.ConfigurationType ==
-                    Microsoft.VisualStudio.VCProjectEngine.ConfigurationTypes.typeDynamicLibrary)
+                    ConfigurationTypes.typeDynamicLibrary)
                 {
                     if (!String.IsNullOrEmpty(vcLinkerTool.ImportLibrary))
                     {
@@ -1264,7 +1251,7 @@ namespace ClangVSx
 
 
                 // we want to create a unique list of libraries to link alongside our object files
-                HashSet<String> librariesToLink = new HashSet<String>();
+                var librariesToLink = new HashSet<String>();
 
                 // sort out libraries for the runtime library choice
                 {
@@ -1294,7 +1281,7 @@ namespace ClangVSx
                 // gather system + additional libs
                 try
                 {
-                    IVCRulePropertyStorage generalRule = (IVCRulePropertyStorage) vcCfg.Rules.Item("Link");
+                    var generalRule = (IVCRulePropertyStorage) vcCfg.Rules.Item("Link");
                     String additionalDependency = generalRule.GetEvaluatedPropertyValue("AdditionalDependencies");
 
                     if (vcLinkerTool.AdditionalDependencies != null)
@@ -1303,7 +1290,7 @@ namespace ClangVSx
                     }
                     if (!String.IsNullOrEmpty(additionalDependency))
                     {
-                        String[] cAddIncDirs = vcCfg.Evaluate(additionalDependency).Split(new char[] {';', ' '});
+                        String[] cAddIncDirs = vcCfg.Evaluate(additionalDependency).Split(new[] {';', ' '});
                         foreach (string pd in cAddIncDirs)
                         {
                             if (!String.IsNullOrEmpty(pd))
@@ -1363,7 +1350,7 @@ namespace ClangVSx
                     }
                     if (!String.IsNullOrEmpty(systemLibDirs))
                     {
-                        StringBuilder newLibEnv = new StringBuilder(512);
+                        var newLibEnv = new StringBuilder(512);
                         String cAddIncDir = systemLibDirs.Replace(",", ";");
                         String[] cAddIncDirs = cAddIncDir.Split(';');
 
@@ -1385,7 +1372,7 @@ namespace ClangVSx
                 // otherwise...
             }
             else if (vcCfg.ConfigurationType ==
-                     Microsoft.VisualStudio.VCProjectEngine.ConfigurationTypes.typeStaticLibrary)
+                     ConfigurationTypes.typeStaticLibrary)
             {
                 // link to static library
                 linkProcess.StartInfo.FileName = LocationLIBExe;
@@ -1405,9 +1392,9 @@ namespace ClangVSx
 
             // put the linker options into a file, we only have ~2000 characters to play with if sending direct which will
             // overflow quickly on any decent sized project
-            String respFileName = System.IO.Path.GetRandomFileName();
-            String respFilePath = System.IO.Path.Combine(vcProject.ProjectDirectory, respFileName);
-            System.IO.StreamWriter respFile = new System.IO.StreamWriter(respFilePath);
+            String respFileName = Path.GetRandomFileName();
+            String respFilePath = Path.Combine(vcProject.ProjectDirectory, respFileName);
+            var respFile = new StreamWriter(respFilePath);
             respFile.WriteLine(linkString);
             respFile.Close();
 
@@ -1424,7 +1411,7 @@ namespace ClangVSx
             linkProcess.WaitForExit();
 
             // kill the temporary linker resp file
-            System.IO.File.Delete(respFilePath);
+            File.Delete(respFilePath);
 
             if (linkProcess.ExitCode != 0)
             {
@@ -1436,14 +1423,14 @@ namespace ClangVSx
                 // test that we got something out of the linker; it will delete the result if something bad happened (that we didn't catch above)
                 // find a full pathname for the file, relative or not
                 String fullResultPath = outLink;
-                if (!System.IO.Path.IsPathRooted(fullResultPath))
+                if (!Path.IsPathRooted(fullResultPath))
                     fullResultPath = vcProject.ProjectDirectory + outLink;
 
-                if (System.IO.File.Exists(fullResultPath))
+                if (File.Exists(fullResultPath))
                 {
                     WriteToOutputPane("\nLinking Successful\n");
 
-                    FileInfo fi = new FileInfo(fullResultPath);
+                    var fi = new FileInfo(fullResultPath);
                     WriteToOutputPane("Result Size(b) : " + fi.Length.ToString() + "\n");
                 }
                 else
@@ -1457,8 +1444,8 @@ namespace ClangVSx
 
         internal bool doPostBuild(VCProject vcProject, VCConfiguration vcCfg)
         {
-            IVCCollection fTools = (IVCCollection) vcCfg.Tools;
-            VCPostBuildEventTool postBuildTool = (VCPostBuildEventTool) fTools.Item("VCPostBuildEventTool");
+            var fTools = (IVCCollection) vcCfg.Tools;
+            var postBuildTool = (VCPostBuildEventTool) fTools.Item("VCPostBuildEventTool");
 
             if (!postBuildTool.ExcludedFromBuild && !String.IsNullOrEmpty(postBuildTool.CommandLine))
             {
@@ -1467,6 +1454,22 @@ namespace ClangVSx
             }
 
             return true;
+        }
+
+        #endregion
+
+        #region Nested type: ProjectFile
+
+        internal struct ProjectFile
+        {
+            public VCFileConfiguration Config;
+            public VCFile File;
+
+            public ProjectFile(VCFile _f, VCFileConfiguration _c)
+            {
+                File = _f;
+                Config = _c;
+            }
         }
 
         #endregion

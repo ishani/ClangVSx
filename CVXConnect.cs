@@ -16,6 +16,7 @@ using Extensibility;
 using Microsoft.VisualStudio.CommandBars;
 using Microsoft.VisualStudio.VCProjectEngine;
 using NEnhancer.Common;
+using Thread = System.Threading.Thread;
 
 namespace ClangVSx
 {
@@ -23,22 +24,20 @@ namespace ClangVSx
     /// <seealso class='IDTExtensibility2' />
     public class CVXConnect : IDTExtensibility2, IDTCommandTarget
     {
-        private DTE2 _applicationObject;
-        private DTEHelper _dteHelper;
-        private AddIn _addInInstance;
-
-        private CommandBarButton SettingsButton;
-        private CommandBarButton RebuildActiveProjectButton;
-        private CommandBarEvents CompileCmdEvent;
+        private readonly List<String> TemporaryFilesCreatedDuringThisSession = new List<String>();
         private CommandBarEvents AnalyseCmdEvent;
+        private bool BuildInProgress;
+        private CommandBarEvents CompileCmdEvent;
         private CommandBarEvents DasmCmdEvent;
         private CommandBarEvents PreproCmdEvent;
-
-        private List<String> TemporaryFilesCreatedDuringThisSession = new List<String>();
-        private bool BuildInProgress;
+        private CommandBarButton RebuildActiveProjectButton;
+        private CommandBarButton SettingsButton;
 
         // instance of the compiler bridge; this offers up the main worker functions that go off and compile files, projects, etc.
         private ClangOps _CVXOps;
+        private AddIn _addInInstance;
+        private DTE2 _applicationObject;
+        private DTEHelper _dteHelper;
 
         #region Commands
 
@@ -63,6 +62,103 @@ namespace ClangVSx
         {
             BuildInProgress = false;
         }
+
+        #region IDTCommandTarget Members
+
+        /// <summary>Implements the QueryStatus method of the IDTCommandTarget interface. This is called when the command's availability is updated</summary>
+        /// <param term='commandName'>The name of the command to determine state for.</param>
+        /// <param term='neededText'>Text that is needed for the command.</param>
+        /// <param term='status'>The state of the command in the user interface.</param>
+        /// <param term='commandText'>Text requested by the neededText parameter.</param>
+        /// <seealso class='Exec' />
+        public void QueryStatus(string commandName, vsCommandStatusTextWanted neededText, ref vsCommandStatus status,
+                                ref object commandText)
+        {
+            if (neededText == vsCommandStatusTextWanted.vsCommandStatusTextWantedNone)
+            {
+                if (commandName.StartsWith("ClangVSx.CVXConnect"))
+                {
+                    status = vsCommandStatus.vsCommandStatusSupported;
+
+                    if (commandName.EndsWith(COMMAND_CLANG_SETTINGS_DLG))
+                    {
+                        // don't change settings mid-build
+                        if (!BuildInProgress)
+                            status |= vsCommandStatus.vsCommandStatusEnabled;
+                    }
+                    else if (commandName.EndsWith(COMMAND_CLANG_REBUILD_ACTIVE))
+                    {
+                        if (!BuildInProgress && _applicationObject.Solution.Count != 0)
+                            status |= vsCommandStatus.vsCommandStatusEnabled;
+                    }
+                    else if (commandName.EndsWith(COMMAND_CLANG_RELINK_ACTIVE))
+                    {
+                        if (!BuildInProgress && _applicationObject.Solution.Count != 0)
+                            status |= vsCommandStatus.vsCommandStatusEnabled;
+                    }
+                }
+            }
+        }
+
+        /// <summary>Implements the Exec method of the IDTCommandTarget interface. This is called when the command is invoked.</summary>
+        /// <param term='commandName'>The name of the command to execute.</param>
+        /// <param term='executeOption'>Describes how the command should be run.</param>
+        /// <param term='varIn'>Parameters passed from the caller to the command handler.</param>
+        /// <param term='varOut'>Parameters passed from the command handler to the caller.</param>
+        /// <param term='handled'>Informs the caller if the command was handled or not.</param>
+        /// <seealso class='Exec' />
+        public void Exec(string commandName, vsCommandExecOption executeOption, ref object varIn, ref object varOut,
+                         ref bool handled)
+        {
+            handled = false;
+            if (executeOption == vsCommandExecOption.vsCommandExecOptionDoDefault)
+            {
+                String cmd = GetCommandShortName(commandName);
+                switch (cmd)
+                {
+                    case COMMAND_CLANG_SETTINGS_DLG:
+                        {
+                            handled = true;
+                            ShowCVXSettingsDialog();
+                        }
+                        break;
+
+                    case COMMAND_CLANG_RELINK_ACTIVE:
+                    case COMMAND_CLANG_REBUILD_ACTIVE:
+                        {
+                            handled = true;
+                            _applicationObject.Documents.SaveAll();
+
+                            try
+                            {
+                                // build a config options block, set the delegates for build events to toggle
+                                // our local build-is-running variable that will disable all other Clang actions until it finishes
+                                var pbc = new ClangOps.ProjectBuildConfig();
+                                pbc.BuildBegun = (bool success) => { BuildInProgress = true; };
+                                pbc.BuildFinished = (bool success) => { BuildInProgress = false; };
+                                pbc.JustLink = (cmd == COMMAND_CLANG_RELINK_ACTIVE);
+
+                                // start the build on another thread so the output pane updates asynchronously
+                                ParameterizedThreadStart buildDelegate =
+                                    _CVXOps.BuildActiveProject;
+                                var newThread = new Thread(buildDelegate);
+                                newThread.Start(pbc);
+                            }
+                            catch (Exception ex)
+                            {
+                                BuildInProgress = false;
+                                MessageBox.Show(ex.Message, "ClangVSx - Project Build Error", MessageBoxButtons.OK,
+                                                MessageBoxIcon.Error);
+                            }
+                        }
+                        break;
+                }
+            }
+        }
+
+        #endregion
+
+        #region IDTExtensibility2 Members
 
         /// <summary>Implements the OnConnection method of the IDTExtensibility2 interface. Receives notification that the Add-in is being loaded.</summary>
         /// <param term='application'>Root object of the host application.</param>
@@ -98,18 +194,18 @@ namespace ClangVSx
         /// <seealso class='IDTExtensibility2' />
         public void OnStartupComplete(ref Array custom)
         {
-            object[] contextGUIDS = new object[] {};
-            Commands2 commands = (Commands2) _applicationObject.Commands;
-            Microsoft.VisualStudio.CommandBars.CommandBars _commandBars =
-                ((Microsoft.VisualStudio.CommandBars.CommandBars) _applicationObject.CommandBars);
+            var contextGUIDS = new object[] {};
+            var commands = (Commands2) _applicationObject.Commands;
+            var _commandBars =
+                ((CommandBars) _applicationObject.CommandBars);
 
             // add a top-level menu to stick some global options in
             {
                 Microsoft.VisualStudio.CommandBars.CommandBar menuBarCommandBar =
-                    ((Microsoft.VisualStudio.CommandBars.CommandBars) _applicationObject.CommandBars)["MenuBar"];
+                    ((CommandBars) _applicationObject.CommandBars)["MenuBar"];
 
                 int nenhancerPopupIndex = menuBarCommandBar.Controls.Count + 1;
-                CommandBarPopup clangMenuRoot = menuBarCommandBar.Controls.Add(
+                var clangMenuRoot = menuBarCommandBar.Controls.Add(
                     MsoControlType.msoControlPopup,
                     Type.Missing,
                     Type.Missing,
@@ -166,7 +262,7 @@ namespace ClangVSx
                     _dteHelper.GetCommandBarByName("Code Window");
 
                 int pmPopupIndex = codeWinCommandBar.Controls.Count + 1;
-                CommandBarPopup pmPopup = codeWinCommandBar.Controls.Add(
+                var pmPopup = codeWinCommandBar.Controls.Add(
                     MsoControlType.msoControlPopup,
                     Type.Missing,
                     Type.Missing,
@@ -180,7 +276,7 @@ namespace ClangVSx
                     "Compile",
                     "Compile");
                 CompileCmdEvent = _applicationObject.Events.get_CommandBarEvents(saveAndCompileCmd) as CommandBarEvents;
-                CompileCmdEvent.Click += new _dispCommandBarControlEvents_ClickEventHandler(cvxCompileFile_menuop);
+                CompileCmdEvent.Click += cvxCompileFile_menuop;
 
                 CommandBarButton saveAndAnalyseCmd = _dteHelper.AddButtonToPopup(
                     pmPopup,
@@ -188,7 +284,7 @@ namespace ClangVSx
                     "Run Static Analysis",
                     "Run Static Analysis");
                 AnalyseCmdEvent = _applicationObject.Events.get_CommandBarEvents(saveAndAnalyseCmd) as CommandBarEvents;
-                AnalyseCmdEvent.Click += new _dispCommandBarControlEvents_ClickEventHandler(cvxAnalyseFile_menuop);
+                AnalyseCmdEvent.Click += cvxAnalyseFile_menuop;
 
                 CommandBarButton saveAndDasmCmd = _dteHelper.AddButtonToPopup(
                     pmPopup,
@@ -196,7 +292,7 @@ namespace ClangVSx
                     "View Disassembly (LLVM)",
                     "View Disassembly (LLVM)");
                 DasmCmdEvent = _applicationObject.Events.get_CommandBarEvents(saveAndDasmCmd) as CommandBarEvents;
-                DasmCmdEvent.Click += new _dispCommandBarControlEvents_ClickEventHandler(cvxDasmnFile_menuop);
+                DasmCmdEvent.Click += cvxDasmnFile_menuop;
 
                 CommandBarButton dasmAndPreproCmd = _dteHelper.AddButtonToPopup(
                     pmPopup,
@@ -204,7 +300,7 @@ namespace ClangVSx
                     "View Preprocessor Result",
                     "View Preprocessor Result");
                 PreproCmdEvent = _applicationObject.Events.get_CommandBarEvents(dasmAndPreproCmd) as CommandBarEvents;
-                PreproCmdEvent.Click += new _dispCommandBarControlEvents_ClickEventHandler(cvxPreProFile_menuop);
+                PreproCmdEvent.Click += cvxPreProFile_menuop;
             }
         }
 
@@ -221,96 +317,7 @@ namespace ClangVSx
             }
         }
 
-        /// <summary>Implements the QueryStatus method of the IDTCommandTarget interface. This is called when the command's availability is updated</summary>
-        /// <param term='commandName'>The name of the command to determine state for.</param>
-        /// <param term='neededText'>Text that is needed for the command.</param>
-        /// <param term='status'>The state of the command in the user interface.</param>
-        /// <param term='commandText'>Text requested by the neededText parameter.</param>
-        /// <seealso class='Exec' />
-        public void QueryStatus(string commandName, vsCommandStatusTextWanted neededText, ref vsCommandStatus status,
-                                ref object commandText)
-        {
-            if (neededText == vsCommandStatusTextWanted.vsCommandStatusTextWantedNone)
-            {
-                if (commandName.StartsWith("ClangVSx.CVXConnect"))
-                {
-                    status = (vsCommandStatus) vsCommandStatus.vsCommandStatusSupported;
-
-                    if (commandName.EndsWith(COMMAND_CLANG_SETTINGS_DLG))
-                    {
-                        // don't change settings mid-build
-                        if (!BuildInProgress)
-                            status |= vsCommandStatus.vsCommandStatusEnabled;
-                    }
-                    else if (commandName.EndsWith(COMMAND_CLANG_REBUILD_ACTIVE))
-                    {
-                        if (!BuildInProgress && _applicationObject.Solution.Count != 0)
-                            status |= vsCommandStatus.vsCommandStatusEnabled;
-                    }
-                    else if (commandName.EndsWith(COMMAND_CLANG_RELINK_ACTIVE))
-                    {
-                        if (!BuildInProgress && _applicationObject.Solution.Count != 0)
-                            status |= vsCommandStatus.vsCommandStatusEnabled;
-                    }
-                }
-            }
-        }
-
-        /// <summary>Implements the Exec method of the IDTCommandTarget interface. This is called when the command is invoked.</summary>
-        /// <param term='commandName'>The name of the command to execute.</param>
-        /// <param term='executeOption'>Describes how the command should be run.</param>
-        /// <param term='varIn'>Parameters passed from the caller to the command handler.</param>
-        /// <param term='varOut'>Parameters passed from the command handler to the caller.</param>
-        /// <param term='handled'>Informs the caller if the command was handled or not.</param>
-        /// <seealso class='Exec' />
-        public void Exec(string commandName, vsCommandExecOption executeOption, ref object varIn, ref object varOut,
-                         ref bool handled)
-        {
-            handled = false;
-            if (executeOption == vsCommandExecOption.vsCommandExecOptionDoDefault)
-            {
-                String cmd = GetCommandShortName(commandName);
-                switch (cmd)
-                {
-                    case COMMAND_CLANG_SETTINGS_DLG:
-                        {
-                            handled = true;
-                            ShowCVXSettingsDialog();
-                        }
-                        break;
-
-                    case COMMAND_CLANG_RELINK_ACTIVE:
-                    case COMMAND_CLANG_REBUILD_ACTIVE:
-                        {
-                            handled = true;
-                            _applicationObject.Documents.SaveAll();
-
-                            try
-                            {
-                                // build a config options block, set the delegates for build events to toggle
-                                // our local build-is-running variable that will disable all other Clang actions until it finishes
-                                ClangOps.ProjectBuildConfig pbc = new ClangOps.ProjectBuildConfig();
-                                pbc.BuildBegun = (bool success) => { BuildInProgress = true; };
-                                pbc.BuildFinished = (bool success) => { BuildInProgress = false; };
-                                pbc.JustLink = (cmd == COMMAND_CLANG_RELINK_ACTIVE);
-
-                                // start the build on another thread so the output pane updates asynchronously
-                                ParameterizedThreadStart buildDelegate =
-                                    new ParameterizedThreadStart(_CVXOps.BuildActiveProject);
-                                System.Threading.Thread newThread = new System.Threading.Thread(buildDelegate);
-                                newThread.Start(pbc);
-                            }
-                            catch (System.Exception ex)
-                            {
-                                BuildInProgress = false;
-                                MessageBox.Show(ex.Message, "ClangVSx - Project Build Error", MessageBoxButtons.OK,
-                                                MessageBoxIcon.Error);
-                            }
-                        }
-                        break;
-                }
-            }
-        }
+        #endregion
 
         internal void ReportBuildInProgress()
         {
@@ -470,12 +477,12 @@ namespace ClangVSx
                             _applicationObject.ActiveDocument.Save(vcFile.FullPath);
 
                         // get current configuration to pass to the bridge
-                        EnvDTE.Configuration cfg =
+                        Configuration cfg =
                             _applicationObject.ActiveDocument.ProjectItem.ConfigurationManager.ActiveConfiguration;
 
                         try
                         {
-                            IVCCollection cfgArray = (IVCCollection) vcProject.Configurations;
+                            var cfgArray = (IVCCollection) vcProject.Configurations;
                             foreach (VCConfiguration vcr in cfgArray)
                             {
                                 if (vcr.ConfigurationName == cfg.ConfigurationName &&
@@ -485,7 +492,7 @@ namespace ClangVSx
                                 }
                             }
                         }
-                        catch (System.Exception)
+                        catch (Exception)
                         {
                             return false;
                         }
@@ -500,28 +507,36 @@ namespace ClangVSx
 
 
         /// <summary>
+        /// display our settings panel
+        /// </summary>
+        private void ShowCVXSettingsDialog()
+        {
+            var wW = new IWinWrapper();
+            wW.mHandle = _applicationObject.MainWindow.HWnd;
+
+            var dlg = new CVXSettings();
+            dlg.ShowDialog(wW);
+        }
+
+        #region Nested type: IWinWrapper
+
+        /// <summary>
         /// workaround for providing IWin32Window interface for IntPtr HWNDs
         /// </summary>
         private class IWinWrapper : IWin32Window
         {
             public int mHandle;
 
+            #region IWin32Window Members
+
             public IntPtr Handle
             {
                 get { return (IntPtr) mHandle; }
             }
+
+            #endregion
         }
 
-        /// <summary>
-        /// display our settings panel
-        /// </summary>
-        private void ShowCVXSettingsDialog()
-        {
-            IWinWrapper wW = new IWinWrapper();
-            wW.mHandle = _applicationObject.MainWindow.HWnd;
-
-            CVXSettings dlg = new CVXSettings();
-            dlg.ShowDialog(wW);
-        }
+        #endregion
     }
 }

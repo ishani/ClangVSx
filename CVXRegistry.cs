@@ -21,7 +21,7 @@ namespace ClangVSx
         {
             if (state.GetType() == typeof (Boolean))
             {
-                Boolean stateAsBool = (Boolean) state;
+                var stateAsBool = (Boolean) state;
 
                 Int32 defaultState = (stateAsBool ? 1 : 0);
                 defaultState = (Int32) reg.GetValue(keyName, defaultState);
@@ -38,7 +38,7 @@ namespace ClangVSx
         {
             if (state.GetType() == typeof (Boolean))
             {
-                Boolean stateAsBool = (Boolean) state;
+                var stateAsBool = (Boolean) state;
 
                 Int32 saveValue = (stateAsBool ? 1 : 0);
                 reg.SetValue(keyName, saveValue);
@@ -103,9 +103,9 @@ namespace ClangVSx
 
     internal class CVXRegistryItem<T>
     {
-        private Win32Registry _registry = new Win32Registry();
-        private T _default_value;
-        private string _name;
+        private readonly T _default_value;
+        private readonly string _name;
+        private readonly Win32Registry _registry = new Win32Registry();
 
         public CVXRegistryItem(Expression<Func<CVXRegistryItem<T>>> expr, T defaultValue)
         {
@@ -120,10 +120,10 @@ namespace ClangVSx
             get
             {
                 // sketchy way to get name of property from inside accessors
-                return _registry.LoadFrom<T>(_name, _default_value);
+                return _registry.LoadFrom(_name, _default_value);
             }
 
-            set { _registry.SaveTo<T>(_name, value); }
+            set { _registry.SaveTo(_name, value); }
         }
 
         // this is just sugar that allows for

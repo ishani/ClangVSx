@@ -7,12 +7,9 @@
 
 
 using System;
+using System.Diagnostics;
+using System.IO;
 using System.Reflection;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Text;
 using System.Windows.Forms;
 
 namespace ClangVSx
@@ -41,18 +38,18 @@ namespace ClangVSx
             // blot the version number up in the title bar
             Assembly assem = Assembly.GetExecutingAssembly();
             Version vers = assem.GetName().Version;
-            this.Text = "ClangVSx " + vers.ToString();
+            Text = "ClangVSx " + vers;
         }
 
         private bool validEXELocation(String loc)
         {
             // scientific! -.-
-            return (System.IO.File.Exists(loc) && loc.ToLower().EndsWith(".exe"));
+            return (File.Exists(loc) && loc.ToLower().EndsWith(".exe"));
         }
 
         private void cvxBrowse_Click(object sender, EventArgs e)
         {
-            findClangExe.InitialDirectory = System.IO.Path.GetDirectoryName(cvxLocation.Text);
+            findClangExe.InitialDirectory = Path.GetDirectoryName(cvxLocation.Text);
             if (findClangExe.ShowDialog(this) == DialogResult.OK)
             {
                 cvxLocation.Text = findClangExe.FileName;
@@ -93,11 +90,11 @@ namespace ClangVSx
                 String cvxStatsStr = "";
 
                 // execute the compiler, ask for version info
-                System.Diagnostics.Process compileProcess = new System.Diagnostics.Process();
+                var compileProcess = new Process();
                 compileProcess.StartInfo.FileName = cvxLocation.Text;
                 compileProcess.StartInfo.Arguments = "-v";
                 compileProcess.StartInfo.UseShellExecute = false;
-                compileProcess.StartInfo.WindowStyle = System.Diagnostics.ProcessWindowStyle.Hidden;
+                compileProcess.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
                 compileProcess.StartInfo.CreateNoWindow = true;
                 compileProcess.StartInfo.RedirectStandardOutput = true;
                 compileProcess.StartInfo.RedirectStandardError = true;
@@ -130,7 +127,7 @@ namespace ClangVSx
 
         private void url_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            System.Diagnostics.Process.Start(((LinkLabel) sender).Text);
+            Process.Start(((LinkLabel) sender).Text);
         }
 
         private void cvxCancel_Click(object sender, EventArgs e)
