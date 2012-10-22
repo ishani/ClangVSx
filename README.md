@@ -1,7 +1,7 @@
 ClangVSx
 ========
 
-AddIn for Visual Studio 2010 that allows use of the Clang C/C++ compiler in place of MSVC++. Translates VC project and build settings into gcc-friendly command line arguments, along with existing platform tools (MSVC Linker, Librarian, RC) to complete the build chain. 
+AddIn for Visual Studio 2010/2012 that allows use of the Clang C/C++ compiler in place of MSVC++. Translates VC project and build settings into gcc-friendly command line arguments, along with existing platform tools (MSVC Linker, Librarian, RC) to complete the build chain. 
 
 One click 'Build Project' testing of Clang in Windows development environments!
 
@@ -15,12 +15,19 @@ Some things **not** supported:
 * ATL / MFC projects (Clang can't handle certain ATL/COM headers properly yet)
 
 
-Added in v0.3.2
+Changes in v0.4.0
+
+* Code clean-up courtesy of [Ilibis](https://github.com/ilibis) fork
+* Settings support for toggling C++11, MS C++ ABI
+* Settings support for different platform targets (proper support for x86/x64/ARM variants)
+* Further testing on VS2012 RTM
+
+Changes in v0.3.2
 
 * Support for latest Clang 3.2 changes - specifically the removal of llvm-ld during LTO phase
 * Support added for Visual Studio 2012 RC
 
-Added in v0.3
+Changes in v0.3
 
 * Support for LTCG (LTO) - ClangVSx will compile to LLVM bitcode, link and optimise the artifacts into a single object file before doing native code generation. 
 
@@ -28,14 +35,14 @@ Added in v0.3
 Required Compiler Patches
 -------------------------
 
-ClangVSx requires Clang 3.0 or above - preferably 3.2.
-However, 3.2 still does not cleanly compile projects using the Windows Platform SDK. I maintain a pre-built version that contains a few patches in this area. Read more [here](http://www.ishani.org/web/articles/code/clang-win32/).
+ClangVSx requires Clang 3.1 or above - preferably 3.2.
+A pre-built version of Clang for Windows, tracked to the latest code changes from SVN, is available [here](http://www.ishani.org/web/articles/code/clang-win32/).
   
   
 - - -
   
 
-Usage (v0.3.2)
+Usage 
 ------------
 There is a directory for each Visual Studio platform supported in the pre-built zip. 
 
@@ -53,6 +60,11 @@ A context-menu option is added to code editor windows that allows for Clang-spec
 
 Release Notes
 -------------
+
+**Version 0.4.0** (2012-10-22)
+
+* Testing against VS 2012 RTM, Windows 8
+* More settings options, better support for 32/64 bit project targets in VS
 
 **Version 0.3.2** (2012-08-09)
 

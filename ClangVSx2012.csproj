@@ -21,7 +21,7 @@
     <OutputPath>bin\2012\Debug\</OutputPath>
     <BaseIntermediateOutputPath>obj\2012\Debug\</BaseIntermediateOutputPath>
     <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;CVSX_2012</DefineConstants>
     <WarningLevel>4</WarningLevel>
     <IncrementalBuild>false</IncrementalBuild>
     <DocumentationFile>ClangVSx.xml</DocumentationFile>
@@ -34,7 +34,7 @@
     <OutputPath>bin\2012\Release\</OutputPath>
     <BaseIntermediateOutputPath>obj\2012\Release\</BaseIntermediateOutputPath>
     <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
-    <DefineConstants>TRACE</DefineConstants>
+    <DefineConstants>TRACE;CVSX_2012</DefineConstants>
     <WarningLevel>4</WarningLevel>
     <IncrementalBuild>false</IncrementalBuild>
     <DocumentationFile>ClangVSx.xml</DocumentationFile>

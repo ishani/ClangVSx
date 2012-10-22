@@ -59,12 +59,16 @@ namespace ClangVSx
       this.cvxTripleX64 = new System.Windows.Forms.ComboBox();
       this.label3 = new System.Windows.Forms.Label();
       this.cvxTripleWin32 = new System.Windows.Forms.ComboBox();
+      this.groupBox3 = new System.Windows.Forms.GroupBox();
+      this.cvxCOptMSABI = new System.Windows.Forms.CheckBox();
+      this.cvxCOptCPP11 = new System.Windows.Forms.CheckBox();
       ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
       this.groupBox1.SuspendLayout();
       ((System.ComponentModel.ISupportInitialize)(this.cvxPic)).BeginInit();
       this.panel1.SuspendLayout();
       this.bridgeOps.SuspendLayout();
       this.groupBox2.SuspendLayout();
+      this.groupBox3.SuspendLayout();
       this.SuspendLayout();
       // 
       // pictureBox1
@@ -143,7 +147,7 @@ namespace ClangVSx
       // 
       // cvxDone
       // 
-      this.cvxDone.Location = new System.Drawing.Point(679, 268);
+      this.cvxDone.Location = new System.Drawing.Point(679, 293);
       this.cvxDone.Name = "cvxDone";
       this.cvxDone.Size = new System.Drawing.Size(112, 23);
       this.cvxDone.TabIndex = 5;
@@ -164,7 +168,7 @@ namespace ClangVSx
       this.panel1.Controls.Add(this.label1);
       this.panel1.Controls.Add(this.linkLabel3);
       this.panel1.Dock = System.Windows.Forms.DockStyle.Bottom;
-      this.panel1.Location = new System.Drawing.Point(0, 297);
+      this.panel1.Location = new System.Drawing.Point(0, 322);
       this.panel1.Name = "panel1";
       this.panel1.Size = new System.Drawing.Size(798, 24);
       this.panel1.TabIndex = 6;
@@ -194,7 +198,7 @@ namespace ClangVSx
       // 
       // cvxCancel
       // 
-      this.cvxCancel.Location = new System.Drawing.Point(561, 268);
+      this.cvxCancel.Location = new System.Drawing.Point(561, 293);
       this.cvxCancel.Name = "cvxCancel";
       this.cvxCancel.Size = new System.Drawing.Size(112, 23);
       this.cvxCancel.TabIndex = 7;
@@ -208,7 +212,7 @@ namespace ClangVSx
       this.bridgeOps.Controls.Add(this.cvxEcho);
       this.bridgeOps.Controls.Add(this.cvxBatch);
       this.bridgeOps.Controls.Add(this.cvxShowCmds);
-      this.bridgeOps.Location = new System.Drawing.Point(500, 109);
+      this.bridgeOps.Location = new System.Drawing.Point(500, 12);
       this.bridgeOps.Name = "bridgeOps";
       this.bridgeOps.Size = new System.Drawing.Size(291, 110);
       this.bridgeOps.TabIndex = 8;
@@ -363,12 +367,44 @@ namespace ClangVSx
       this.cvxTripleWin32.TabIndex = 6;
       this.cvxTripleWin32.Text = "i686-pc-win32";
       // 
+      // groupBox3
+      // 
+      this.groupBox3.Controls.Add(this.cvxCOptCPP11);
+      this.groupBox3.Controls.Add(this.cvxCOptMSABI);
+      this.groupBox3.Location = new System.Drawing.Point(500, 129);
+      this.groupBox3.Name = "groupBox3";
+      this.groupBox3.Size = new System.Drawing.Size(291, 133);
+      this.groupBox3.TabIndex = 10;
+      this.groupBox3.TabStop = false;
+      this.groupBox3.Text = "Compilation Options";
+      // 
+      // cvxCOptMSABI
+      // 
+      this.cvxCOptMSABI.AutoSize = true;
+      this.cvxCOptMSABI.Location = new System.Drawing.Point(10, 46);
+      this.cvxCOptMSABI.Name = "cvxCOptMSABI";
+      this.cvxCOptMSABI.Size = new System.Drawing.Size(201, 17);
+      this.cvxCOptMSABI.TabIndex = 12;
+      this.cvxCOptMSABI.Text = "Force Microsoft C++ ABI (incomplete)";
+      this.cvxCOptMSABI.UseVisualStyleBackColor = true;
+      // 
+      // cvxCOptCPP11
+      // 
+      this.cvxCOptCPP11.AutoSize = true;
+      this.cvxCOptCPP11.Location = new System.Drawing.Point(10, 23);
+      this.cvxCOptCPP11.Name = "cvxCOptCPP11";
+      this.cvxCOptCPP11.Size = new System.Drawing.Size(93, 17);
+      this.cvxCOptCPP11.TabIndex = 13;
+      this.cvxCOptCPP11.Text = "Enable C++11";
+      this.cvxCOptCPP11.UseVisualStyleBackColor = true;
+      // 
       // CVXSettings
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-      this.ClientSize = new System.Drawing.Size(798, 321);
+      this.ClientSize = new System.Drawing.Size(798, 346);
       this.ControlBox = false;
+      this.Controls.Add(this.groupBox3);
       this.Controls.Add(this.groupBox2);
       this.Controls.Add(this.bridgeOps);
       this.Controls.Add(this.cvxCancel);
@@ -396,6 +432,8 @@ namespace ClangVSx
       this.bridgeOps.PerformLayout();
       this.groupBox2.ResumeLayout(false);
       this.groupBox2.PerformLayout();
+      this.groupBox3.ResumeLayout(false);
+      this.groupBox3.PerformLayout();
       this.ResumeLayout(false);
       this.PerformLayout();
 
@@ -430,6 +468,9 @@ namespace ClangVSx
     private System.Windows.Forms.ComboBox cvxTripleX64;
     private System.Windows.Forms.Label label5;
     private System.Windows.Forms.ComboBox cvxTripleARM;
+    private System.Windows.Forms.GroupBox groupBox3;
+    private System.Windows.Forms.CheckBox cvxCOptCPP11;
+    private System.Windows.Forms.CheckBox cvxCOptMSABI;
 
 
   }
