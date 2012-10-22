@@ -4,6 +4,33 @@
         <name>ClangVSx</name>
     </assembly>
     <members>
+        <member name="T:ClangVSx.CVXSettings">
+            <summary>
+            Settings Dialog Box
+            </summary>
+        </member>
+        <member name="M:ClangVSx.CVXSettings.#ctor">
+            <summary>
+            Settings management
+            </summary>
+        </member>
+        <member name="F:ClangVSx.CVXSettings.components">
+            <summary>
+            Required designer variable.
+            </summary>
+        </member>
+        <member name="M:ClangVSx.CVXSettings.Dispose(System.Boolean)">
+            <summary>
+            Clean up any resources being used.
+            </summary>
+            <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        </member>
+        <member name="M:ClangVSx.CVXSettings.InitializeComponent">
+            <summary>
+            Required method for Designer support - do not modify
+            the contents of this method with the code editor.
+            </summary>
+        </member>
         <member name="T:ClangVSx.CommandBar">
             <summary>
               A strongly-typed resource class, for looking up localized strings, etc.
@@ -1505,33 +1532,6 @@
               Looks up a localized string similar to XML.
             </summary>
         </member>
-        <member name="T:ClangVSx.CVXSettings">
-            <summary>
-            Settings Dialog Box
-            </summary>
-        </member>
-        <member name="M:ClangVSx.CVXSettings.#ctor">
-            <summary>
-            Settings management
-            </summary>
-        </member>
-        <member name="F:ClangVSx.CVXSettings.components">
-            <summary>
-            Required designer variable.
-            </summary>
-        </member>
-        <member name="M:ClangVSx.CVXSettings.Dispose(System.Boolean)">
-            <summary>
-            Clean up any resources being used.
-            </summary>
-            <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
-        </member>
-        <member name="M:ClangVSx.CVXSettings.InitializeComponent">
-            <summary>
-            Required method for Designer support - do not modify
-            the contents of this method with the code editor.
-            </summary>
-        </member>
         <member name="M:ClangVSx.ClangOps.#ctor(EnvDTE80.DTE2)">
             <summary>
             
@@ -1550,6 +1550,99 @@
         <member name="M:ClangVSx.ClangOps.BuildActiveProject(System.Object)">
             <summary>
             Compile the project that is set as the 'startup project' in the solution
+            </summary>
+        </member>
+        <member name="T:ClangVSx.CVXConnect">
+            <summary>The object for implementing an Add-in.</summary>
+            <seealso class='IDTExtensibility2' />
+        </member>
+        <member name="M:ClangVSx.CVXConnect.#ctor">
+            <summary>Implements the constructor for the Add-in object. Place your initialization code within this method.</summary>
+        </member>
+        <member name="M:ClangVSx.CVXConnect.QueryStatus(System.String,EnvDTE.vsCommandStatusTextWanted,EnvDTE.vsCommandStatus@,System.Object@)">
+            <summary>Implements the QueryStatus method of the IDTCommandTarget interface. This is called when the command's availability is updated</summary>
+            <param term='commandName'>The name of the command to determine state for.</param>
+            <param term='neededText'>Text that is needed for the command.</param>
+            <param term='status'>The state of the command in the user interface.</param>
+            <param term='commandText'>Text requested by the neededText parameter.</param>
+            <seealso class='Exec' />
+        </member>
+        <member name="M:ClangVSx.CVXConnect.Exec(System.String,EnvDTE.vsCommandExecOption,System.Object@,System.Object@,System.Boolean@)">
+            <summary>Implements the Exec method of the IDTCommandTarget interface. This is called when the command is invoked.</summary>
+            <param term='commandName'>The name of the command to execute.</param>
+            <param term='executeOption'>Describes how the command should be run.</param>
+            <param term='varIn'>Parameters passed from the caller to the command handler.</param>
+            <param term='varOut'>Parameters passed from the command handler to the caller.</param>
+            <param term='handled'>Informs the caller if the command was handled or not.</param>
+            <seealso class='Exec' />
+        </member>
+        <member name="M:ClangVSx.CVXConnect.OnConnection(System.Object,Extensibility.ext_ConnectMode,System.Object,System.Array@)">
+            <summary>Implements the OnConnection method of the IDTExtensibility2 interface. Receives notification that the Add-in is being loaded.</summary>
+            <param term='application'>Root object of the host application.</param>
+            <param term='connectMode'>Describes how the Add-in is being loaded.</param>
+            <param term='addInInst'>Object representing this Add-in.</param>
+            <seealso class='IDTExtensibility2' />
+        </member>
+        <member name="M:ClangVSx.CVXConnect.OnDisconnection(Extensibility.ext_DisconnectMode,System.Array@)">
+            <summary>Implements the OnDisconnection method of the IDTExtensibility2 interface. Receives notification that the Add-in is being unloaded.</summary>
+            <param term='disconnectMode'>Describes how the Add-in is being unloaded.</param>
+            <param term='custom'>Array of parameters that are host application specific.</param>
+            <seealso class='IDTExtensibility2' />
+        </member>
+        <member name="M:ClangVSx.CVXConnect.OnAddInsUpdate(System.Array@)">
+            <summary>Implements the OnAddInsUpdate method of the IDTExtensibility2 interface. Receives notification when the collection of Add-ins has changed.</summary>
+            <param term='custom'>Array of parameters that are host application specific.</param>
+            <seealso class='IDTExtensibility2' />		
+        </member>
+        <member name="M:ClangVSx.CVXConnect.OnStartupComplete(System.Array@)">
+            <summary>Implements the OnStartupComplete method of the IDTExtensibility2 interface. Receives notification that the host application has completed loading.</summary>
+            <param term='custom'>Array of parameters that are host application specific.</param>
+            <seealso class='IDTExtensibility2' />
+        </member>
+        <member name="M:ClangVSx.CVXConnect.OnBeginShutdown(System.Array@)">
+            <summary>Implements the OnBeginShutdown method of the IDTExtensibility2 interface. Receives notification that the host application is being unloaded.</summary>
+            <param term='custom'>Array of parameters that are host application specific.</param>
+            <seealso class='IDTExtensibility2' />
+        </member>
+        <member name="M:ClangVSx.CVXConnect.cvxCompileFile_menuop(System.Object,System.Boolean@,System.Boolean@)">
+            <summary>
+            get the active code file and compile it
+            </summary>
+        </member>
+        <member name="M:ClangVSx.CVXConnect.cvxDasmnFile_menuop(System.Object,System.Boolean@,System.Boolean@)">
+            <summary>
+            ask clang to emit assembly listing for the given file, then pop that result open in VS
+            </summary>
+        </member>
+        <member name="M:ClangVSx.CVXConnect.cvxPreProFile_menuop(System.Object,System.Boolean@,System.Boolean@)">
+            <summary>
+            dump the preprocessor and native-assembly format listing
+            </summary>
+        </member>
+        <member name="M:ClangVSx.CVXConnect.cvxAnalyseFile_menuop(System.Object,System.Boolean@,System.Boolean@)">
+            <summary>
+            get the active code file and compile it, adding static analyzer arguments to the pile
+            </summary>
+        </member>
+        <member name="M:ClangVSx.CVXConnect.GetActiveVCFile(Microsoft.VisualStudio.VCProjectEngine.VCFile@,Microsoft.VisualStudio.VCProjectEngine.VCProject@,Microsoft.VisualStudio.VCProjectEngine.VCConfiguration@)">
+            <summary>
+            Get the active code file, project and configuration 
+            </summary>
+            <returns>true if we have found an active C/C++ document</returns>
+        </member>
+        <member name="M:ClangVSx.CVXConnect.ShowCVXSettingsDialog">
+            <summary>
+            display our settings panel
+            </summary>
+        </member>
+        <member name="T:ClangVSx.CVXConnect.IWinWrapper">
+            <summary>
+            workaround for providing IWin32Window interface for IntPtr HWNDs
+            </summary>
+        </member>
+        <member name="T:ClangVSx.CVXRegistry">
+            <summary>
+            Wrapper around registry access to load/save AddIn settings
             </summary>
         </member>
         <member name="T:ClangVSx.CVXBuildSystem">
@@ -1592,99 +1685,6 @@
         <member name="M:ClangVSx.CVXBuildSystem.BuildProject(Microsoft.VisualStudio.VCProjectEngine.VCProject,Microsoft.VisualStudio.VCProjectEngine.VCConfiguration,System.Boolean)">
             <summary>
             main worker function to build a project, swapping in our own tools as desired
-            </summary>
-        </member>
-        <member name="T:ClangVSx.CVXConnect">
-            <summary>The object for implementing an Add-in.</summary>
-            <seealso class='IDTExtensibility2' />
-        </member>
-        <member name="M:ClangVSx.CVXConnect.#ctor">
-            <summary>Implements the constructor for the Add-in object. Place your initialization code within this method.</summary>
-        </member>
-        <member name="M:ClangVSx.CVXConnect.OnConnection(System.Object,Extensibility.ext_ConnectMode,System.Object,System.Array@)">
-            <summary>Implements the OnConnection method of the IDTExtensibility2 interface. Receives notification that the Add-in is being loaded.</summary>
-            <param term='application'>Root object of the host application.</param>
-            <param term='connectMode'>Describes how the Add-in is being loaded.</param>
-            <param term='addInInst'>Object representing this Add-in.</param>
-            <seealso class='IDTExtensibility2' />
-        </member>
-        <member name="M:ClangVSx.CVXConnect.OnDisconnection(Extensibility.ext_DisconnectMode,System.Array@)">
-            <summary>Implements the OnDisconnection method of the IDTExtensibility2 interface. Receives notification that the Add-in is being unloaded.</summary>
-            <param term='disconnectMode'>Describes how the Add-in is being unloaded.</param>
-            <param term='custom'>Array of parameters that are host application specific.</param>
-            <seealso class='IDTExtensibility2' />
-        </member>
-        <member name="M:ClangVSx.CVXConnect.OnAddInsUpdate(System.Array@)">
-            <summary>Implements the OnAddInsUpdate method of the IDTExtensibility2 interface. Receives notification when the collection of Add-ins has changed.</summary>
-            <param term='custom'>Array of parameters that are host application specific.</param>
-            <seealso class='IDTExtensibility2' />		
-        </member>
-        <member name="M:ClangVSx.CVXConnect.OnStartupComplete(System.Array@)">
-            <summary>Implements the OnStartupComplete method of the IDTExtensibility2 interface. Receives notification that the host application has completed loading.</summary>
-            <param term='custom'>Array of parameters that are host application specific.</param>
-            <seealso class='IDTExtensibility2' />
-        </member>
-        <member name="M:ClangVSx.CVXConnect.OnBeginShutdown(System.Array@)">
-            <summary>Implements the OnBeginShutdown method of the IDTExtensibility2 interface. Receives notification that the host application is being unloaded.</summary>
-            <param term='custom'>Array of parameters that are host application specific.</param>
-            <seealso class='IDTExtensibility2' />
-        </member>
-        <member name="M:ClangVSx.CVXConnect.QueryStatus(System.String,EnvDTE.vsCommandStatusTextWanted,EnvDTE.vsCommandStatus@,System.Object@)">
-            <summary>Implements the QueryStatus method of the IDTCommandTarget interface. This is called when the command's availability is updated</summary>
-            <param term='commandName'>The name of the command to determine state for.</param>
-            <param term='neededText'>Text that is needed for the command.</param>
-            <param term='status'>The state of the command in the user interface.</param>
-            <param term='commandText'>Text requested by the neededText parameter.</param>
-            <seealso class='Exec' />
-        </member>
-        <member name="M:ClangVSx.CVXConnect.Exec(System.String,EnvDTE.vsCommandExecOption,System.Object@,System.Object@,System.Boolean@)">
-            <summary>Implements the Exec method of the IDTCommandTarget interface. This is called when the command is invoked.</summary>
-            <param term='commandName'>The name of the command to execute.</param>
-            <param term='executeOption'>Describes how the command should be run.</param>
-            <param term='varIn'>Parameters passed from the caller to the command handler.</param>
-            <param term='varOut'>Parameters passed from the command handler to the caller.</param>
-            <param term='handled'>Informs the caller if the command was handled or not.</param>
-            <seealso class='Exec' />
-        </member>
-        <member name="M:ClangVSx.CVXConnect.cvxCompileFile_menuop(System.Object,System.Boolean@,System.Boolean@)">
-            <summary>
-            get the active code file and compile it
-            </summary>
-        </member>
-        <member name="M:ClangVSx.CVXConnect.cvxDasmnFile_menuop(System.Object,System.Boolean@,System.Boolean@)">
-            <summary>
-            ask clang to emit assembly listing for the given file, then pop that result open in VS
-            </summary>
-        </member>
-        <member name="M:ClangVSx.CVXConnect.cvxPreProFile_menuop(System.Object,System.Boolean@,System.Boolean@)">
-            <summary>
-            dump the preprocessor and native-assembly format listing
-            </summary>
-        </member>
-        <member name="M:ClangVSx.CVXConnect.cvxAnalyseFile_menuop(System.Object,System.Boolean@,System.Boolean@)">
-            <summary>
-            get the active code file and compile it, adding static analyzer arguments to the pile
-            </summary>
-        </member>
-        <member name="M:ClangVSx.CVXConnect.GetActiveVCFile(Microsoft.VisualStudio.VCProjectEngine.VCFile@,Microsoft.VisualStudio.VCProjectEngine.VCProject@,Microsoft.VisualStudio.VCProjectEngine.VCConfiguration@)">
-            <summary>
-            Get the active code file, project and configuration 
-            </summary>
-            <returns>true if we have found an active C/C++ document</returns>
-        </member>
-        <member name="M:ClangVSx.CVXConnect.ShowCVXSettingsDialog">
-            <summary>
-            display our settings panel
-            </summary>
-        </member>
-        <member name="T:ClangVSx.CVXConnect.IWinWrapper">
-            <summary>
-            workaround for providing IWin32Window interface for IntPtr HWNDs
-            </summary>
-        </member>
-        <member name="T:ClangVSx.CVXRegistry">
-            <summary>
-            Wrapper around registry access to load/save AddIn settings
             </summary>
         </member>
     </members>
