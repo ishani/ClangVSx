@@ -79,13 +79,22 @@ namespace ClangVSx
         return false;
       }
 
+      String prevEnv = Environment.CurrentDirectory;
+
       try
       {
+        Environment.CurrentDirectory = vcProject.ProjectDirectory;
+        WriteToOutputPane("Project Directory : " + Environment.CurrentDirectory + "\n");
+
         return buildSystem.CompileSingleFile(vcFile, vcProject, vcCfg, additionalCmds);
       }
       catch (Exception ex)
       {
         WriteToOutputPane("Exception During File Compile : \n" + ex.Message + "\n");
+      }
+      finally
+      {
+        Environment.CurrentDirectory = prevEnv;
       }
 
       return false;
@@ -117,6 +126,8 @@ namespace ClangVSx
         return;
       }
 
+      String prevEnv = Environment.CurrentDirectory;
+
       try
       {
         // loop through the startup projects
@@ -146,8 +157,10 @@ namespace ClangVSx
               var cfgArray = (IVCCollection)vcProject.Configurations;
               foreach (VCConfiguration vcr in cfgArray)
               {
-                if (vcr.ConfigurationName == cfg.ConfigurationName &&
-                    vcr.Platform.Name == cfg.PlatformName)
+                // we .ToLower() here as there are some weird occurances where names don't match as VS is holding
+                // onto a capitalised version that isn't visible in any of the VS IDEs :Z
+                if (vcr.ConfigurationName.ToLower() == cfg.ConfigurationName.ToLower() &&
+                    vcr.Platform.Name.ToLower() == cfg.PlatformName.ToLower())
                 {
                   vcCfg = vcr;
                 }
@@ -167,6 +180,9 @@ namespace ClangVSx
               WriteToOutputPane("Configuration : " + vcCfg.Name + "\n");
             }
 
+            Environment.CurrentDirectory = vcProject.ProjectDirectory;
+            WriteToOutputPane("Project Directory : " + Environment.CurrentDirectory + "\n");
+
             bool result = buildSystem.BuildProject(vcProject, vcCfg, config.JustLink);
             config.BuildFinished(result);
             return;
@@ -184,6 +200,7 @@ namespace ClangVSx
       finally
       {
         config.BuildFinished(false);
+        Environment.CurrentDirectory = prevEnv; 
       }
     }
 

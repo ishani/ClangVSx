@@ -328,10 +328,11 @@ namespace ClangVSx
                       MessageBoxIcon.Information);
     }
 
+
     /// <summary>
     /// get the active code file and compile it
     /// </summary>
-    protected void cvxCompileFile_menuop(object CommandaBarControl, ref bool handled, ref bool cancelDefault)
+    protected void cvxCompileFile_menuop(object CommandBarControlObj, ref bool handled, ref bool cancelDefault)
     {
       if (BuildInProgress)
       {
@@ -358,7 +359,7 @@ namespace ClangVSx
     /// <summary>
     /// ask clang to emit assembly listing for the given file, then pop that result open in VS
     /// </summary>
-    protected void cvxDasmnFile_menuop(object CommandaBarControl, ref bool handled, ref bool cancelDefault)
+    protected void cvxDasmnFile_menuop(object CommandBarControlObj, ref bool handled, ref bool cancelDefault)
     {
       if (BuildInProgress)
       {
@@ -392,7 +393,7 @@ namespace ClangVSx
     /// <summary>
     /// dump the preprocessor and native-assembly format listing
     /// </summary>
-    protected void cvxPreProFile_menuop(object CommandaBarControl, ref bool handled, ref bool cancelDefault)
+    protected void cvxPreProFile_menuop(object CommandBarControlObj, ref bool handled, ref bool cancelDefault)
     {
       if (BuildInProgress)
       {
@@ -425,7 +426,7 @@ namespace ClangVSx
     /// <summary>
     /// get the active code file and compile it, adding static analyzer arguments to the pile
     /// </summary>
-    protected void cvxAnalyseFile_menuop(object CommandaBarControl, ref bool handled, ref bool cancelDefault)
+    protected void cvxAnalyseFile_menuop(object CommandBarControlObj, ref bool handled, ref bool cancelDefault)
     {
       if (BuildInProgress)
       {
@@ -439,7 +440,7 @@ namespace ClangVSx
 
       if (GetActiveVCFile(out vcFile, out vcProject, out vcCfg))
       {
-        _CVXOps.CompileSingleFile(vcFile, vcProject, vcCfg, "--analyze --analyzer-output text");
+        _CVXOps.CompileSingleFile(vcFile, vcProject, vcCfg, "--analyze -Xclang -analyzer-stats --analyzer-output text");
       }
       else
       {

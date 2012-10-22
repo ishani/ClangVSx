@@ -81,8 +81,6 @@ namespace ClangVSx
       }
 #endif 
 #if CVSX_2010
-      // work out where the MS linker / lib tools are, Clang/LLVM doesn't have a linker presently
-      // "C:\Program Files (x86)\Microsoft Visual Studio 10.0\Common7\Tools\"
       String pathToVS = Environment.GetEnvironmentVariable("VS100COMNTOOLS");
       if (pathToVS == null)
       {
@@ -309,8 +307,9 @@ namespace ClangVSx
 
       // sort out an output object file name
       String objectFileName = vcFC.Evaluate(perFileVCC.ObjectFile).Replace("/", "\\");
+      objectFileName = Path.GetFullPath(objectFileName);
 
-      String prebuild = Path.Combine(vcProject.ProjectDirectory, objectFileName);
+      String prebuild = Path.GetDirectoryName(objectFileName);
       if (!Directory.Exists(prebuild))
       {
         Directory.CreateDirectory(prebuild);
@@ -464,7 +463,14 @@ namespace ClangVSx
       // add the 'additional options' verbatim
       if (perFileVCC.AdditionalOptions != null)
       {
-        compileString.Append(vcFC.Evaluate(perFileVCC.AdditionalOptions) + " ");
+        // add the 'additional options' verbatim
+        // only pull across opts that begin with "-", ignoring VS "/" ones
+        string[] opts = vcFC.Evaluate(perFileVCC.AdditionalOptions).Split(' ');
+        foreach (string opt in opts)
+        {
+          if (opt.StartsWith("-"))
+            compileString.Append(opt + " ");
+        }
       }
 
       // ask for warnings/errors in MSVC format
@@ -552,6 +558,9 @@ namespace ClangVSx
               if (incCheck == "./") incCheck = ".";
               if (incCheck == "../") incCheck = "..";
 
+              // resolve any relative paths
+              incCheck = Path.GetFullPath(incCheck);
+
               result.Append("\"");
               result.Append(incCheck);
               result.Append("\" ");
@@ -573,8 +582,13 @@ namespace ClangVSx
             var parsedInc = (evalMethod.Invoke(evaluator, new object[] { inc }) as String);
             if (parsedInc != null && parsedInc.Length > 0)
             {
+              String incCheck = parsedInc.Replace("\\", "/");
+
+              // resolve any relative paths
+              incCheck = Path.GetFullPath(incCheck);
+
               result.Append("-include \"");
-              result.Append(parsedInc.Replace("\\", "/"));
+              result.Append(incCheck);
               result.Append("\" ");
             }
           }
@@ -705,7 +719,13 @@ namespace ClangVSx
       // allow Clang args to be stuck in the 'additional options' textbox in C/C++ properties page
       if (vcCTool.AdditionalOptions != null)
       {
-        defaultCompilerString.Append(vcCfg.Evaluate(vcCTool.AdditionalOptions) + " ");
+        // only pull across opts that begin with "-", ignoring VS "/" ones
+        string[] opts = vcCfg.Evaluate(vcCTool.AdditionalOptions).Split(' ');
+        foreach (string opt in opts)
+        {
+          if (opt.StartsWith("-"))
+            defaultCompilerString.Append(opt + " ");
+        }
       }
 
       // bolt on any arguments from the settings dialog
@@ -806,6 +826,10 @@ namespace ClangVSx
           break;
       }
       outLink.Replace("/", "\\");
+
+      // resolve path to be local to the location of the project file, if required
+      outLink = Path.GetFullPath(outLink);
+
       WriteToOutputPane("Linker Output : " + outLink + "\n");
 
       String outLinkDirectory = Path.GetDirectoryName(outLink);
@@ -1288,7 +1312,13 @@ namespace ClangVSx
         }
 
         // add the 'additional options' verbatim
-        linkString.Append(vcCfg.Evaluate(vcLinkerTool.AdditionalOptions) + " ");
+        // only pull across opts that begin with "-", ignoring VS "/" ones
+        string[] opts = vcCfg.Evaluate(vcLinkerTool.AdditionalOptions).Split(' ');
+        foreach (string opt in opts)
+        {
+          if (opt.StartsWith("-"))
+            linkString.Append(opt + " ");
+        }
 
 
         // we want to create a unique list of libraries to link alongside our object files

@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Diagnostics;
 using System.Reflection;
 using System.Resources;
 using EnvDTE;
@@ -63,6 +64,15 @@ namespace NEnhancer.Common
     public CommandBar GetCommandBarByName(string cmdBarName)
     {
       return ((CommandBars)_dte.CommandBars)[cmdBarName];
+    }
+
+    public void DumpCommandBars()
+    {
+      foreach (CommandBar cb in ((CommandBars)_dte.CommandBars))
+      {
+        string sb = cb.Name;
+        Debug.WriteLine(sb);
+      }
     }
 
     public void AddNamedCommand2(string cmdName, string buttonText, string toolTip,
