@@ -14,6 +14,9 @@ Some things **not** supported:
 * PCH (ignored during translation)
 * ATL / MFC projects (Clang can't handle certain ATL/COM headers properly yet)
 
+Changes in v0.4.5
+
+* Compatibility with Clang 3.3 (-ccc-host-triple => -target) with 3.2 fallback
 
 Changes in v0.4.0
 
@@ -35,7 +38,7 @@ Changes in v0.3
 Required Compiler Patches
 -------------------------
 
-ClangVSx requires Clang 3.1 or above - preferably 3.2.
+ClangVSx requires Clang 3.2 or higher; The latest version supports 3.3 by default. 
 A pre-built version of Clang for Windows, tracked to the latest code changes from SVN, is available [here](http://www.ishani.org/web/articles/code/clang-win32/).
   
   
@@ -60,6 +63,10 @@ A context-menu option is added to code editor windows that allows for Clang-spec
 
 Release Notes
 -------------
+
+**Version 0.4.5** (2012-12-04)
+
+* Support for Clang 3.3
 
 **Version 0.4.0** (2012-10-22)
 

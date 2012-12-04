@@ -59,7 +59,7 @@ namespace ClangVSx
         Version vers = assem.GetName().Version;
         DateTime buildDate = new DateTime(2000, 1, 1).AddDays(vers.Build).AddSeconds(vers.Revision * 2);
         WriteToOutputPane("ClangVSx " + vers.Major.ToString() + "." + vers.Minor.ToString() +
-                          " | Clang Compiler Bridge | www.ishani.org\n\n");
+                          " | LLVM/Clang C++ Compiler Bridge | www.ishani.org\n\n");
 
         // try to give the message queue time to bring up the output window
         Application.DoEvents();
@@ -634,12 +634,14 @@ namespace ClangVSx
       //
       var defaultCompilerString = new StringBuilder(" -c -nostdinc -D__CLANG_VSX__ ");
 
+      String targetCmdOpt = CVXRegistry.TOptOldSyntax ? "ccc-host-triple" : "target";
+
       if (vcCfg.Platform.Name == "Win32")
-        defaultCompilerString.AppendFormat("-ccc-host-triple {0} ", CVXRegistry.TripleWin32.Value);
+        defaultCompilerString.AppendFormat("-{0} {1} ", targetCmdOpt, CVXRegistry.TripleWin32.Value);
       else if (vcCfg.Platform.Name == "x64")
-        defaultCompilerString.AppendFormat("-ccc-host-triple {0} ", CVXRegistry.TripleX64.Value);
+        defaultCompilerString.AppendFormat("-{0} {1} ", targetCmdOpt, CVXRegistry.TripleX64.Value);
       else if (vcCfg.Platform.Name == "ARM")
-        defaultCompilerString.AppendFormat("-ccc-host-triple {0} ", CVXRegistry.TripleARM.Value);
+        defaultCompilerString.AppendFormat("-{0} {1} ", targetCmdOpt, CVXRegistry.TripleARM.Value);
 
       if (CVXRegistry.EchoInternal)
       {

@@ -167,5 +167,9 @@ namespace ClangVSx
 
     public static CVXRegistryItem<String> TripleARM = new CVXRegistryItem<String>(() => TripleARM,
                                                                                   "armv7-apple-darwin10");
+
+    public static CVXRegistryItem<Boolean> TOptOldSyntax = new CVXRegistryItem<Boolean>(() => TOptOldSyntax, false);
+
+    
   }
 }

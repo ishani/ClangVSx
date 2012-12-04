@@ -40,6 +40,8 @@ namespace ClangVSx
       cvxTripleX64.Text = CVXRegistry.TripleX64;
       cvxTripleARM.Text = CVXRegistry.TripleARM;
 
+      cvxTOptOldSyntax.Checked = CVXRegistry.TOptOldSyntax.Value;
+
       // blot the version number up in the title bar
       Assembly assem = Assembly.GetExecutingAssembly();
       Version vers = assem.GetName().Version;
@@ -79,6 +81,8 @@ namespace ClangVSx
         CVXRegistry.TripleWin32.Value = cvxTripleWin32.Text;
         CVXRegistry.TripleX64.Value = cvxTripleX64.Text;
         CVXRegistry.TripleARM.Value = cvxTripleARM.Text;
+
+        CVXRegistry.TOptOldSyntax.Value = cvxTOptOldSyntax.Checked;
       }
 
       if (!validEXELocation(cvxLocation.Text))
