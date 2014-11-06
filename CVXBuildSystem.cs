@@ -72,6 +72,13 @@ namespace ClangVSx
 
       // work out where the MS linker / lib tools are, Clang/LLVM doesn't have a linker presently
       // eg "C:\Program Files (x86)\Microsoft Visual Studio 10.0\Common7\Tools\"
+#if CVSX_2013
+      String pathToVS = Environment.GetEnvironmentVariable("VS120COMNTOOLS");
+      if (pathToVS == null) {
+          throw new Exception(
+              "Could not find Visual Studio 2013 install directory (via VS110COMNTOOLS environment variable)");
+      }
+#endif
 #if CVSX_2012
       String pathToVS = Environment.GetEnvironmentVariable("VS110COMNTOOLS");
       if (pathToVS == null)
