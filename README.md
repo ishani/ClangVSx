@@ -1,7 +1,7 @@
 ClangVSx
 ========
 
-AddIn for Visual Studio 2010/2012 that allows use of the Clang C/C++ compiler in place of MSVC++. Translates VC project and build settings into gcc-friendly command line arguments, along with existing platform tools (MSVC Linker, Librarian, RC) to complete the build chain. 
+AddIn for Visual Studio 2013 that allows use of the Clang 3.5 C/C++ compiler in place of MSVC++. Translates VC project and build settings into gcc-friendly command line arguments, along with existing platform tools (MSVC Linker, Librarian, RC) to complete the build chain. 
 
 One click 'Build Project' testing of Clang in Windows development environments!
 
@@ -13,6 +13,11 @@ Some things **not** supported:
 
 * PCH (ignored during translation)
 * ATL / MFC projects (Clang can't handle certain ATL/COM headers properly yet)
+
+Changes in v0.5
+
+* Compatibility with Clang 3.5 - deprecate previous versions and add new features, fix LTO pipeline
+* Support for VS2010/2012 will likely still work but I won't be testing or deploying those
 
 Changes in v0.4.5
 
@@ -38,8 +43,9 @@ Changes in v0.3
 Required Compiler Patches
 -------------------------
 
-ClangVSx requires Clang 3.2 or higher; The latest version supports 3.3 by default. 
-A pre-built version of Clang for Windows, tracked to the latest code changes from SVN, is available [here](http://www.ishani.org/web/articles/code/clang-win32/).
+The latest version is tested against Clang 3.5.1. 
+
+A pre-built version of Clang for Windows, tracked to the latest code changes from SVN, is available [here](http://www.ishani.org/projects/ClangVSX/).
   
   
 - - -
@@ -49,11 +55,8 @@ Usage
 ------------
 There is a directory for each Visual Studio platform supported in the pre-built zip. 
 
-VS2010:
-Copy *.AddIn* and built *ClangVSx.dll* from the VS_2010/ directory into ``C:\Users\<username>\Documents\Visual Studio 2010\Addins\``  
-VS2012:
-Copy *.AddIn* and built *ClangVSx.dll* from the VS_2012/ directory into ``C:\Users\<username>\Documents\Visual Studio 2012\Addins\``  
-Also you may have to add a folder to the Add-in Security panel, [information here](http://www.ishani.org/web/2012/getting-add-ins-to-work-on-visual-studio-2012-rc/).
+VS2013:
+Copy *.AddIn* and built *ClangVSx.dll* from the VS_2013/ directory into ``C:\Users\<username>\Documents\Visual Studio 2013\Addins\``  
 
 A new top-level *Clang* menu will be created, offering a settings dialog (to choose location of compiler) and *Rebuild Active Project* or *Relink*
 A context-menu option is added to code editor windows that allows for Clang-specific tasks to be performed on that code.
@@ -63,6 +66,11 @@ A context-menu option is added to code editor windows that allows for Clang-spec
 
 Release Notes
 -------------
+
+**Version 0.5.0** (2015-01-15)
+
+* Support for Clang 3.5
+* Support for Visual Studio 2013
 
 **Version 0.4.5** (2012-12-04)
 
