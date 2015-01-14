@@ -148,14 +148,12 @@ namespace ClangVSx
     // output options
     public static CVXRegistryItem<Boolean> ShowCommands = new CVXRegistryItem<Boolean>(() => ShowCommands, false);
     public static CVXRegistryItem<Boolean> MakeBatchFiles = new CVXRegistryItem<Boolean>(() => MakeBatchFiles, false);
-    public static CVXRegistryItem<Boolean> EchoInternal = new CVXRegistryItem<Boolean>(() => EchoInternal, false);
     public static CVXRegistryItem<Boolean> ShowPhases = new CVXRegistryItem<Boolean>(() => ShowPhases, false);
-
-
+    public static CVXRegistryItem<Boolean> VerboseVectorize = new CVXRegistryItem<Boolean>(() => VerboseVectorize, false);
+    
     // compiler options toggles
-    public static CVXRegistryItem<Boolean> COptCPP11 = new CVXRegistryItem<Boolean>(() => COptCPP11, true);
-    public static CVXRegistryItem<Boolean> COptMSABI = new CVXRegistryItem<Boolean>(() => COptMSABI, false);
-
+    public static CVXRegistryItem<Boolean> COptCPP14 = new CVXRegistryItem<Boolean>(() => COptCPP14, true);
+    public static CVXRegistryItem<Boolean> COptSLPAgg = new CVXRegistryItem<Boolean>(() => COptSLPAgg, false);
 
     // global options
     public static CVXRegistryItem<String> CommonArgs = new CVXRegistryItem<String>(() => CommonArgs, "");
@@ -167,8 +165,6 @@ namespace ClangVSx
 
     public static CVXRegistryItem<String> TripleARM = new CVXRegistryItem<String>(() => TripleARM,
                                                                                   "armv7-apple-darwin10");
-
-    public static CVXRegistryItem<Boolean> TOptOldSyntax = new CVXRegistryItem<Boolean>(() => TOptOldSyntax, false);
 
     
   }

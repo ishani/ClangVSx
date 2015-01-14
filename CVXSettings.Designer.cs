@@ -47,7 +47,6 @@ namespace ClangVSx
       this.cvxCancel = new System.Windows.Forms.Button();
       this.bridgeOps = new System.Windows.Forms.GroupBox();
       this.cvxPhases = new System.Windows.Forms.CheckBox();
-      this.cvxEcho = new System.Windows.Forms.CheckBox();
       this.cvxBatch = new System.Windows.Forms.CheckBox();
       this.cvxShowCmds = new System.Windows.Forms.CheckBox();
       this.label2 = new System.Windows.Forms.Label();
@@ -60,9 +59,9 @@ namespace ClangVSx
       this.label3 = new System.Windows.Forms.Label();
       this.cvxTripleWin32 = new System.Windows.Forms.ComboBox();
       this.groupBox3 = new System.Windows.Forms.GroupBox();
-      this.cvxCOptCPP11 = new System.Windows.Forms.CheckBox();
-      this.cvxCOptMSABI = new System.Windows.Forms.CheckBox();
-      this.cvxTOptOldSyntax = new System.Windows.Forms.CheckBox();
+      this.cvxCOptCPP14 = new System.Windows.Forms.CheckBox();
+      this.cvxCOptSLPAgg = new System.Windows.Forms.CheckBox();
+      this.cvxVerboseVectorize = new System.Windows.Forms.CheckBox();
       ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
       this.groupBox1.SuspendLayout();
       ((System.ComponentModel.ISupportInitialize)(this.cvxPic)).BeginInit();
@@ -91,7 +90,7 @@ namespace ClangVSx
       this.groupBox1.Controls.Add(this.cvxLocation);
       this.groupBox1.Location = new System.Drawing.Point(184, 12);
       this.groupBox1.Name = "groupBox1";
-      this.groupBox1.Size = new System.Drawing.Size(310, 91);
+      this.groupBox1.Size = new System.Drawing.Size(310, 114);
       this.groupBox1.TabIndex = 1;
       this.groupBox1.TabStop = false;
       this.groupBox1.Text = "Location of Clang Executable";
@@ -113,7 +112,7 @@ namespace ClangVSx
       this.cvxStats.Multiline = true;
       this.cvxStats.Name = "cvxStats";
       this.cvxStats.ReadOnly = true;
-      this.cvxStats.Size = new System.Drawing.Size(252, 34);
+      this.cvxStats.Size = new System.Drawing.Size(252, 59);
       this.cvxStats.TabIndex = 3;
       // 
       // cvxBrowse
@@ -181,9 +180,10 @@ namespace ClangVSx
       this.label1.ForeColor = System.Drawing.Color.Black;
       this.label1.Location = new System.Drawing.Point(6, 3);
       this.label1.Name = "label1";
-      this.label1.Size = new System.Drawing.Size(325, 16);
+      this.label1.Size = new System.Drawing.Size(482, 16);
       this.label1.TabIndex = 4;
-      this.label1.Text = "ClangVSx Compiler Bridge - Harry Denholm, ishani.org 2012";
+      this.label1.Text = "ClangVSx Compiler Bridge for Clang/LLVM 3.5+   --   Harry Denholm, ishani.org 201" +
+    "2 - 2015";
       // 
       // linkLabel3
       // 
@@ -209,13 +209,13 @@ namespace ClangVSx
       // 
       // bridgeOps
       // 
+      this.bridgeOps.Controls.Add(this.cvxVerboseVectorize);
       this.bridgeOps.Controls.Add(this.cvxPhases);
-      this.bridgeOps.Controls.Add(this.cvxEcho);
       this.bridgeOps.Controls.Add(this.cvxBatch);
       this.bridgeOps.Controls.Add(this.cvxShowCmds);
       this.bridgeOps.Location = new System.Drawing.Point(500, 12);
       this.bridgeOps.Name = "bridgeOps";
-      this.bridgeOps.Size = new System.Drawing.Size(291, 110);
+      this.bridgeOps.Size = new System.Drawing.Size(291, 114);
       this.bridgeOps.TabIndex = 8;
       this.bridgeOps.TabStop = false;
       this.bridgeOps.Text = "Output";
@@ -223,22 +223,12 @@ namespace ClangVSx
       // cvxPhases
       // 
       this.cvxPhases.AutoSize = true;
-      this.cvxPhases.Location = new System.Drawing.Point(10, 83);
+      this.cvxPhases.Location = new System.Drawing.Point(10, 64);
       this.cvxPhases.Name = "cvxPhases";
       this.cvxPhases.Size = new System.Drawing.Size(228, 17);
       this.cvxPhases.TabIndex = 11;
       this.cvxPhases.Text = "Show compiler phases ( -ccc-print-phases )";
       this.cvxPhases.UseVisualStyleBackColor = true;
-      // 
-      // cvxEcho
-      // 
-      this.cvxEcho.AutoSize = true;
-      this.cvxEcho.Location = new System.Drawing.Point(10, 62);
-      this.cvxEcho.Name = "cvxEcho";
-      this.cvxEcho.Size = new System.Drawing.Size(261, 17);
-      this.cvxEcho.TabIndex = 10;
-      this.cvxEcho.Text = "Echo internal compiler command line ( -ccc-echo )";
-      this.cvxEcho.UseVisualStyleBackColor = true;
       // 
       // cvxBatch
       // 
@@ -281,7 +271,6 @@ namespace ClangVSx
       // 
       // groupBox2
       // 
-      this.groupBox2.Controls.Add(this.cvxTOptOldSyntax);
       this.groupBox2.Controls.Add(this.label5);
       this.groupBox2.Controls.Add(this.cvxTripleARM);
       this.groupBox2.Controls.Add(this.label4);
@@ -290,9 +279,9 @@ namespace ClangVSx
       this.groupBox2.Controls.Add(this.cvxTripleWin32);
       this.groupBox2.Controls.Add(this.label2);
       this.groupBox2.Controls.Add(this.cvxCommonArgs);
-      this.groupBox2.Location = new System.Drawing.Point(184, 109);
+      this.groupBox2.Location = new System.Drawing.Point(184, 132);
       this.groupBox2.Name = "groupBox2";
-      this.groupBox2.Size = new System.Drawing.Size(310, 179);
+      this.groupBox2.Size = new System.Drawing.Size(310, 156);
       this.groupBox2.TabIndex = 9;
       this.groupBox2.TabStop = false;
       this.groupBox2.Text = "Global ";
@@ -371,44 +360,44 @@ namespace ClangVSx
       // 
       // groupBox3
       // 
-      this.groupBox3.Controls.Add(this.cvxCOptCPP11);
-      this.groupBox3.Controls.Add(this.cvxCOptMSABI);
-      this.groupBox3.Location = new System.Drawing.Point(500, 129);
+      this.groupBox3.Controls.Add(this.cvxCOptSLPAgg);
+      this.groupBox3.Controls.Add(this.cvxCOptCPP14);
+      this.groupBox3.Location = new System.Drawing.Point(500, 132);
       this.groupBox3.Name = "groupBox3";
-      this.groupBox3.Size = new System.Drawing.Size(291, 158);
+      this.groupBox3.Size = new System.Drawing.Size(291, 156);
       this.groupBox3.TabIndex = 10;
       this.groupBox3.TabStop = false;
       this.groupBox3.Text = "Compilation Options";
       // 
-      // cvxCOptCPP11
+      // cvxCOptCPP14
       // 
-      this.cvxCOptCPP11.AutoSize = true;
-      this.cvxCOptCPP11.Location = new System.Drawing.Point(10, 23);
-      this.cvxCOptCPP11.Name = "cvxCOptCPP11";
-      this.cvxCOptCPP11.Size = new System.Drawing.Size(93, 17);
-      this.cvxCOptCPP11.TabIndex = 13;
-      this.cvxCOptCPP11.Text = "Enable C++11";
-      this.cvxCOptCPP11.UseVisualStyleBackColor = true;
+      this.cvxCOptCPP14.AutoSize = true;
+      this.cvxCOptCPP14.Location = new System.Drawing.Point(10, 23);
+      this.cvxCOptCPP14.Name = "cvxCOptCPP14";
+      this.cvxCOptCPP14.Size = new System.Drawing.Size(93, 17);
+      this.cvxCOptCPP14.TabIndex = 13;
+      this.cvxCOptCPP14.Text = "Enable C++14";
+      this.cvxCOptCPP14.UseVisualStyleBackColor = true;
       // 
-      // cvxCOptMSABI
+      // cvxCOptSLPAgg
       // 
-      this.cvxCOptMSABI.AutoSize = true;
-      this.cvxCOptMSABI.Location = new System.Drawing.Point(10, 46);
-      this.cvxCOptMSABI.Name = "cvxCOptMSABI";
-      this.cvxCOptMSABI.Size = new System.Drawing.Size(201, 17);
-      this.cvxCOptMSABI.TabIndex = 12;
-      this.cvxCOptMSABI.Text = "Force Microsoft C++ ABI (incomplete)";
-      this.cvxCOptMSABI.UseVisualStyleBackColor = true;
+      this.cvxCOptSLPAgg.AutoSize = true;
+      this.cvxCOptSLPAgg.Location = new System.Drawing.Point(10, 46);
+      this.cvxCOptSLPAgg.Name = "cvxCOptSLPAgg";
+      this.cvxCOptSLPAgg.Size = new System.Drawing.Size(164, 17);
+      this.cvxCOptSLPAgg.TabIndex = 14;
+      this.cvxCOptSLPAgg.Text = "Aggressive SLP vectorization";
+      this.cvxCOptSLPAgg.UseVisualStyleBackColor = true;
       // 
-      // cvxTOptOldSyntax
+      // cvxVerboseVectorize
       // 
-      this.cvxTOptOldSyntax.AutoSize = true;
-      this.cvxTOptOldSyntax.Location = new System.Drawing.Point(10, 152);
-      this.cvxTOptOldSyntax.Name = "cvxTOptOldSyntax";
-      this.cvxTOptOldSyntax.Size = new System.Drawing.Size(156, 17);
-      this.cvxTOptOldSyntax.TabIndex = 14;
-      this.cvxTOptOldSyntax.Text = "Use Clang 3.2 target syntax";
-      this.cvxTOptOldSyntax.UseVisualStyleBackColor = true;
+      this.cvxVerboseVectorize.AutoSize = true;
+      this.cvxVerboseVectorize.Location = new System.Drawing.Point(10, 87);
+      this.cvxVerboseVectorize.Name = "cvxVerboseVectorize";
+      this.cvxVerboseVectorize.Size = new System.Drawing.Size(245, 17);
+      this.cvxVerboseVectorize.TabIndex = 12;
+      this.cvxVerboseVectorize.Text = "Show verbose vectorization analysis / remarks";
+      this.cvxVerboseVectorize.UseVisualStyleBackColor = true;
       // 
       // CVXSettings
       // 
@@ -472,7 +461,6 @@ namespace ClangVSx
     private System.Windows.Forms.TextBox cvxCommonArgs;
     private System.Windows.Forms.GroupBox groupBox2;
     private System.Windows.Forms.LinkLabel linkLabel3;
-    private System.Windows.Forms.CheckBox cvxEcho;
     private System.Windows.Forms.Label label3;
     private System.Windows.Forms.ComboBox cvxTripleWin32;
     private System.Windows.Forms.CheckBox cvxPhases;
@@ -481,9 +469,9 @@ namespace ClangVSx
     private System.Windows.Forms.Label label5;
     private System.Windows.Forms.ComboBox cvxTripleARM;
     private System.Windows.Forms.GroupBox groupBox3;
-    private System.Windows.Forms.CheckBox cvxCOptCPP11;
-    private System.Windows.Forms.CheckBox cvxCOptMSABI;
-    private System.Windows.Forms.CheckBox cvxTOptOldSyntax;
+    private System.Windows.Forms.CheckBox cvxCOptCPP14;
+    private System.Windows.Forms.CheckBox cvxVerboseVectorize;
+    private System.Windows.Forms.CheckBox cvxCOptSLPAgg;
 
 
   }

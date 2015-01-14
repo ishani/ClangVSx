@@ -76,7 +76,7 @@ namespace ClangVSx
       String pathToVS = Environment.GetEnvironmentVariable("VS120COMNTOOLS");
       if (pathToVS == null) {
           throw new Exception(
-              "Could not find Visual Studio 2013 install directory (via VS110COMNTOOLS environment variable)");
+              "Could not find Visual Studio 2013 install directory (via VS120COMNTOOLS environment variable)");
       }
 #endif
 #if CVSX_2012
@@ -641,7 +641,7 @@ namespace ClangVSx
       //
       var defaultCompilerString = new StringBuilder(" -c -nostdinc -D__CLANG_VSX__ ");
 
-      String targetCmdOpt = CVXRegistry.TOptOldSyntax ? "ccc-host-triple" : "target";
+      String targetCmdOpt = "target";
 
       if (vcCfg.Platform.Name == "Win32")
         defaultCompilerString.AppendFormat("-{0} {1} ", targetCmdOpt, CVXRegistry.TripleWin32.Value);
@@ -650,24 +650,30 @@ namespace ClangVSx
       else if (vcCfg.Platform.Name == "ARM")
         defaultCompilerString.AppendFormat("-{0} {1} ", targetCmdOpt, CVXRegistry.TripleARM.Value);
 
-      if (CVXRegistry.EchoInternal)
-      {
-        defaultCompilerString.Append("-ccc-echo ");
-      }
       if (CVXRegistry.ShowPhases)
       {
         defaultCompilerString.Append("-ccc-print-phases ");
       }
 
       // compiler options from the settings page
-      if (CVXRegistry.COptCPP11)
+      if (CVXRegistry.COptCPP14)
+      {
+        defaultCompilerString.Append("-std=c++14 ");
+      }
+      else
       {
         defaultCompilerString.Append("-std=c++11 ");
       }
-      if (CVXRegistry.COptMSABI)
+
+      if (CVXRegistry.COptSLPAgg)
       {
-        defaultCompilerString.Append("-Xclang -cxx-abi -Xclang microsoft ");
+        defaultCompilerString.Append("-fslp-vectorize-aggressive ");
       }
+      if (CVXRegistry.VerboseVectorize)
+      {
+        defaultCompilerString.Append("-Rpass=loop-vectorize -Rpass-missed=loop-vectorize -Rpass-analysis=loop-vectorize ");
+      }
+
 
       // add the UNICODE defines?
       if (vcCfg.CharacterSet == charSet.charSetUnicode)
@@ -728,12 +734,14 @@ namespace ClangVSx
       // allow Clang args to be stuck in the 'additional options' textbox in C/C++ properties page
       if (vcCTool.AdditionalOptions != null)
       {
-        // only pull across opts that begin with "-", ignoring VS "/" ones
+        // only pull across opts that begin with "++"; we have to be specific here because VS has both / and -
+        // prefixed arguments, so ++<arg> means we flag up clang-specific args we want to pass in ..
+        // sadly that also means we can't interop smoothly with VS as it will reject "++", but this is an edge case anyway
         string[] opts = vcCfg.Evaluate(vcCTool.AdditionalOptions).Split(' ');
         foreach (string opt in opts)
         {
-          if (opt.StartsWith("-"))
-            defaultCompilerString.Append(opt + " ");
+          if (opt.StartsWith("++"))
+            defaultCompilerString.Append(opt.Substring(2) + " ");
         }
       }
 
@@ -768,7 +776,7 @@ namespace ClangVSx
       }
       defaultCompilerString.Append(" -fms-compatibility ");
       defaultCompilerString.Append(" -fms-extensions ");
-      defaultCompilerString.Append(" -fmsc-version=1600 ");
+      defaultCompilerString.Append(" -fmsc-version=1800 ");
 
 
       return defaultCompilerString.ToString();
@@ -1161,6 +1169,11 @@ namespace ClangVSx
         linkProcess.StartInfo.Arguments = String.Format(@"-o=""{0}"" ""{1}"" {2} ", newLinkObject, linkCA,
                                                         firstRound ? "" : "\"" + newLinkObject + "\"");
 
+        if (CVXRegistry.ShowCommands)
+        {
+          WriteToOutputPane("\n  " + linkProcess.StartInfo.FileName + " " + linkProcess.StartInfo.Arguments + "\n");
+        }
+
         linkProcess.StartInfo.WorkingDirectory = vcProject.ProjectDirectory;
         linkProcess.Start();
 
@@ -1187,7 +1200,7 @@ namespace ClangVSx
         linkProcess.StartInfo.FileName = LocationLLVM_LLC_EXE;
 
         // execute the compiler
-        linkProcess.StartInfo.Arguments = String.Format(@"-stats -O3 -filetype=obj -o=""{0}"" ""{1}"" ",
+        linkProcess.StartInfo.Arguments = String.Format(@"-O3 -filetype=obj -o=""{0}"" ""{1}"" ",
                                                         newLinkObject, inputLinkObject);
         linkProcess.StartInfo.WorkingDirectory = vcProject.ProjectDirectory;
         linkProcess.Start();

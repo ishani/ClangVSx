@@ -29,18 +29,17 @@ namespace ClangVSx
 
       cvxShowCmds.Checked = CVXRegistry.ShowCommands;
       cvxBatch.Checked = CVXRegistry.MakeBatchFiles;
-      cvxEcho.Checked = CVXRegistry.EchoInternal;
       cvxPhases.Checked = CVXRegistry.ShowPhases;
+      cvxVerboseVectorize.Checked = CVXRegistry.VerboseVectorize;
 
-      cvxCOptCPP11.Checked = CVXRegistry.COptCPP11.Value;
-      cvxCOptMSABI.Checked = CVXRegistry.COptMSABI.Value;
+      cvxCOptCPP14.Checked = CVXRegistry.COptCPP14.Value;
+      cvxCOptSLPAgg.Checked = CVXRegistry.COptSLPAgg.Value;
 
       cvxCommonArgs.Text = CVXRegistry.CommonArgs;
       cvxTripleWin32.Text = CVXRegistry.TripleWin32;
       cvxTripleX64.Text = CVXRegistry.TripleX64;
       cvxTripleARM.Text = CVXRegistry.TripleARM;
 
-      cvxTOptOldSyntax.Checked = CVXRegistry.TOptOldSyntax.Value;
 
       // blot the version number up in the title bar
       Assembly assem = Assembly.GetExecutingAssembly();
@@ -71,18 +70,17 @@ namespace ClangVSx
 
         CVXRegistry.ShowCommands.Value = cvxShowCmds.Checked;
         CVXRegistry.MakeBatchFiles.Value = cvxBatch.Checked;
-        CVXRegistry.EchoInternal.Value = cvxEcho.Checked;
         CVXRegistry.ShowPhases.Value = cvxPhases.Checked;
+        CVXRegistry.VerboseVectorize.Value = cvxVerboseVectorize.Checked;
 
-        CVXRegistry.COptCPP11.Value = cvxCOptCPP11.Checked;
-        CVXRegistry.COptMSABI.Value = cvxCOptMSABI.Checked;
+        CVXRegistry.COptCPP14.Value = cvxCOptCPP14.Checked;
+        CVXRegistry.COptSLPAgg.Value = cvxCOptSLPAgg.Checked;
 
         CVXRegistry.CommonArgs.Value = cvxCommonArgs.Text;
         CVXRegistry.TripleWin32.Value = cvxTripleWin32.Text;
         CVXRegistry.TripleX64.Value = cvxTripleX64.Text;
         CVXRegistry.TripleARM.Value = cvxTripleARM.Text;
 
-        CVXRegistry.TOptOldSyntax.Value = cvxTOptOldSyntax.Checked;
       }
 
       if (!validEXELocation(cvxLocation.Text))
