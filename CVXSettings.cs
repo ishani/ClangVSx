@@ -33,6 +33,7 @@ namespace ClangVSx
       cvxVerboseVectorize.Checked = CVXRegistry.VerboseVectorize;
 
       cvxCOptCPP14.Checked = CVXRegistry.COptCPP14.Value;
+      cvxCOptC11.Checked = CVXRegistry.COptC11.Value;
       cvxCOptSLPAgg.Checked = CVXRegistry.COptSLPAgg.Value;
 
       cvxCommonArgs.Text = CVXRegistry.CommonArgs;

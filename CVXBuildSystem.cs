@@ -438,9 +438,13 @@ namespace ClangVSx
         compileString.Append("-save-temps -S -Xpreprocessor -CC ");
       }
 
-      if (perFileVCC.CompileAs == CompileAsOptions.compileAsCPlusPlus)
+      string extension = (Path.GetExtension(vcFile.Name) ?? "").ToLowerInvariant();
+      if (perFileVCC.CompileAs == CompileAsOptions.compileAsCPlusPlus || (perFileVCC.CompileAs == CompileAsOptions.compileAsDefault && extension == ".cpp"))
       {
-        compileString.Append("-x c++ ");
+          // compiler options from the settings page
+          compileString.Append(CVXRegistry.COptCPP14 ? "-std=c++14 " : "-std=c++11 ");
+
+          compileString.Append("-x c++ ");
 
         // RTTI disable?
         if (!perFileVCC.RuntimeTypeInfo)
@@ -465,6 +469,10 @@ namespace ClangVSx
         {
           compileString.Append("-fno-exceptions ");
         }
+      }
+      else if (perFileVCC.CompileAs == CompileAsOptions.compileAsC || (perFileVCC.CompileAs == CompileAsOptions.compileAsDefault && extension == ".c"))
+      {
+          compileString.Append(CVXRegistry.COptC11 ? "-std=c11 " : "-std=c99 ");
       }
 
       // add the 'additional options' verbatim
@@ -653,16 +661,6 @@ namespace ClangVSx
       if (CVXRegistry.ShowPhases)
       {
         defaultCompilerString.Append("-ccc-print-phases ");
-      }
-
-      // compiler options from the settings page
-      if (CVXRegistry.COptCPP14)
-      {
-        defaultCompilerString.Append("-std=c++14 ");
-      }
-      else
-      {
-        defaultCompilerString.Append("-std=c++11 ");
       }
 
       if (CVXRegistry.COptSLPAgg)
