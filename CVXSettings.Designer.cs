@@ -472,6 +472,7 @@ namespace ClangVSx
     private System.Windows.Forms.CheckBox cvxCOptCPP14;
     private System.Windows.Forms.CheckBox cvxVerboseVectorize;
     private System.Windows.Forms.CheckBox cvxCOptSLPAgg;
+    private System.Windows.Forms.CheckBox cvxCOptC11;
 
 
   }
