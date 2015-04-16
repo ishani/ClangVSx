@@ -42,6 +42,9 @@ namespace ClangVSx
       cvxTripleX64.Text = CVXRegistry.TripleX64;
       cvxTripleARM.Text = CVXRegistry.TripleARM;
 
+      cvxVSRootOverride.Checked = CVXRegistry.VSRootPathOverride.Value;
+      cvxVSRootPath.Text = CVXRegistry.VSRootPath.Value;
+
 
       // blot the version number up in the title bar
       Assembly assem = Assembly.GetExecutingAssembly();
@@ -85,6 +88,8 @@ namespace ClangVSx
         CVXRegistry.TripleX64.Value = cvxTripleX64.Text;
         CVXRegistry.TripleARM.Value = cvxTripleARM.Text;
 
+        CVXRegistry.VSRootPathOverride.Value = cvxVSRootOverride.Checked;
+        CVXRegistry.VSRootPath.Value = cvxVSRootPath.Text;
       }
 
       if (!validEXELocation(cvxLocation.Text))

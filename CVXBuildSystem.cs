@@ -73,9 +73,10 @@ namespace ClangVSx
 
       // work out where the MS linker / lib tools are, Clang/LLVM doesn't have a linker presently
       // eg "C:\Program Files (x86)\Microsoft Visual Studio 10.0\Common7\Tools\"
+      //    VS120COMNTOOLS=C:\Program Files (x86)\Microsoft Visual Studio 12.0\Common7\Tools\
 #if CVSX_2013
       String pathToVS = Environment.GetEnvironmentVariable("VS120COMNTOOLS");
-      if (pathToVS == null) {
+      if (pathToVS == null && !CVXRegistry.VSRootPathOverride.Value) {
           throw new Exception(
               "Could not find Visual Studio 2013 install directory (via VS120COMNTOOLS environment variable)");
       }
@@ -96,6 +97,12 @@ namespace ClangVSx
             "Could not find Visual Studio 2010 install directory (via VS100COMNTOOLS environment variable)");
       }
 #endif
+
+      if (CVXRegistry.VSRootPathOverride.Value)
+      {
+        WriteToOutputPane("Overriding VS envvar with : " + CVXRegistry.VSRootPath.Value + "\n");
+        pathToVS = CVXRegistry.VSRootPath.Value;
+      }
 
       // have to go digging for the location of the MSVC linker/librarian
       PathToVSTools = Path.GetFullPath(pathToVS + @"..\..\VC\bin\");

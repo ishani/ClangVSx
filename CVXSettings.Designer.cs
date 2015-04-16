@@ -60,12 +60,15 @@ namespace ClangVSx
       this.label3 = new System.Windows.Forms.Label();
       this.cvxTripleWin32 = new System.Windows.Forms.ComboBox();
       this.groupBox3 = new System.Windows.Forms.GroupBox();
+      this.label7 = new System.Windows.Forms.Label();
       this.label6 = new System.Windows.Forms.Label();
       this.cvxCOptMaxErr = new System.Windows.Forms.NumericUpDown();
       this.cvxCOptStdSpec = new System.Windows.Forms.CheckBox();
       this.cvxCOptSLPAgg = new System.Windows.Forms.CheckBox();
       this.cvxCOptCPP14 = new System.Windows.Forms.CheckBox();
-      this.label7 = new System.Windows.Forms.Label();
+      this.groupBox4 = new System.Windows.Forms.GroupBox();
+      this.cvxVSRootPath = new System.Windows.Forms.TextBox();
+      this.cvxVSRootOverride = new System.Windows.Forms.CheckBox();
       ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
       this.groupBox1.SuspendLayout();
       ((System.ComponentModel.ISupportInitialize)(this.cvxPic)).BeginInit();
@@ -74,6 +77,7 @@ namespace ClangVSx
       this.groupBox2.SuspendLayout();
       this.groupBox3.SuspendLayout();
       ((System.ComponentModel.ISupportInitialize)(this.cvxCOptMaxErr)).BeginInit();
+      this.groupBox4.SuspendLayout();
       this.SuspendLayout();
       // 
       // pictureBox1
@@ -152,7 +156,7 @@ namespace ClangVSx
       // 
       // cvxDone
       // 
-      this.cvxDone.Location = new System.Drawing.Point(679, 302);
+      this.cvxDone.Location = new System.Drawing.Point(679, 365);
       this.cvxDone.Name = "cvxDone";
       this.cvxDone.Size = new System.Drawing.Size(112, 23);
       this.cvxDone.TabIndex = 5;
@@ -173,7 +177,7 @@ namespace ClangVSx
       this.panel1.Controls.Add(this.label1);
       this.panel1.Controls.Add(this.linkLabel3);
       this.panel1.Dock = System.Windows.Forms.DockStyle.Bottom;
-      this.panel1.Location = new System.Drawing.Point(0, 335);
+      this.panel1.Location = new System.Drawing.Point(0, 394);
       this.panel1.Name = "panel1";
       this.panel1.Size = new System.Drawing.Size(798, 24);
       this.panel1.TabIndex = 6;
@@ -204,7 +208,7 @@ namespace ClangVSx
       // 
       // cvxCancel
       // 
-      this.cvxCancel.Location = new System.Drawing.Point(561, 302);
+      this.cvxCancel.Location = new System.Drawing.Point(562, 365);
       this.cvxCancel.Name = "cvxCancel";
       this.cvxCancel.Size = new System.Drawing.Size(112, 23);
       this.cvxCancel.TabIndex = 7;
@@ -388,6 +392,15 @@ namespace ClangVSx
       this.groupBox3.TabStop = false;
       this.groupBox3.Text = "Compilation Options";
       // 
+      // label7
+      // 
+      this.label7.AutoSize = true;
+      this.label7.Location = new System.Drawing.Point(70, 92);
+      this.label7.Name = "label7";
+      this.label7.Size = new System.Drawing.Size(141, 13);
+      this.label7.TabIndex = 18;
+      this.label7.Text = "( set to 0 to never abandon )";
+      // 
       // label6
       // 
       this.label6.AutoSize = true;
@@ -434,21 +447,42 @@ namespace ClangVSx
       this.cvxCOptCPP14.Text = "Enable C++14 Standard";
       this.cvxCOptCPP14.UseVisualStyleBackColor = true;
       // 
-      // label7
+      // groupBox4
       // 
-      this.label7.AutoSize = true;
-      this.label7.Location = new System.Drawing.Point(70, 92);
-      this.label7.Name = "label7";
-      this.label7.Size = new System.Drawing.Size(141, 13);
-      this.label7.TabIndex = 18;
-      this.label7.Text = "( set to 0 to never abandon )";
+      this.groupBox4.Controls.Add(this.cvxVSRootOverride);
+      this.groupBox4.Controls.Add(this.cvxVSRootPath);
+      this.groupBox4.Location = new System.Drawing.Point(184, 294);
+      this.groupBox4.Name = "groupBox4";
+      this.groupBox4.Size = new System.Drawing.Size(607, 48);
+      this.groupBox4.TabIndex = 11;
+      this.groupBox4.TabStop = false;
+      this.groupBox4.Text = "Custom VSnnnCOMNTOOLS";
+      // 
+      // cvxVSRootPath
+      // 
+      this.cvxVSRootPath.Location = new System.Drawing.Point(158, 19);
+      this.cvxVSRootPath.Name = "cvxVSRootPath";
+      this.cvxVSRootPath.Size = new System.Drawing.Size(439, 20);
+      this.cvxVSRootPath.TabIndex = 1;
+      this.cvxVSRootPath.Text = "C:\\Program Files (x86)\\Microsoft Visual Studio 12.0\\Common7\\Tools\\";
+      // 
+      // cvxVSRootOverride
+      // 
+      this.cvxVSRootOverride.AutoSize = true;
+      this.cvxVSRootOverride.Location = new System.Drawing.Point(10, 21);
+      this.cvxVSRootOverride.Name = "cvxVSRootOverride";
+      this.cvxVSRootOverride.Size = new System.Drawing.Size(130, 17);
+      this.cvxVSRootOverride.TabIndex = 14;
+      this.cvxVSRootOverride.Text = "Override envvar with :";
+      this.cvxVSRootOverride.UseVisualStyleBackColor = true;
       // 
       // CVXSettings
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-      this.ClientSize = new System.Drawing.Size(798, 359);
+      this.ClientSize = new System.Drawing.Size(798, 418);
       this.ControlBox = false;
+      this.Controls.Add(this.groupBox4);
       this.Controls.Add(this.groupBox3);
       this.Controls.Add(this.groupBox2);
       this.Controls.Add(this.bridgeOps);
@@ -480,6 +514,8 @@ namespace ClangVSx
       this.groupBox3.ResumeLayout(false);
       this.groupBox3.PerformLayout();
       ((System.ComponentModel.ISupportInitialize)(this.cvxCOptMaxErr)).EndInit();
+      this.groupBox4.ResumeLayout(false);
+      this.groupBox4.PerformLayout();
       this.ResumeLayout(false);
       this.PerformLayout();
 
@@ -521,6 +557,9 @@ namespace ClangVSx
     private System.Windows.Forms.Label label6;
     private System.Windows.Forms.NumericUpDown cvxCOptMaxErr;
     private System.Windows.Forms.Label label7;
+    private System.Windows.Forms.GroupBox groupBox4;
+    private System.Windows.Forms.CheckBox cvxVSRootOverride;
+    private System.Windows.Forms.TextBox cvxVSRootPath;
 
 
   }

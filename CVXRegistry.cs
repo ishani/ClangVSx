@@ -169,6 +169,8 @@ namespace ClangVSx
     public static CVXRegistryItem<String> TripleARM = new CVXRegistryItem<String>(() => TripleARM,
                                                                                   "armv7-apple-darwin10");
 
-    
+    public static CVXRegistryItem<Boolean> VSRootPathOverride = new CVXRegistryItem<Boolean>(() => VSRootPathOverride, false);
+    public static CVXRegistryItem<String> VSRootPath = new CVXRegistryItem<String>(() => VSRootPath,
+                                                                                  @"C:\Program Files (x86)\Microsoft Visual Studio 12.0\Common7\Tools\");    
   }
 }
