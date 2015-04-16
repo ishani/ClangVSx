@@ -1179,8 +1179,11 @@ namespace ClangVSx
           if (BatchFileStream != null)
             BatchFileStream.WriteLine(String.Format("\"{0}\" {1}", LocationClangEXE, compileString));
 
-          if (numCompilerErrors >= CVXRegistry.COptMaxErrToAbort)
-            break;
+          if (CVXRegistry.COptMaxErrToAbort > 0 && numCompilerErrors >= CVXRegistry.COptMaxErrToAbort)
+          {
+            WriteToOutputPane("Abandoning build, too many errors... \n");
+            return false;
+          }
         }
       }
 

@@ -60,11 +60,12 @@ namespace ClangVSx
       this.label3 = new System.Windows.Forms.Label();
       this.cvxTripleWin32 = new System.Windows.Forms.ComboBox();
       this.groupBox3 = new System.Windows.Forms.GroupBox();
+      this.label6 = new System.Windows.Forms.Label();
+      this.cvxCOptMaxErr = new System.Windows.Forms.NumericUpDown();
       this.cvxCOptStdSpec = new System.Windows.Forms.CheckBox();
       this.cvxCOptSLPAgg = new System.Windows.Forms.CheckBox();
       this.cvxCOptCPP14 = new System.Windows.Forms.CheckBox();
-      this.cvxCOptMaxErr = new System.Windows.Forms.NumericUpDown();
-      this.label6 = new System.Windows.Forms.Label();
+      this.label7 = new System.Windows.Forms.Label();
       ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
       this.groupBox1.SuspendLayout();
       ((System.ComponentModel.ISupportInitialize)(this.cvxPic)).BeginInit();
@@ -374,6 +375,7 @@ namespace ClangVSx
       // 
       // groupBox3
       // 
+      this.groupBox3.Controls.Add(this.label7);
       this.groupBox3.Controls.Add(this.label6);
       this.groupBox3.Controls.Add(this.cvxCOptMaxErr);
       this.groupBox3.Controls.Add(this.cvxCOptStdSpec);
@@ -386,14 +388,30 @@ namespace ClangVSx
       this.groupBox3.TabStop = false;
       this.groupBox3.Text = "Compilation Options";
       // 
+      // label6
+      // 
+      this.label6.AutoSize = true;
+      this.label6.Location = new System.Drawing.Point(70, 76);
+      this.label6.Name = "label6";
+      this.label6.Size = new System.Drawing.Size(137, 13);
+      this.label6.TabIndex = 17;
+      this.label6.Text = "Errors before abandon build";
+      // 
+      // cvxCOptMaxErr
+      // 
+      this.cvxCOptMaxErr.Location = new System.Drawing.Point(11, 73);
+      this.cvxCOptMaxErr.Name = "cvxCOptMaxErr";
+      this.cvxCOptMaxErr.Size = new System.Drawing.Size(52, 20);
+      this.cvxCOptMaxErr.TabIndex = 16;
+      // 
       // cvxCOptStdSpec
       // 
       this.cvxCOptStdSpec.AutoSize = true;
       this.cvxCOptStdSpec.Location = new System.Drawing.Point(10, 124);
       this.cvxCOptStdSpec.Name = "cvxCOptStdSpec";
-      this.cvxCOptStdSpec.Size = new System.Drawing.Size(197, 17);
+      this.cvxCOptStdSpec.Size = new System.Drawing.Size(233, 17);
       this.cvxCOptStdSpec.TabIndex = 15;
-      this.cvxCOptStdSpec.Text = "Specify Standard ( eg C99 / C++0x )";
+      this.cvxCOptStdSpec.Text = "Always Specify Standard ( eg C99 / C++0x )";
       this.cvxCOptStdSpec.UseVisualStyleBackColor = true;
       // 
       // cvxCOptSLPAgg
@@ -416,21 +434,14 @@ namespace ClangVSx
       this.cvxCOptCPP14.Text = "Enable C++14 Standard";
       this.cvxCOptCPP14.UseVisualStyleBackColor = true;
       // 
-      // cvxCOptMaxErr
+      // label7
       // 
-      this.cvxCOptMaxErr.Location = new System.Drawing.Point(10, 92);
-      this.cvxCOptMaxErr.Name = "cvxCOptMaxErr";
-      this.cvxCOptMaxErr.Size = new System.Drawing.Size(52, 20);
-      this.cvxCOptMaxErr.TabIndex = 16;
-      // 
-      // label6
-      // 
-      this.label6.AutoSize = true;
-      this.label6.Location = new System.Drawing.Point(69, 95);
-      this.label6.Name = "label6";
-      this.label6.Size = new System.Drawing.Size(137, 13);
-      this.label6.TabIndex = 17;
-      this.label6.Text = "Errors before abandon build";
+      this.label7.AutoSize = true;
+      this.label7.Location = new System.Drawing.Point(70, 92);
+      this.label7.Name = "label7";
+      this.label7.Size = new System.Drawing.Size(141, 13);
+      this.label7.TabIndex = 18;
+      this.label7.Text = "( set to 0 to never abandon )";
       // 
       // CVXSettings
       // 
@@ -509,6 +520,7 @@ namespace ClangVSx
     private System.Windows.Forms.CheckBox cvxCOptStdSpec;
     private System.Windows.Forms.Label label6;
     private System.Windows.Forms.NumericUpDown cvxCOptMaxErr;
+    private System.Windows.Forms.Label label7;
 
 
   }
