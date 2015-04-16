@@ -67,6 +67,14 @@ A context-menu option is added to code editor windows that allows for Clang-spec
 Release Notes
 -------------
 
+**Version 0.5.2** (2015-04-16)
+
+* Control max-errors-before-build-abandon in Settings
+* Override VS envvars for root tool paths can be overridden in Settings
+* Better support for C - testing with libsodium, opus, libvpx
+* Better support for custom build tasks - testing with YASM in libvpx
+* Can cancel rebuilds
+
 **Version 0.5.0** (2015-01-15)
 
 * Support for Clang 3.5
