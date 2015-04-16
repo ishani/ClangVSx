@@ -18,6 +18,7 @@ using System.Windows.Forms;
 using EnvDTE;
 using Microsoft.VisualStudio.VCProjectEngine;
 using Process = System.Diagnostics.Process;
+using System.Threading;
 
 namespace ClangVSx
 {
@@ -151,6 +152,79 @@ namespace ClangVSx
       return result;
     }
 
+    // http://stackoverflow.com/questions/139593/processstartinfo-hanging-on-waitforexit-why
+    internal int RunProcessAndLogOutputs( Process setProcess )
+    {
+      int pCode = -1;
+      StringBuilder output = new StringBuilder();
+      StringBuilder error = new StringBuilder();
+
+      using (AutoResetEvent outputWaitHandle = new AutoResetEvent(false))
+      using (AutoResetEvent errorWaitHandle = new AutoResetEvent(false))
+      {
+        using (setProcess)
+        {
+          try
+          {
+            setProcess.OutputDataReceived += (sender, e) =>
+            {
+              if (e.Data == null)
+              {
+                outputWaitHandle.Set();
+              }
+              else
+              {
+                output.AppendLine(e.Data);
+              }
+            };
+            setProcess.ErrorDataReceived += (sender, e) =>
+            {
+              if (e.Data == null)
+              {
+                errorWaitHandle.Set();
+              }
+              else
+              {
+                error.AppendLine(e.Data);
+              }
+            };
+
+            setProcess.Start();
+
+            setProcess.BeginOutputReadLine();
+            setProcess.BeginErrorReadLine();
+
+            if (setProcess.WaitForExit(2000))
+            {
+              pCode = setProcess.ExitCode;
+            }
+            else
+            {
+              // Timed out.
+            }
+
+            WriteToOutputPane(output.ToString());
+            WriteToOutputPane(error.ToString());
+
+          }
+          catch (Exception ex)
+          {
+            WriteToOutputPane("Exception when running process: " + ex.Message + "\n");
+            return -2;
+          }
+          finally
+          {
+            outputWaitHandle.WaitOne(2000);
+            errorWaitHandle.WaitOne(2000);
+          }
+
+        }
+      }
+
+
+      return pCode;
+    }
+
     private VCFileConfiguration GetFileConfiguration(IVCCollection configs, VCConfiguration cfg)
     {
       try
@@ -192,6 +266,7 @@ namespace ClangVSx
         foreach (String singleCmd in cmdsToRun)
         {
           var evaluatedCmd = evalMethod.Invoke(evaluator, new object[] { singleCmd }) as String;
+          evaluatedCmd= evaluatedCmd.Replace("/", "\\");
 
           if (DoShowCommands)
           {
@@ -206,14 +281,10 @@ namespace ClangVSx
           // run the specified tool
           Process cbStep = NewExternalProcess();
           cbStep.StartInfo.FileName = "cmd.exe";
-          cbStep.StartInfo.Arguments = "/C " + evaluatedCmd.Replace("/", "\\");
+          cbStep.StartInfo.Arguments = "/C " + evaluatedCmd;
           cbStep.StartInfo.WorkingDirectory = vcProject.ProjectDirectory;
-          cbStep.Start();
 
-          String outputStr = cbStep.StandardOutput.ReadToEnd();
-          WriteToOutputPane(outputStr);
-
-          cbStep.WaitForExit();
+          RunProcessAndLogOutputs(cbStep);
         }
       }
       catch (Exception e)
@@ -277,14 +348,16 @@ namespace ClangVSx
         }
       }
 
+      string evaluatedDescription = vcFC.Evaluate(customBuildTool.Description);
+
       // nothing to do?
       if (!outputFilesNeedBuilding)
       {
-        WriteToOutputPane("[skipping] " + customBuildTool.Description + "\n");
+        WriteToOutputPane("[skipping] " + evaluatedDescription + "\n");
         return;
       }
 
-      WriteToOutputPane(customBuildTool.Description + "\n");
+      WriteToOutputPane("[custom] " + evaluatedDescription + "\n");
 
       ExecuteCustomBuildToolCommandLine<VCFileConfiguration>(customBuildTool.CommandLine, vcFC, vcProject);
     }
@@ -442,6 +515,16 @@ namespace ClangVSx
       {
         compileString.Append("-x c++ ");
 
+        // compiler options from the settings page
+        if (CVXRegistry.COptCPP14)
+        {
+          compileString.Append("-std=c++14 ");
+        }
+        else if (CVXRegistry.COptStdSpec)
+        {
+          compileString.Append("-std=c++11 ");
+        }
+
         // RTTI disable?
         if (!perFileVCC.RuntimeTypeInfo)
         {
@@ -464,6 +547,15 @@ namespace ClangVSx
         catch
         {
           compileString.Append("-fno-exceptions ");
+        }
+      }
+      else if (perFileVCC.CompileAs == CompileAsOptions.compileAsC)
+      {
+        compileString.Append("-x c ");
+
+        if (CVXRegistry.COptStdSpec)
+        {
+          compileString.Append("-std=c99 ");
         }
       }
 
@@ -655,16 +747,6 @@ namespace ClangVSx
         defaultCompilerString.Append("-ccc-print-phases ");
       }
 
-      // compiler options from the settings page
-      if (CVXRegistry.COptCPP14)
-      {
-        defaultCompilerString.Append("-std=c++14 ");
-      }
-      else
-      {
-        defaultCompilerString.Append("-std=c++11 ");
-      }
-
       if (CVXRegistry.COptSLPAgg)
       {
         defaultCompilerString.Append("-fslp-vectorize-aggressive ");
@@ -808,7 +890,7 @@ namespace ClangVSx
     /// <summary>
     /// main worker function to build a project, swapping in our own tools as desired
     /// </summary>
-    public bool BuildProject(VCProject vcProject, VCConfiguration vcCfg, bool justLink)
+    public bool BuildProject(VCProject vcProject, VCConfiguration vcCfg, bool justLink, IBuildCancellation buildCancellation)
     {
       String defaultCompilerString = GenerateDefaultCompilerString(vcProject, vcCfg);
 
@@ -919,7 +1001,7 @@ namespace ClangVSx
         // dry-run the phases that generate lists of build artifacts
         return (
                    doResourceCompiler(vcProject, vcCfg, ProjectFiles, CompilationArtifacts, true) &&
-                   doCompileCPP(vcProject, vcCfg, ProjectFiles, CompilationArtifacts, true) &&
+                   doCompileCPP(vcProject, vcCfg, ProjectFiles, CompilationArtifacts, true, buildCancellation) &&
                    doPreLink(vcProject, vcCfg) &&
                    doLink(vcProject, vcCfg, outLink, CompilationArtifacts)
                );
@@ -931,7 +1013,7 @@ namespace ClangVSx
                    doCustomBuildStepPerFile(vcProject, vcCfg, ProjectFiles) &&
                    doMIDL(vcProject, vcCfg, ProjectFiles) &&
                    doResourceCompiler(vcProject, vcCfg, ProjectFiles, CompilationArtifacts) &&
-                   doCompileCPP(vcProject, vcCfg, ProjectFiles, CompilationArtifacts) &&
+                   doCompileCPP(vcProject, vcCfg, ProjectFiles, CompilationArtifacts, false, buildCancellation) &&
                    doPreLink(vcProject, vcCfg) &&
                    doLink(vcProject, vcCfg, outLink, CompilationArtifacts) &&
                    doPostBuild(vcProject, vcCfg)
@@ -1064,7 +1146,7 @@ namespace ClangVSx
     }
 
     internal bool doCompileCPP(VCProject vcProject, VCConfiguration vcCfg, List<ProjectFile> ProjectFiles,
-                               HashSet<String> CompilationArtifacts, bool dryRun = false)
+                               HashSet<String> CompilationArtifacts, bool dryRun = false, IBuildCancellation buildCancellation = null)
     {
       var fTools = (IVCCollection)vcCfg.Tools;
       var vcCTool = (VCCLCompilerTool)fTools.Item("VCCLCompilerTool");
@@ -1077,6 +1159,13 @@ namespace ClangVSx
 
       foreach (ProjectFile pf in ProjectFiles)
       {
+        if (buildCancellation != null && buildCancellation.ShouldCancelBuild())
+        {
+          WriteToOutputPane("Stopping build... \n");
+          Application.DoEvents();
+          return false;
+        }
+
         if ((pf.Config.Tool as VCCLCompilerTool) != null)
         {
           var compileString = new StringBuilder(1024);
@@ -1090,7 +1179,7 @@ namespace ClangVSx
           if (BatchFileStream != null)
             BatchFileStream.WriteLine(String.Format("\"{0}\" {1}", LocationClangEXE, compileString));
 
-          if (numCompilerErrors > 5)
+          if (numCompilerErrors >= CVXRegistry.COptMaxErrToAbort)
             break;
         }
       }
@@ -1175,9 +1264,8 @@ namespace ClangVSx
         }
 
         linkProcess.StartInfo.WorkingDirectory = vcProject.ProjectDirectory;
-        linkProcess.Start();
 
-        linkProcess.WaitForExit();
+        RunProcessAndLogOutputs(linkProcess);
 
         if (linkProcess.ExitCode != 0)
         {

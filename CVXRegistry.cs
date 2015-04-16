@@ -154,6 +154,9 @@ namespace ClangVSx
     // compiler options toggles
     public static CVXRegistryItem<Boolean> COptCPP14 = new CVXRegistryItem<Boolean>(() => COptCPP14, true);
     public static CVXRegistryItem<Boolean> COptSLPAgg = new CVXRegistryItem<Boolean>(() => COptSLPAgg, false);
+    public static CVXRegistryItem<Boolean> COptStdSpec = new CVXRegistryItem<Boolean>(() => COptStdSpec, true);
+
+    public static CVXRegistryItem<Int32> COptMaxErrToAbort = new CVXRegistryItem<Int32>(() => COptMaxErrToAbort, 5);
 
     // global options
     public static CVXRegistryItem<String> CommonArgs = new CVXRegistryItem<String>(() => CommonArgs, "");

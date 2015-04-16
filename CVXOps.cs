@@ -133,6 +133,12 @@ namespace ClangVSx
         // loop through the startup projects
         foreach (object startUpProj in (Array)_applicationObject.Solution.SolutionBuild.StartupProjects)
         {
+          if (config.BuildShouldCancel.ShouldCancelBuild())
+          {
+            WriteToOutputPane("Stopping build... \n");
+            break;
+          }
+
           // is this project a VC++ one? the guid is hardcoded because it doesn't seem to be included
           // anywhere else in the constants, EnvDTE, etc..!
           Project p = _applicationObject.Solution.Item(startUpProj);
@@ -183,7 +189,7 @@ namespace ClangVSx
             Environment.CurrentDirectory = vcProject.ProjectDirectory;
             WriteToOutputPane("Project Directory : " + Environment.CurrentDirectory + "\n");
 
-            bool result = buildSystem.BuildProject(vcProject, vcCfg, config.JustLink);
+            bool result = buildSystem.BuildProject(vcProject, vcCfg, config.JustLink, config.BuildShouldCancel);
             config.BuildFinished(result);
             return;
           }
@@ -210,6 +216,7 @@ namespace ClangVSx
     {
       public BuildEventDelegate BuildBegun;
       public BuildEventDelegate BuildFinished;
+      public IBuildCancellation BuildShouldCancel;
       public bool JustLink;
     }
 

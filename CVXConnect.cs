@@ -23,17 +23,25 @@ using Thread = System.Threading.Thread;
 
 namespace ClangVSx
 {
+  public interface IBuildCancellation
+  {
+     bool ShouldCancelBuild();
+  }
+
   /// <summary>The object for implementing an Add-in.</summary>
   /// <seealso class='IDTExtensibility2' />
-  public class CVXConnect : IDTExtensibility2, IDTCommandTarget
+  public class CVXConnect : IDTExtensibility2, IDTCommandTarget, IBuildCancellation
   {
     private readonly List<String> TemporaryFilesCreatedDuringThisSession = new List<String>();
     private CommandBarEvents AnalyseCmdEvent;
     private bool BuildInProgress;
+    private bool BuildCancelFlag;
     private CommandBarEvents CompileCmdEvent;
     private CommandBarEvents DasmCmdEvent;
     private CommandBarEvents PreproCmdEvent;
     private CommandBarButton RebuildActiveProjectButton;
+    private CommandBarButton RelinkButton;
+    private CommandBarButton CancelBuildButton;
     private CommandBarButton SettingsButton;
 
     // instance of the compiler bridge; this offers up the main worker functions that go off and compile files, projects, etc.
@@ -42,11 +50,17 @@ namespace ClangVSx
     private DTE2 _applicationObject;
     private DTEHelper _dteHelper;
 
+    public bool ShouldCancelBuild()
+    {
+      return BuildCancelFlag;
+    }
+
     #region Commands
 
     private const string COMMAND_CLANG_SETTINGS_DLG = "ShowSettingsDlg";
     private const string COMMAND_CLANG_REBUILD_ACTIVE = "RebuildActiveProject";
     private const string COMMAND_CLANG_RELINK_ACTIVE = "RelinkActiveProject";
+    private const string COMMAND_CLANG_CANCEL_BUILD = "CancelBuild";
 
     private string GetCommandFullName(string cmdName)
     {
@@ -64,6 +78,7 @@ namespace ClangVSx
     public CVXConnect()
     {
       BuildInProgress = false;
+      BuildCancelFlag = false;
     }
 
     #region IDTCommandTarget Members
@@ -99,6 +114,11 @@ namespace ClangVSx
             if (!BuildInProgress && _applicationObject.Solution.Count != 0)
               status |= vsCommandStatus.vsCommandStatusEnabled;
           }
+          else if (commandName.EndsWith(COMMAND_CLANG_CANCEL_BUILD))
+          {
+            if (BuildInProgress && _applicationObject.Solution.Count != 0)
+              status |= vsCommandStatus.vsCommandStatusEnabled;
+          }
         }
       }
     }
@@ -126,6 +146,13 @@ namespace ClangVSx
             }
             break;
 
+          case COMMAND_CLANG_CANCEL_BUILD:
+            {
+              handled = true;
+              BuildCancelFlag = true;
+            }
+            break;
+
           case COMMAND_CLANG_RELINK_ACTIVE:
           case COMMAND_CLANG_REBUILD_ACTIVE:
             {
@@ -134,11 +161,14 @@ namespace ClangVSx
 
               try
               {
+                BuildCancelFlag = false;
+
                 // build a config options block, set the delegates for build events to toggle
                 // our local build-is-running variable that will disable all other Clang actions until it finishes
                 var pbc = new ClangOps.ProjectBuildConfig();
                 pbc.BuildBegun = (bool success) => { BuildInProgress = true; };
                 pbc.BuildFinished = (bool success) => { BuildInProgress = false; };
+                pbc.BuildShouldCancel = this;
                 pbc.JustLink = (cmd == COMMAND_CLANG_RELINK_ACTIVE);
 
                 // start the build on another thread so the output pane updates asynchronously
@@ -254,7 +284,20 @@ namespace ClangVSx
               0);
           Command commandToAdd =
               _applicationObject.Commands.Item(GetCommandFullName(COMMAND_CLANG_RELINK_ACTIVE), 0);
-          RebuildActiveProjectButton =
+          RelinkButton =
+              commandToAdd.AddControl(clangMenuRoot.CommandBar, clangMenuRoot.CommandBar.Controls.Count + 1)
+              as CommandBarButton;
+        }
+        {
+          _dteHelper.AddNamedCommand2(
+              COMMAND_CLANG_CANCEL_BUILD,
+              "Cancel Build",
+              "Cancel Build",
+              false,
+              0);
+          Command commandToAdd =
+              _applicationObject.Commands.Item(GetCommandFullName(COMMAND_CLANG_CANCEL_BUILD), 0);
+          CancelBuildButton =
               commandToAdd.AddControl(clangMenuRoot.CommandBar, clangMenuRoot.CommandBar.Controls.Count + 1)
               as CommandBarButton;
         }

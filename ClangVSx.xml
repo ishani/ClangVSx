@@ -1542,7 +1542,7 @@
             common code to generate compiler settings for non-file-specific stuff
             </summary>
         </member>
-        <member name="M:ClangVSx.CVXBuildSystem.BuildProject(Microsoft.VisualStudio.VCProjectEngine.VCProject,Microsoft.VisualStudio.VCProjectEngine.VCConfiguration,System.Boolean)">
+        <member name="M:ClangVSx.CVXBuildSystem.BuildProject(Microsoft.VisualStudio.VCProjectEngine.VCProject,Microsoft.VisualStudio.VCProjectEngine.VCConfiguration,System.Boolean,ClangVSx.IBuildCancellation)">
             <summary>
             main worker function to build a project, swapping in our own tools as desired
             </summary>

@@ -46,6 +46,7 @@ namespace ClangVSx
       this.linkLabel3 = new System.Windows.Forms.LinkLabel();
       this.cvxCancel = new System.Windows.Forms.Button();
       this.bridgeOps = new System.Windows.Forms.GroupBox();
+      this.cvxVerboseVectorize = new System.Windows.Forms.CheckBox();
       this.cvxPhases = new System.Windows.Forms.CheckBox();
       this.cvxBatch = new System.Windows.Forms.CheckBox();
       this.cvxShowCmds = new System.Windows.Forms.CheckBox();
@@ -59,9 +60,11 @@ namespace ClangVSx
       this.label3 = new System.Windows.Forms.Label();
       this.cvxTripleWin32 = new System.Windows.Forms.ComboBox();
       this.groupBox3 = new System.Windows.Forms.GroupBox();
-      this.cvxCOptCPP14 = new System.Windows.Forms.CheckBox();
+      this.cvxCOptStdSpec = new System.Windows.Forms.CheckBox();
       this.cvxCOptSLPAgg = new System.Windows.Forms.CheckBox();
-      this.cvxVerboseVectorize = new System.Windows.Forms.CheckBox();
+      this.cvxCOptCPP14 = new System.Windows.Forms.CheckBox();
+      this.cvxCOptMaxErr = new System.Windows.Forms.NumericUpDown();
+      this.label6 = new System.Windows.Forms.Label();
       ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
       this.groupBox1.SuspendLayout();
       ((System.ComponentModel.ISupportInitialize)(this.cvxPic)).BeginInit();
@@ -69,6 +72,7 @@ namespace ClangVSx
       this.bridgeOps.SuspendLayout();
       this.groupBox2.SuspendLayout();
       this.groupBox3.SuspendLayout();
+      ((System.ComponentModel.ISupportInitialize)(this.cvxCOptMaxErr)).BeginInit();
       this.SuspendLayout();
       // 
       // pictureBox1
@@ -220,6 +224,16 @@ namespace ClangVSx
       this.bridgeOps.TabStop = false;
       this.bridgeOps.Text = "Output";
       // 
+      // cvxVerboseVectorize
+      // 
+      this.cvxVerboseVectorize.AutoSize = true;
+      this.cvxVerboseVectorize.Location = new System.Drawing.Point(10, 87);
+      this.cvxVerboseVectorize.Name = "cvxVerboseVectorize";
+      this.cvxVerboseVectorize.Size = new System.Drawing.Size(245, 17);
+      this.cvxVerboseVectorize.TabIndex = 12;
+      this.cvxVerboseVectorize.Text = "Show verbose vectorization analysis / remarks";
+      this.cvxVerboseVectorize.UseVisualStyleBackColor = true;
+      // 
       // cvxPhases
       // 
       this.cvxPhases.AutoSize = true;
@@ -360,6 +374,9 @@ namespace ClangVSx
       // 
       // groupBox3
       // 
+      this.groupBox3.Controls.Add(this.label6);
+      this.groupBox3.Controls.Add(this.cvxCOptMaxErr);
+      this.groupBox3.Controls.Add(this.cvxCOptStdSpec);
       this.groupBox3.Controls.Add(this.cvxCOptSLPAgg);
       this.groupBox3.Controls.Add(this.cvxCOptCPP14);
       this.groupBox3.Location = new System.Drawing.Point(500, 132);
@@ -369,15 +386,15 @@ namespace ClangVSx
       this.groupBox3.TabStop = false;
       this.groupBox3.Text = "Compilation Options";
       // 
-      // cvxCOptCPP14
+      // cvxCOptStdSpec
       // 
-      this.cvxCOptCPP14.AutoSize = true;
-      this.cvxCOptCPP14.Location = new System.Drawing.Point(10, 23);
-      this.cvxCOptCPP14.Name = "cvxCOptCPP14";
-      this.cvxCOptCPP14.Size = new System.Drawing.Size(93, 17);
-      this.cvxCOptCPP14.TabIndex = 13;
-      this.cvxCOptCPP14.Text = "Enable C++14";
-      this.cvxCOptCPP14.UseVisualStyleBackColor = true;
+      this.cvxCOptStdSpec.AutoSize = true;
+      this.cvxCOptStdSpec.Location = new System.Drawing.Point(10, 124);
+      this.cvxCOptStdSpec.Name = "cvxCOptStdSpec";
+      this.cvxCOptStdSpec.Size = new System.Drawing.Size(197, 17);
+      this.cvxCOptStdSpec.TabIndex = 15;
+      this.cvxCOptStdSpec.Text = "Specify Standard ( eg C99 / C++0x )";
+      this.cvxCOptStdSpec.UseVisualStyleBackColor = true;
       // 
       // cvxCOptSLPAgg
       // 
@@ -389,15 +406,31 @@ namespace ClangVSx
       this.cvxCOptSLPAgg.Text = "Aggressive SLP vectorization";
       this.cvxCOptSLPAgg.UseVisualStyleBackColor = true;
       // 
-      // cvxVerboseVectorize
+      // cvxCOptCPP14
       // 
-      this.cvxVerboseVectorize.AutoSize = true;
-      this.cvxVerboseVectorize.Location = new System.Drawing.Point(10, 87);
-      this.cvxVerboseVectorize.Name = "cvxVerboseVectorize";
-      this.cvxVerboseVectorize.Size = new System.Drawing.Size(245, 17);
-      this.cvxVerboseVectorize.TabIndex = 12;
-      this.cvxVerboseVectorize.Text = "Show verbose vectorization analysis / remarks";
-      this.cvxVerboseVectorize.UseVisualStyleBackColor = true;
+      this.cvxCOptCPP14.AutoSize = true;
+      this.cvxCOptCPP14.Location = new System.Drawing.Point(10, 23);
+      this.cvxCOptCPP14.Name = "cvxCOptCPP14";
+      this.cvxCOptCPP14.Size = new System.Drawing.Size(139, 17);
+      this.cvxCOptCPP14.TabIndex = 13;
+      this.cvxCOptCPP14.Text = "Enable C++14 Standard";
+      this.cvxCOptCPP14.UseVisualStyleBackColor = true;
+      // 
+      // cvxCOptMaxErr
+      // 
+      this.cvxCOptMaxErr.Location = new System.Drawing.Point(10, 92);
+      this.cvxCOptMaxErr.Name = "cvxCOptMaxErr";
+      this.cvxCOptMaxErr.Size = new System.Drawing.Size(52, 20);
+      this.cvxCOptMaxErr.TabIndex = 16;
+      // 
+      // label6
+      // 
+      this.label6.AutoSize = true;
+      this.label6.Location = new System.Drawing.Point(69, 95);
+      this.label6.Name = "label6";
+      this.label6.Size = new System.Drawing.Size(137, 13);
+      this.label6.TabIndex = 17;
+      this.label6.Text = "Errors before abandon build";
       // 
       // CVXSettings
       // 
@@ -435,6 +468,7 @@ namespace ClangVSx
       this.groupBox2.PerformLayout();
       this.groupBox3.ResumeLayout(false);
       this.groupBox3.PerformLayout();
+      ((System.ComponentModel.ISupportInitialize)(this.cvxCOptMaxErr)).EndInit();
       this.ResumeLayout(false);
       this.PerformLayout();
 
@@ -472,6 +506,9 @@ namespace ClangVSx
     private System.Windows.Forms.CheckBox cvxCOptCPP14;
     private System.Windows.Forms.CheckBox cvxVerboseVectorize;
     private System.Windows.Forms.CheckBox cvxCOptSLPAgg;
+    private System.Windows.Forms.CheckBox cvxCOptStdSpec;
+    private System.Windows.Forms.Label label6;
+    private System.Windows.Forms.NumericUpDown cvxCOptMaxErr;
 
 
   }

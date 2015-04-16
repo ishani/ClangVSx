@@ -34,6 +34,8 @@ namespace ClangVSx
 
       cvxCOptCPP14.Checked = CVXRegistry.COptCPP14.Value;
       cvxCOptSLPAgg.Checked = CVXRegistry.COptSLPAgg.Value;
+      cvxCOptStdSpec.Checked = CVXRegistry.COptStdSpec.Value;
+      cvxCOptMaxErr.Value = CVXRegistry.COptMaxErrToAbort.Value;
 
       cvxCommonArgs.Text = CVXRegistry.CommonArgs;
       cvxTripleWin32.Text = CVXRegistry.TripleWin32;
@@ -75,6 +77,8 @@ namespace ClangVSx
 
         CVXRegistry.COptCPP14.Value = cvxCOptCPP14.Checked;
         CVXRegistry.COptSLPAgg.Value = cvxCOptSLPAgg.Checked;
+        CVXRegistry.COptStdSpec.Value = cvxCOptStdSpec.Checked;
+        CVXRegistry.COptMaxErrToAbort.Value = (Int32)cvxCOptMaxErr.Value;
 
         CVXRegistry.CommonArgs.Value = cvxCommonArgs.Text;
         CVXRegistry.TripleWin32.Value = cvxTripleWin32.Text;
