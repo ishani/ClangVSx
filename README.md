@@ -1,3 +1,5 @@
+**Archived; recent versions of Visual Studio now provide far more advanced Clang integration out-of-the-box. This project is left up as potentially useful reference for VS Add-in authors.**
+
 ClangVSx
 ========
 
